@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using werkbank.services;
 
 namespace werkbank.operations
 {
@@ -27,7 +28,7 @@ namespace werkbank.operations
             ZipOutputStream zipStream = new(fileStream);
 
             // compression level (0-9)
-            zipStream.SetLevel(Config.CompressionLevel);
+            zipStream.SetLevel(Settings.Properties.ArchiveCompressionLevel);
 
             int offset = Dir.FullName.Length;
 

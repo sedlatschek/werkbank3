@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace werkbank.services
 {
-    internal class QueueService: IService
+    internal class QueueService
     {
     }
 }
