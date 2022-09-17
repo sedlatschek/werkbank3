@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using werkbank.exceptions;
@@ -192,7 +194,9 @@ namespace werkbank.controls
         public void Gather()
         {
             objectListView.DeselectAll();
-            Work(this, new DoWorkEventArgs(this), true);
+            panel_loading.Visible = true;
+            objectListView.Enabled = false;
+            Work(new DoWorkEventArgs(this), true);
         }
 
         /// <summary>
@@ -203,6 +207,8 @@ namespace werkbank.controls
             if (!worker.IsBusy)
             {
                 objectListView.DeselectAll();
+                panel_loading.Visible = true;
+                objectListView.Enabled = false;
                 worker.RunWorkerAsync();
             }
         }
@@ -215,28 +221,44 @@ namespace werkbank.controls
             worker.CancelAsync();
         }
 
-        private void Work(object sender, DoWorkEventArgs e, bool sync = false)
+        private void Work(DoWorkEventArgs e, bool sync = false)
         {
             List<Werk> werke = new();
 
+            if (!sync) worker.ReportProgress(0);
+
             int envIndex = 0;
+            int envCount = EnvironmentRepository.Environments.Count;
+
             foreach (string envPath in EnvironmentRepository.Directories)
             {
                 if (e.Cancel) break;
 
+                int partitionEnvPercentage = 100 / envCount;
+                int baseEnvPercentage = partitionEnvPercentage * envIndex;
+                int maxEnvPercentage = baseEnvPercentage + partitionEnvPercentage;
+
+
                 // go through each environment in vault
                 DirectoryInfo envDir = new(Path.Combine(Directory.FullName, envPath));
-                if (!envDir.Exists) continue;
+                if (!envDir.Exists)
+                {
+                    if (!sync) worker.ReportProgress(maxEnvPercentage);
+                    continue;
+                }
 
                 // get all subdirectories of vault/environment directory
                 var werkDirs = envDir.EnumerateDirectories().OrderByDescending(d => d.LastWriteTime);
                 int werkCount = werkDirs.Count();
+
 
                 int werkIndex = 0;
                 foreach (DirectoryInfo werkDir in werkDirs)
                 {
                     // stop gathering if background worker is cancelled
                     if (e.Cancel) break;
+
+                    if (!sync) worker.ReportProgress(baseEnvPercentage + partitionEnvPercentage / werkCount * werkIndex, werkDir.Name);
 
                     foreach (DirectoryInfo subDir in werkDir.GetDirectories())
                     {
@@ -307,24 +329,33 @@ namespace werkbank.controls
                     }
                     werkIndex += 1;
                 }
+
+                if (!sync) worker.ReportProgress(maxEnvPercentage);
+
                 envIndex += 1;
             }
 
             if (sync)
             {
                 objectListView.SetObjects(werke);
+                panel_loading.Visible = false;
+                objectListView.Enabled = true;
             }
             e.Result = werke;
+
+            worker.ReportProgress(100, "Done");
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Work(sender, e);
+            Work(e);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-
+            progressBar.Value = e.ProgressPercentage;
+            string state = e.UserState != null ? " - " + e.UserState.ToString() : "";
+            label_progress.Text = e.ProgressPercentage + "%" + state;
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -339,10 +370,30 @@ namespace werkbank.controls
                 throw new Exception("No result after work");
             }
 
-            List<Werk> werke = (List<Werk>)e.Result;
+            progressBar.Value = progressBar.Maximum;
+            timer_hide_loading.Start();
 
             // draw gathered items
+            List<Werk> werke = (List<Werk>)e.Result;
             objectListView.SetObjects(werke);
+        }
+
+        private void WerkList_SizeChanged(object sender, EventArgs e)
+        {
+            AlignLoadingPanel();
+        }
+
+        private void AlignLoadingPanel()
+        {
+            panel_loading.Left = Width / 2 - panel_loading.Width / 2;
+            panel_loading.Top = Height / 2 - panel_loading.Height / 2;
+        }
+
+        private void TimerHideLoading_Tick(object sender, EventArgs e)
+        {
+            timer_hide_loading.Enabled = false;
+            objectListView.Enabled = true;
+            panel_loading.Visible = false;
         }
     }
 }
