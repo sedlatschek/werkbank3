@@ -12,7 +12,7 @@ namespace tests.operations
     public class MoveFileTest
     {
         [TestMethod]
-        public void TestPerformWorks()
+        public void PerformWorks()
         {
             string source = Util.GetTempPath() + ".txt";
             File.WriteAllText(source, "hi");
@@ -27,7 +27,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestVerifyWorks()
+        public void VerifyWorks()
         {
             string source = Util.GetTempPath() + ".txt";
             File.WriteAllText(source, "hi");

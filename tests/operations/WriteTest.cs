@@ -12,7 +12,7 @@ namespace tests.operations
     public class WriteTest
     {
         [TestMethod]
-        public void TestPerformWorks()
+        public void PerformWorks()
         {
             string file = Util.GetTempPath() + ".txt";
             Write.Perform(new OperationWriteOptions(file, "hi"));
@@ -22,7 +22,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestVerifyWorks()
+        public void VerifyWorks()
         {
             string file = Util.GetTempPath() + ".txt";
             OperationWriteOptions options = new(file, "hi");

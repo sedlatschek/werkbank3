@@ -13,7 +13,7 @@ namespace tests.operations
     public class ZipTest
     {
         [TestMethod]
-        public void TestPerformWorks()
+        public void PerformWorks()
         {
             string source = Util.GetTempPath();
             Directory.CreateDirectory(source);
@@ -50,7 +50,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestVerifyWorks()
+        public void VerifyWorks()
         {
             string source = Util.GetTempPath();
             Directory.CreateDirectory(source);

@@ -12,7 +12,7 @@ namespace tests.operations
     public class CopyTest
     {
         [TestMethod]
-        public void TestPerformWorksForDir()
+        public void PerformWorksForDir()
         {
             string source = Util.GetTempPath();
             Directory.CreateDirectory(source);
@@ -34,7 +34,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestPerformWorksForFile()
+        public void PerformWorksForFile()
         {
             string source = Util.GetTempPath() + ".txt";
             File.WriteAllText(source, "hi");
@@ -48,7 +48,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestVerifyWorks()
+        public void VerifyWorks()
         {
             string path1 = Util.GetTempPath();
             string path2 = Util.GetTempPath();
@@ -107,7 +107,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestVerifyWorksForFile()
+        public void VerifyWorksForFile()
         {
             string source = Util.GetTempPath() + ".txt";
             File.WriteAllText(source, "hi");

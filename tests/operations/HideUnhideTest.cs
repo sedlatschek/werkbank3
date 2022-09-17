@@ -12,7 +12,7 @@ namespace tests.operations
     public class HideUnhideTest
     {
         [TestMethod]
-        public void TestPerformWorksForDir()
+        public void PerformWorksForDir()
         {
             string dir = Util.GetTempPath();
             Directory.CreateDirectory(dir);
@@ -27,7 +27,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestPerformWorksForFile()
+        public void PerformWorksForFile()
         {
             string file = Util.GetTempPath() + ".txt";
             File.WriteAllText(file, "haha");
@@ -42,7 +42,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestVerifyWorksForDir()
+        public void VerifyWorksForDir()
         {
             string dir = Util.GetTempPath();
             Directory.CreateDirectory(dir);
@@ -60,7 +60,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestVerifyWorksForFile()
+        public void VerifyWorksForFile()
         {
             string file = Util.GetTempPath() + ".txt";
             File.WriteAllText(file, "haha");

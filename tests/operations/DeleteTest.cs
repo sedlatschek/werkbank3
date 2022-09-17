@@ -11,7 +11,7 @@ namespace tests.operations
     public class DeleteTest
     {
         [TestMethod]
-        public void TestPerformWorks()
+        public void PerformWorks()
         {
             string temp = Util.GetTempPath();
 
@@ -33,7 +33,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestVerifyWorks()
+        public void VerifyWorks()
         {
             string temp = Util.GetTempPath();
 

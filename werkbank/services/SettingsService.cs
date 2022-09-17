@@ -11,8 +11,17 @@ namespace werkbank.services
     {
         public static readonly Settings Properties = Init();
 
+        [JsonProperty("dirHotVault")]
+        public string DirHotVault { get; set; }
+
+        [JsonProperty("dirColdVault")]
+        public string DirColdVault { get; set; }
+
+        [JsonProperty("dirArchiveVault")]
+        public string DirArchiveVault { get; set; }
+
         [JsonProperty("archiveCompressionLevel")]
-        public int ArchiveCompressionLevel { get; set; }
+        public int ArchiveCompressionLevel { get; set; } = 9;
 
         /// <summary>
         /// Retrieve the latest settings if possible or create new settings.
@@ -28,14 +37,40 @@ namespace werkbank.services
                     Settings? settings = JsonConvert.DeserializeObject<Settings>(str);
                     if (settings != null)
                     {
-                        return settings;
+                        return ApplyDefaultsOnEmpty(settings);
                     }
                 }
             }
-            return new Settings()
+            return ApplyDefaultsOnEmpty(new Settings());
+        }
+
+        public Settings()
+        {
+            DirHotVault = Config.DirDefaultHotVault;
+            DirColdVault = Config.DirDefaultColdVault;
+            DirArchiveVault = Config.DirDefaultArchiveVault;
+            ArchiveCompressionLevel = 9;
+        }
+
+        private static Settings ApplyDefaultsOnEmpty(Settings Settings)
+        {
+            if (string.IsNullOrEmpty(Settings.DirHotVault))
             {
-                ArchiveCompressionLevel = 9
-            };
+                Settings.DirHotVault = Config.DirDefaultHotVault;
+            }
+            if (string.IsNullOrEmpty(Settings.DirColdVault))
+            {
+                Settings.DirColdVault = Config.DirDefaultColdVault;
+            }
+            if (string.IsNullOrEmpty(Settings.DirArchiveVault))
+            {
+                Settings.DirArchiveVault = Config.DirDefaultArchiveVault;
+            }
+            if (Settings.ArchiveCompressionLevel < 0 || Settings.ArchiveCompressionLevel > 9)
+            {
+                Settings.ArchiveCompressionLevel = 9;
+            }
+            return Settings;
         }
 
         /// <summary>

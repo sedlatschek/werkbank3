@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace werkbank.environments
 {
-    internal class Environment
+    public abstract class Environment
     {
+        public abstract string Name { get; }
+        public abstract string Handle { get; }
+        public abstract string Directory { get; }
+        public int Index { get; }
+
+        public Environment(int Index)
+        {
+            this.Index = Index;
+        }
     }
 }

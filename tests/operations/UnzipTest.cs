@@ -14,7 +14,7 @@ namespace tests.operations
     public class UnzipTest
     {
         [TestMethod]
-        public void TestPerformWorks()
+        public void PerformWorks()
         {
             string source = Util.GetTempPath();
             string dest = Util.GetTempPath();
@@ -43,7 +43,7 @@ namespace tests.operations
         }
 
         [TestMethod]
-        public void TestVerifyWorks()
+        public void VerifyWorks()
         {
             string source = Util.GetTempPath();
             string dest = Util.GetTempPath();

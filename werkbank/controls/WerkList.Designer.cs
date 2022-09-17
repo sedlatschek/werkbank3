@@ -29,16 +29,31 @@
         private void InitializeComponent()
         {
             this.objectListView = new BrightIdeasSoftware.ObjectListView();
+            this.worker = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.objectListView)).BeginInit();
             this.SuspendLayout();
             // 
             // objectListView
             // 
-            this.objectListView.Location = new System.Drawing.Point(76, 80);
+            this.objectListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.objectListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.objectListView.FullRowSelect = true;
+            this.objectListView.Location = new System.Drawing.Point(3, 3);
+            this.objectListView.MultiSelect = false;
             this.objectListView.Name = "objectListView";
-            this.objectListView.Size = new System.Drawing.Size(121, 97);
+            this.objectListView.Size = new System.Drawing.Size(700, 383);
             this.objectListView.TabIndex = 0;
             this.objectListView.View = System.Windows.Forms.View.Details;
+            // 
+            // worker
+            // 
+            this.worker.WorkerReportsProgress = true;
+            this.worker.WorkerSupportsCancellation = true;
+            this.worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.Worker_DoWork);
+            this.worker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.Worker_ProgressChanged);
+            this.worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.Worker_RunWorkerCompleted);
             // 
             // WerkList
             // 
@@ -55,5 +70,6 @@
         #endregion
 
         private BrightIdeasSoftware.ObjectListView objectListView;
+        private System.ComponentModel.BackgroundWorker worker;
     }
 }

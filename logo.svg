@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 168.2617 142.1875">
+    <defs>
+        <linearGradient id="a" x1="642.9629" y1="499" x2="642.9629" y2="356.8125" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#CC9999" />
+            <stop offset="2" stop-color="#AD7F7F" />
+        </linearGradient>
+    </defs>
+    <title>Werkbank Logo</title>
+    <path
+        d="M680.6094,459.3516h.5859l20.8985-102.5391h25L693.3047,499h-21.582l-28.418-101.1719h-.5859L614.2031,499h-21.68L558.832,356.8125h24.9024l21.0937,102.4414h.586l27.0507-102.4414h20.8985Z"
+        transform="translate(-558.832 -356.8125)" style="fill:url(#a)" />
+</svg>
