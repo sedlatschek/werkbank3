@@ -145,5 +145,25 @@ namespace werkbank.models
         {
             return Path.Combine(VaultRepository.GetDirectory(State), Environment.Directory, Name);
         }
+
+        /// <summary>
+        /// Open the current directory of the werk in the file explorer.
+        /// </summary>
+        public void OpenExplorer()
+        {
+            System.Diagnostics.Process.Start("explorer.exe", CurrentDirectory);
+        }
+
+        /// <summary>
+        /// Open the current directory of the werk in VS Code.
+        /// </summary>
+        public void OpenInVsCode()
+        {
+            System.Diagnostics.Process.Start(Path.Combine(
+                System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
+                @"Programs\Microsoft VS Code\Code.exe"),
+                CurrentDirectory
+            );
+        }
     }
 }

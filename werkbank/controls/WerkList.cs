@@ -23,6 +23,16 @@ namespace werkbank.controls
 
         private readonly ImageList IconList;
 
+        /// <summary>
+        /// Triggers whenever a werk is selected.
+        /// </summary>
+        public event EventHandler<Werk?>? WerkSelected;
+
+        /// <summary>
+        /// Triggers whenever a werk is double clicked.
+        /// </summary>
+        public event EventHandler<Werk>? WerkDoubleClick;
+
         private DirectoryInfo Directory
         {
             get
@@ -136,13 +146,8 @@ namespace werkbank.controls
                 Width = 80,
                 AspectToStringConverter = (object env) =>
                 {
-                    return (env as environments.Environment).Name;
+                    return ((environments.Environment)env).Name;
                 },
-                ImageGetter = (object werk) =>
-                {
-                    return null;
-                    // return (werk as Werk).Environment.Icon;
-                }
             };
             objectListView.Columns.Add(colEnv);
 
@@ -346,19 +351,19 @@ namespace werkbank.controls
             worker.ReportProgress(100, "Done");
         }
 
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        private void WorkerDoWork(object sender, DoWorkEventArgs e)
         {
             Work(e);
         }
 
-        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void WorkerProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBar.Value = e.ProgressPercentage;
             string state = e.UserState != null ? " - " + e.UserState.ToString() : "";
             label_progress.Text = e.ProgressPercentage + "%" + state;
         }
 
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void WorkerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Error != null)
             {
@@ -378,7 +383,7 @@ namespace werkbank.controls
             objectListView.SetObjects(werke);
         }
 
-        private void WerkList_SizeChanged(object sender, EventArgs e)
+        private void WerkListSizeChanged(object sender, EventArgs e)
         {
             AlignLoadingPanel();
         }
@@ -389,11 +394,42 @@ namespace werkbank.controls
             panel_loading.Top = Height / 2 - panel_loading.Height / 2;
         }
 
-        private void TimerHideLoading_Tick(object sender, EventArgs e)
+        private void TimerHideLoadingTick(object sender, EventArgs e)
         {
             timer_hide_loading.Enabled = false;
             objectListView.Enabled = true;
             panel_loading.Visible = false;
+        }
+
+        private void ObjectListViewItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            if (objectListView.SelectedObject != null)
+            {
+                WerkSelected?.Invoke(this, (Werk)objectListView.SelectedObject);
+            }
+            else
+            {
+                WerkSelected?.Invoke(this, null);
+            }
+        }
+
+        private void ObjectListViewMouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (objectListView.SelectedObject != null)
+            {
+                WerkDoubleClick?.Invoke(this, (Werk)objectListView.SelectedObject);
+            }
+        }
+
+        private void ObjectListViewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space || e.KeyCode == Keys.Enter)
+            {
+                if (objectListView.SelectedObject != null)
+                {
+                    WerkDoubleClick?.Invoke(this, (Werk)objectListView.SelectedObject);
+                }
+            }
         }
     }
 }

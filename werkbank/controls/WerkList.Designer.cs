@@ -45,6 +45,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.objectListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.objectListView.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.objectListView.FullRowSelect = true;
             this.objectListView.Location = new System.Drawing.Point(3, 3);
             this.objectListView.MultiSelect = false;
@@ -52,14 +53,17 @@
             this.objectListView.Size = new System.Drawing.Size(700, 383);
             this.objectListView.TabIndex = 0;
             this.objectListView.View = System.Windows.Forms.View.Details;
+            this.objectListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.ObjectListViewItemSelectionChanged);
+            this.objectListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ObjectListViewKeyUp);
+            this.objectListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ObjectListViewMouseDoubleClick);
             // 
             // worker
             // 
             this.worker.WorkerReportsProgress = true;
             this.worker.WorkerSupportsCancellation = true;
-            this.worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.Worker_DoWork);
-            this.worker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.Worker_ProgressChanged);
-            this.worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.Worker_RunWorkerCompleted);
+            this.worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.WorkerDoWork);
+            this.worker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.WorkerProgressChanged);
+            this.worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.WorkerRunWorkerCompleted);
             // 
             // progressBar
             // 
@@ -96,7 +100,7 @@
             // timer_hide_loading
             // 
             this.timer_hide_loading.Interval = 1000;
-            this.timer_hide_loading.Tick += new System.EventHandler(this.TimerHideLoading_Tick);
+            this.timer_hide_loading.Tick += new System.EventHandler(this.TimerHideLoadingTick);
             // 
             // WerkList
             // 
@@ -106,7 +110,7 @@
             this.Controls.Add(this.objectListView);
             this.Name = "WerkList";
             this.Size = new System.Drawing.Size(706, 389);
-            this.SizeChanged += new System.EventHandler(this.WerkList_SizeChanged);
+            this.SizeChanged += new System.EventHandler(this.WerkListSizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.objectListView)).EndInit();
             this.panel_loading.ResumeLayout(false);
             this.panel_loading.PerformLayout();
