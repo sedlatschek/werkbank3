@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using werkbank.models;
+using werkbank.transitions;
 
 namespace werkbank.environments
 {
@@ -16,6 +18,16 @@ namespace werkbank.environments
         public Environment(int Index)
         {
             this.Index = Index;
+        }
+
+        public bool BeforeTransition(Batch Batch, WerkState From, WerkState To)
+        {
+            return false;
+        }
+
+        public bool AfterTransition(Batch Batch, WerkState From, WerkState To)
+        {
+            return false;
         }
     }
 }

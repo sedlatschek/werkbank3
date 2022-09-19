@@ -2,6 +2,7 @@ using System.Diagnostics;
 using werkbank.controls;
 using werkbank.models;
 using werkbank.services;
+using werkbank.transitions;
 
 namespace werkbank
 {
@@ -12,28 +13,31 @@ namespace werkbank
         private readonly WerkList vaultCold;
         private readonly WerkList vaultArchive;
 
-        private readonly ImageList IconList;
+        private readonly ImageList iconList;
+
+        private readonly FormQueue formQueue;
 
         private Werk? selectedWerk;
 
         public FormWerkbank()
         {
             vaults = new List<WerkList>();
-            IconList = new ImageList();
+            iconList = new ImageList();
+            formQueue = new FormQueue();
 
             InitializeComponent();
 
             label_version.Text = "v" + Application.ProductVersion.ToString();
 
-            vaultHot = new WerkList(IconList, WerkState.Hot);
+            vaultHot = new WerkList(iconList, WerkState.Hot);
             vaults.Add(vaultHot);
             splitContainer1.Panel1.Controls.Add(vaultHot);
 
-            vaultCold = new WerkList(IconList, WerkState.Cold);
+            vaultCold = new WerkList(iconList, WerkState.Cold);
             vaults.Add(vaultCold);
             splitContainer2.Panel1.Controls.Add(vaultCold);
 
-            vaultArchive = new WerkList(IconList, WerkState.Archived);
+            vaultArchive = new WerkList(iconList, WerkState.Archived);
             vaults.Add(vaultArchive);
             splitContainer2.Panel2.Controls.Add(vaultArchive);
 
@@ -42,7 +46,10 @@ namespace werkbank
                 vault.Dock = DockStyle.Fill;
                 vault.WerkSelected += WerkSelected;
                 vault.WerkDoubleClick += WerkDoubleClick;
+                vault.GatherDone += VaultGatherDone;
             }
+
+            timerQueue.Interval = Settings.Properties.QueueTickInterval;
 
             UpdateControlsAvailability();
         }
@@ -51,6 +58,15 @@ namespace werkbank
         {
             Settings.Save();
             RefreshWerke();
+        }
+
+        private void FormWerkbankShown(object sender, EventArgs e)
+        {
+        }
+
+        private void FormWerkbankClosing(object sender, FormClosingEventArgs e)
+        {
+            formQueue.Save();
         }
 
         /// <summary>
@@ -65,6 +81,16 @@ namespace werkbank
                     vault.GatherAsync();
                 }
             }
+        }
+
+        private void VaultGatherDone(object? sender, List<Werk> werke)
+        {
+            formQueue.RelateWithWerke(werke);
+            if (sender != null)
+            {
+                ((WerkList)sender).List.RefreshObjects(werke);
+            }
+            timerQueue.Start();
         }
 
         private void WerkSelected(object? sender, Werk? werk)
@@ -82,11 +108,6 @@ namespace werkbank
             UpdateControlsAvailability();
         }
 
-
-        private void SettingsToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         #region "controls"
         private void WerkDoubleClick(object? sender, Werk werk)
@@ -113,12 +134,48 @@ namespace werkbank
 
         private void ButtonWerkUpClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (selectedWerk != null)
+            {
+                Werk werk = selectedWerk;
+                ColdToHotTransition transition = new();
+                Batch batch = transition.Build(werk);
+                batch.OnBatchDone += (sender, e) =>
+                {
+                    if (batch.Done)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            vaultCold.List.RemoveObject(werk);
+                            vaultHot.List.AddObject(werk);
+                            vaultHot.List.SelectedObject = werk;
+                        }));
+                    }
+                };
+                formQueue.Add(batch);
+            }
         }
 
         private void ButtonWerkDownClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (selectedWerk != null)
+            {
+                Werk werk = selectedWerk;
+                HotToColdTransition transition = new();
+                Batch batch = transition.Build(werk);
+                batch.OnBatchDone += (sender, e) =>
+                {
+                    if (batch.Done)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            vaultHot.List.RemoveObject(werk);
+                            vaultCold.List.AddObject(werk);
+                            vaultCold.List.SelectedObject = werk;
+                        }));
+                    }
+                };
+                formQueue.Add(batch);
+            }
         }
 
         private void ButtonWerkBackupClick(object sender, EventArgs e)
@@ -151,5 +208,14 @@ namespace werkbank
             throw new NotImplementedException();
         }
         #endregion
+        private void ButtonQueueClick(object sender, EventArgs e)
+        {
+            formQueue.ShowDialog();
+        }
+
+        private void TimerQueueTick(object sender, EventArgs e)
+        {
+            formQueue.Run();
+        }
     }
 }

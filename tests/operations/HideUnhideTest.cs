@@ -17,11 +17,11 @@ namespace tests.operations
             string dir = Util.GetTempPath();
             Directory.CreateDirectory(dir);
 
-            Hide.Perform(new OperationHideOptions(dir));
+            Hide.Perform(dir);
 
             Assert.IsTrue(File.GetAttributes(dir).HasFlag(FileAttributes.Hidden));
 
-            Unhide.Perform(new OperationUnhideOptions(dir));
+            Unhide.Perform(dir);
 
             Assert.IsFalse(File.GetAttributes(dir).HasFlag(FileAttributes.Hidden));
         }
@@ -32,11 +32,11 @@ namespace tests.operations
             string file = Util.GetTempPath() + ".txt";
             File.WriteAllText(file, "haha");
 
-            Hide.Perform(new OperationHideOptions(file));
+            Hide.Perform(file);
 
             Assert.IsTrue(File.GetAttributes(file).HasFlag(FileAttributes.Hidden));
 
-            Unhide.Perform(new OperationUnhideOptions(file));
+            Unhide.Perform(file);
 
             Assert.IsFalse(File.GetAttributes(file).HasFlag(FileAttributes.Hidden));
         }
@@ -50,13 +50,13 @@ namespace tests.operations
             FileAttributes attributes = File.GetAttributes(dir);
             File.SetAttributes(dir, attributes |= FileAttributes.Hidden);
 
-            Assert.IsTrue(Hide.Verify(new OperationHideOptions(dir)));
-            Assert.IsFalse(Unhide.Verify(new OperationUnhideOptions(dir)));
+            Assert.IsTrue(Hide.Verify(dir));
+            Assert.IsFalse(Unhide.Verify(dir));
 
             File.SetAttributes(dir, attributes &= ~FileAttributes.Hidden);
 
-            Assert.IsFalse(Hide.Verify(new OperationHideOptions(dir)));
-            Assert.IsTrue(Unhide.Verify(new OperationUnhideOptions(dir)));
+            Assert.IsFalse(Hide.Verify(dir));
+            Assert.IsTrue(Unhide.Verify(dir));
         }
 
         [TestMethod]
@@ -68,13 +68,13 @@ namespace tests.operations
             FileAttributes attributes = File.GetAttributes(file);
             File.SetAttributes(file, attributes |= FileAttributes.Hidden);
 
-            Assert.IsTrue(Hide.Verify(new OperationHideOptions(file)));
-            Assert.IsFalse(Unhide.Verify(new OperationUnhideOptions(file)));
+            Assert.IsTrue(Hide.Verify(file));
+            Assert.IsFalse(Unhide.Verify(file));
 
             File.SetAttributes(file, attributes &= ~FileAttributes.Hidden);
 
-            Assert.IsFalse(Hide.Verify(new OperationHideOptions(file)));
-            Assert.IsTrue(Unhide.Verify(new OperationUnhideOptions(file)));
+            Assert.IsFalse(Hide.Verify(file));
+            Assert.IsTrue(Unhide.Verify(file));
         }
     }
 }

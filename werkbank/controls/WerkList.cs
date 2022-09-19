@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using werkbank.exceptions;
 using werkbank.models;
 using werkbank.repositories;
+using werkbank.transitions;
 
 namespace werkbank.controls
 {
@@ -22,6 +23,11 @@ namespace werkbank.controls
         public readonly WerkState State;
 
         private readonly ImageList IconList;
+
+        /// <summary>
+        /// The gather is done.
+        /// </summary>
+        public event EventHandler<List<Werk>>? GatherDone;
 
         /// <summary>
         /// Triggers whenever a werk is selected.
@@ -110,22 +116,21 @@ namespace werkbank.controls
             };
             objectListView.Columns.Add(colTitle);
 
-            OLVColumn colCurMove = new()
+            OLVColumn colCurTransition = new()
             {
-                Name = objectListView.Name + "_column_move",
-                AspectName = "CurrentOperationPackage",
-                Text = "Move",
+                Name = objectListView.Name + "_column_transition",
+                AspectName = "CurrentBatch",
+                Text = "Transition",
                 IsEditable = false,
-                Width = 86,
+                Width = 108,
                 AspectToStringConverter = (object x) =>
                 {
                     if (x == null) return "Idle";
-                    // OperationPackage package = (OperationPackage)x;
-                    return "Something is going on";
-                    // return package.MoveType.ToString() + " (" + package.Attempts.ToString() + ")";
+                    Batch batch = (Batch)x;
+                    return batch.Title + " (" + batch.ProgressPercentage.ToString() + "%)";
                 }
             };
-            objectListView.Columns.Add(colCurMove);
+            objectListView.Columns.Add(colCurTransition);
 
             OLVColumn colId = new()
             {
@@ -175,11 +180,10 @@ namespace werkbank.controls
             // formatting
             objectListView.FormatCell += (sender, args) =>
             {
-                /*
-                if (args.Column == colCurMove)
+                if (args.Column == colCurTransition)
                 {
                     Werk werk = (Werk)args.Item.RowObject;
-                    if (werk.CurrentOperationPackage != null)
+                    if (werk.CurrentBatch != null)
                     {
                         foreach (OLVListSubItem subItem in args.Item.SubItems)
                         {
@@ -187,7 +191,6 @@ namespace werkbank.controls
                         }
                     }
                 }
-                */
             };
 
             objectListView.SmallImageList = IconList;
@@ -298,13 +301,13 @@ namespace werkbank.controls
                                 }
 
                                 // check whether the werks environment matches the directory of the werk
-                                if (!werk.CurrentDirectory.StartsWith(envDir.FullName))
+                                if (!werk.CurrentDirectory.StartsWith(envDir.FullName) && !werk.Moving)
                                 {
                                     throw new UnexpectedWerkEnvironmentException(werk, envDir.FullName);
                                 }
 
                                 // check whether the computed path matches the actual path
-                                if (werk.CurrentDirectory != werkDir.FullName)
+                                if (werk.CurrentDirectory != werkDir.FullName && !werk.Moving)
                                 {
                                     throw new UnexpectedWerkDirectoryNameException(werk, werkDir.FullName);
                                 }
@@ -351,19 +354,19 @@ namespace werkbank.controls
             worker.ReportProgress(100, "Done");
         }
 
-        private void WorkerDoWork(object sender, DoWorkEventArgs e)
+        private void OnGather(object sender, DoWorkEventArgs e)
         {
             Work(e);
         }
 
-        private void WorkerProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void OnGatherProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBar.Value = e.ProgressPercentage;
             string state = e.UserState != null ? " - " + e.UserState.ToString() : "";
             label_progress.Text = e.ProgressPercentage + "%" + state;
         }
 
-        private void WorkerRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void OnGatherCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Error != null)
             {
@@ -381,6 +384,8 @@ namespace werkbank.controls
             // draw gathered items
             List<Werk> werke = (List<Werk>)e.Result;
             objectListView.SetObjects(werke);
+
+            GatherDone?.Invoke(this, werke);
         }
 
         private void WerkListSizeChanged(object sender, EventArgs e)

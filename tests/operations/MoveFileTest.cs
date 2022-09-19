@@ -18,8 +18,7 @@ namespace tests.operations
             File.WriteAllText(source, "hi");
             string dest = Util.GetTempPath() + ".txt";
 
-            OperationMoveFileOptions options = new(source, dest);
-            MoveFile.Perform(options);
+            MoveFile.Perform(source, dest);
 
             Assert.IsFalse(File.Exists(source));
             Assert.IsTrue(File.Exists(dest));
@@ -33,23 +32,22 @@ namespace tests.operations
             File.WriteAllText(source, "hi");
             string dest = Util.GetTempPath() + ".txt";
 
-            OperationMoveFileOptions options = new(source, dest);
-            MoveFile.Perform(options);
+            MoveFile.Perform(source, dest);
 
             Assert.IsFalse(File.Exists(source));
             Assert.IsTrue(File.Exists(dest));
             Assert.AreEqual("hi", File.ReadAllText(dest));
 
-            Assert.IsTrue(MoveFile.Verify(options));
+            Assert.IsTrue(MoveFile.Verify(source, dest));
 
             File.WriteAllText(source, "hi");
-            Assert.IsFalse(MoveFile.Verify(options));
+            Assert.IsFalse(MoveFile.Verify(source, dest));
 
             File.Delete(source);
-            Assert.IsTrue(MoveFile.Verify(options));
+            Assert.IsTrue(MoveFile.Verify(source, dest));
 
             File.Delete(dest);
-            Assert.IsFalse(MoveFile.Verify(options));
+            Assert.IsFalse(MoveFile.Verify(source, dest));
         }
     }
 }

@@ -25,7 +25,7 @@ namespace tests.operations
 
             string zip = Util.GetTempPath() + ".zip";
 
-            Zip.Perform(new OperationZipOptions(source, zip));
+            Zip.Perform(source, zip);
             Assert.IsTrue(File.Exists(zip));
 
             List<string> contents = GetZipContents(zip);
@@ -63,26 +63,26 @@ namespace tests.operations
             File.WriteAllText(x, "XX");
 
             string zip = Util.GetTempPath() + ".zip";
-            Zip.Perform(new OperationZipOptions(source, zip));
+            Zip.Perform(source, zip);
 
             Assert.IsTrue(File.Exists(zip));
-            Assert.IsTrue(Zip.Verify(new OperationZipOptions(source, zip)));
+            Assert.IsTrue(Zip.Verify(source, zip));
 
             string y = Path.Combine(subDir.FullName, "y");
             File.WriteAllText(y, "hoy");
-            Assert.IsFalse(Zip.Verify(new OperationZipOptions(source, zip)));
+            Assert.IsFalse(Zip.Verify(source, zip));
 
             File.Delete(y);
-            Assert.IsTrue(Zip.Verify(new OperationZipOptions(source, zip)));
+            Assert.IsTrue(Zip.Verify(source, zip));
 
             File.WriteAllText(ho, "This text was changed!");
-            Assert.IsFalse(Zip.Verify(new OperationZipOptions(source, zip)));
+            Assert.IsFalse(Zip.Verify(source, zip));
 
             File.WriteAllText(ho, "ho");
-            Assert.IsTrue(Zip.Verify(new OperationZipOptions(source, zip)));
+            Assert.IsTrue(Zip.Verify(source, zip));
 
             File.Delete(x);
-            Assert.IsFalse(Zip.Verify(new OperationZipOptions(source, zip)));
+            Assert.IsFalse(Zip.Verify(source, zip));
         }
     }
 }

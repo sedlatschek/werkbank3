@@ -30,26 +30,32 @@ namespace werkbank
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormWerkbank));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panel_controls = new System.Windows.Forms.Panel();
             this.button_werk_web = new System.Windows.Forms.Button();
+            this.label_version = new System.Windows.Forms.Label();
             this.button_refresh = new System.Windows.Forms.Button();
             this.button_settings = new System.Windows.Forms.Button();
             this.button_werk_open = new System.Windows.Forms.Button();
             this.button_werk_backup = new System.Windows.Forms.Button();
             this.button_werk_down = new System.Windows.Forms.Button();
             this.button_werk_up = new System.Windows.Forms.Button();
-            this.label_version = new System.Windows.Forms.Label();
             this.button_werk_vscode = new System.Windows.Forms.Button();
             this.button_werk_edit = new System.Windows.Forms.Button();
+            this.panel_queue = new System.Windows.Forms.Panel();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.button_queue = new System.Windows.Forms.Button();
+            this.timerQueue = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.SuspendLayout();
             this.panel_controls.SuspendLayout();
+            this.panel_queue.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -68,8 +74,8 @@ namespace werkbank
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(925, 652);
-            this.splitContainer1.SplitterDistance = 296;
+            this.splitContainer1.Size = new System.Drawing.Size(925, 612);
+            this.splitContainer1.SplitterDistance = 277;
             this.splitContainer1.TabIndex = 2;
             // 
             // splitContainer2
@@ -86,8 +92,8 @@ namespace werkbank
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.BackColor = System.Drawing.Color.LightGray;
-            this.splitContainer2.Size = new System.Drawing.Size(925, 352);
-            this.splitContainer2.SplitterDistance = 178;
+            this.splitContainer2.Size = new System.Drawing.Size(925, 331);
+            this.splitContainer2.SplitterDistance = 167;
             this.splitContainer2.TabIndex = 0;
             // 
             // panel_controls
@@ -96,13 +102,13 @@ namespace werkbank
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_controls.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.panel_controls.Controls.Add(this.button_werk_web);
+            this.panel_controls.Controls.Add(this.label_version);
             this.panel_controls.Controls.Add(this.button_refresh);
             this.panel_controls.Controls.Add(this.button_settings);
             this.panel_controls.Controls.Add(this.button_werk_open);
             this.panel_controls.Controls.Add(this.button_werk_backup);
             this.panel_controls.Controls.Add(this.button_werk_down);
             this.panel_controls.Controls.Add(this.button_werk_up);
-            this.panel_controls.Controls.Add(this.label_version);
             this.panel_controls.Controls.Add(this.button_werk_vscode);
             this.panel_controls.Controls.Add(this.button_werk_edit);
             this.panel_controls.Location = new System.Drawing.Point(925, 0);
@@ -127,6 +133,18 @@ namespace werkbank
             this.button_werk_web.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.button_werk_web.UseVisualStyleBackColor = false;
             this.button_werk_web.Click += new System.EventHandler(this.ButtonWerkWebClick);
+            // 
+            // label_version
+            // 
+            this.label_version.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label_version.AutoSize = true;
+            this.label_version.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label_version.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.label_version.Location = new System.Drawing.Point(41, 639);
+            this.label_version.Name = "label_version";
+            this.label_version.Size = new System.Drawing.Size(28, 12);
+            this.label_version.TabIndex = 2;
+            this.label_version.Text = "v0.0.0";
             // 
             // button_refresh
             // 
@@ -237,18 +255,6 @@ namespace werkbank
             this.button_werk_up.UseVisualStyleBackColor = false;
             this.button_werk_up.Click += new System.EventHandler(this.ButtonWerkUpClick);
             // 
-            // label_version
-            // 
-            this.label_version.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_version.AutoSize = true;
-            this.label_version.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label_version.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.label_version.Location = new System.Drawing.Point(1, 640);
-            this.label_version.Name = "label_version";
-            this.label_version.Size = new System.Drawing.Size(28, 12);
-            this.label_version.TabIndex = 2;
-            this.label_version.Text = "v0.0.0";
-            // 
             // button_werk_vscode
             // 
             this.button_werk_vscode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
@@ -285,17 +291,66 @@ namespace werkbank
             this.button_werk_edit.UseVisualStyleBackColor = false;
             this.button_werk_edit.Click += new System.EventHandler(this.ButtonWerkEditClick);
             // 
+            // panel_queue
+            // 
+            this.panel_queue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel_queue.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panel_queue.Controls.Add(this.progressBar);
+            this.panel_queue.Controls.Add(this.button_queue);
+            this.panel_queue.Location = new System.Drawing.Point(0, 612);
+            this.panel_queue.Name = "panel_queue";
+            this.panel_queue.Size = new System.Drawing.Size(925, 40);
+            this.panel_queue.TabIndex = 5;
+            // 
+            // progressBar
+            // 
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar.Location = new System.Drawing.Point(92, 7);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(827, 25);
+            this.progressBar.TabIndex = 13;
+            // 
+            // button_queue
+            // 
+            this.button_queue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button_queue.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_queue.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_queue.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.button_queue.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.button_queue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_queue.Image = global::werkbank.Properties.Resources.btn_queue;
+            this.button_queue.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button_queue.Location = new System.Drawing.Point(3, 3);
+            this.button_queue.Name = "button_queue";
+            this.button_queue.Size = new System.Drawing.Size(83, 34);
+            this.button_queue.TabIndex = 12;
+            this.button_queue.Text = "Queue";
+            this.button_queue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.button_queue.UseVisualStyleBackColor = false;
+            this.button_queue.Click += new System.EventHandler(this.ButtonQueueClick);
+            // 
+            // timerQueue
+            // 
+            this.timerQueue.Interval = 1000;
+            this.timerQueue.Tick += new System.EventHandler(this.TimerQueueTick);
+            // 
             // FormWerkbank
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(997, 652);
+            this.Controls.Add(this.panel_queue);
             this.Controls.Add(this.panel_controls);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormWerkbank";
             this.Text = "Werkbank";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormWerkbankClosing);
             this.Load += new System.EventHandler(this.FormWerkbankLoad);
+            this.Shown += new System.EventHandler(this.FormWerkbankShown);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
@@ -303,6 +358,7 @@ namespace werkbank
             this.splitContainer2.ResumeLayout(false);
             this.panel_controls.ResumeLayout(false);
             this.panel_controls.PerformLayout();
+            this.panel_queue.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -321,5 +377,9 @@ namespace werkbank
         private Button button_settings;
         private Button button_refresh;
         private Button button_werk_web;
+        private Panel panel_queue;
+        private System.Windows.Forms.Timer timerQueue;
+        private Button button_queue;
+        private ProgressBar progressBar;
     }
 }

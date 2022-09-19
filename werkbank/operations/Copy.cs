@@ -4,14 +4,30 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using werkbank.exceptions;
 
 namespace werkbank.operations
 {
     public static class Copy
     {
-        public static bool Perform(OperationCopyOptions Options)
+        public static bool Perform(string? SourcePath, string? DestinationPath)
         {
-            CopyDirOrFile(Options.SourcePath, Options.DestinationPath);
+            if (SourcePath == null || DestinationPath == null)
+            {
+                throw new OperationParametersMissingException();
+            }
+
+            if (Directory.Exists(DestinationPath))
+            {
+                Directory.Delete(DestinationPath, true);
+            }
+            else if (File.Exists(DestinationPath))
+            {
+                File.Delete(DestinationPath);
+            }
+
+
+            CopyDirOrFile(SourcePath, DestinationPath);
             return true;
         }
 
@@ -50,9 +66,13 @@ namespace werkbank.operations
             }
         }
 
-        public static bool Verify(OperationCopyOptions Options)
+        public static bool Verify(string? SourcePath, string? DestinationPath)
         {
-            return IsEqual(Options.SourcePath, Options.DestinationPath) && IsEqual(Options.DestinationPath, Options.SourcePath);
+            if (SourcePath == null || DestinationPath == null)
+            {
+                throw new OperationParametersMissingException();
+            }
+            return IsEqual(SourcePath, DestinationPath) && IsEqual(DestinationPath, SourcePath);
         }
 
         /// <summary>

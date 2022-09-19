@@ -23,11 +23,11 @@ namespace tests.operations
             Assert.IsTrue(Directory.Exists(dir));
             Assert.IsTrue(File.Exists(hi));
 
-            Delete.Perform(new OperationDeleteOptions(dir));
+            Delete.Perform(dir);
 
             Assert.IsFalse(Directory.Exists(dir));
 
-            Delete.Perform(new OperationDeleteOptions(hi));
+            Delete.Perform(hi);
 
             Assert.IsFalse(File.Exists(hi));
         }
@@ -42,14 +42,14 @@ namespace tests.operations
             string hi = Path.Combine(temp, "hi.txt");
             File.WriteAllText(hi, "hi");
 
-            Assert.IsFalse(Delete.Verify(new OperationDeleteOptions(dir)));
-            Assert.IsFalse(Delete.Verify(new OperationDeleteOptions(hi)));
+            Assert.IsFalse(Delete.Verify(dir));
+            Assert.IsFalse(Delete.Verify(hi));
 
             Directory.Delete(dir);
-            Assert.IsTrue(Delete.Verify(new OperationDeleteOptions(dir)));
+            Assert.IsTrue(Delete.Verify(dir));
 
             File.Delete(hi);
-            Assert.IsTrue(Delete.Verify(new OperationDeleteOptions(hi)));
+            Assert.IsTrue(Delete.Verify(hi));
         }
     }
 }

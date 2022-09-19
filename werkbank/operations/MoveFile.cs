@@ -4,24 +4,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using werkbank.exceptions;
 
 namespace werkbank.operations
 {
     public static class MoveFile
     {
-        public static bool Perform(OperationMoveFileOptions Options)
+        public static bool Perform(string? SourcePath, string? DestinationPath)
         {
-            if (File.Exists(Options.DestinationPath))
+            if (SourcePath == null || DestinationPath == null)
             {
-                File.Delete(Options.DestinationPath);
+                throw new OperationParametersMissingException();
             }
-            File.Move(Options.SourcePath, Options.DestinationPath, true);
+
+            if (File.Exists(DestinationPath))
+            {
+                File.Delete(DestinationPath);
+            }
+            File.Move(SourcePath, DestinationPath, true);
             return true;
         }
 
-        public static bool Verify(OperationMoveFileOptions Options)
+        public static bool Verify(string? SourcePath, string? DestinationPath)
         {
-            return !File.Exists(Options.SourcePath) && File.Exists(Options.DestinationPath);
+            if (SourcePath == null || DestinationPath == null)
+            {
+                throw new OperationParametersMissingException();
+            }
+
+            return !File.Exists(SourcePath) && File.Exists(DestinationPath);
         }
     }
 }

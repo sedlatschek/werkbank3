@@ -8,6 +8,7 @@ using werkbank.converters;
 using werkbank.environments;
 using werkbank.repositories;
 using werkbank.services;
+using werkbank.transitions;
 using static System.Windows.Forms.AxHost;
 
 namespace werkbank.models
@@ -81,6 +82,9 @@ namespace werkbank.models
         }
 
         [JsonIgnore]
+        public Batch? CurrentBatch;
+
+        [JsonIgnore]
         public bool HasIcon
         {
             get
@@ -136,11 +140,44 @@ namespace werkbank.models
             }
         }
 
+        /// <summary>
+        /// Get the directory the werk would have for the given environment.
+        /// </summary>
+        /// <param name="Environment"></param>
+        /// <returns></returns>
+        public string GetDirectoryFor(environments.Environment Environment)
+        {
+            return GetDirectoryFor(State, Environment, Name);
+        }
+
+        /// <summary>
+        /// Get the directory the werk would have for the given werk state.
+        /// </summary>
+        /// <param name="State"></param>
+        /// <returns></returns>
+        public string GetDirectoryFor(WerkState State)
+        {
+            return GetDirectoryFor(State, Environment, Name);
+        }
+
+        /// <summary>
+        /// Get the directory the werk would have for the given werk state and environment.
+        /// </summary>
+        /// <param name="State"></param>
+        /// <param name="Environment"></param>
+        /// <returns></returns>
         public string GetDirectoryFor(WerkState State, environments.Environment Environment)
         {
             return GetDirectoryFor(State, Environment, Name);
         }
 
+        /// <summary>
+        /// Get the directory a werk would have with a given werk state, environment and name.
+        /// </summary>
+        /// <param name="State"></param>
+        /// <param name="Environment"></param>
+        /// <param name="Name"></param>
+        /// <returns></returns>
         public static string GetDirectoryFor(WerkState State, environments.Environment Environment, string Name)
         {
             return Path.Combine(VaultRepository.GetDirectory(State), Environment.Directory, Name);

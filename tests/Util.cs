@@ -7,6 +7,8 @@ using Slugify;
 using werkbank.models;
 using Newtonsoft.Json;
 using werkbank.services;
+using werkbank.transitions;
+using werkbank.operations;
 
 namespace tests
 {
@@ -83,6 +85,22 @@ namespace tests
                 if (Directory.Exists(dir))
                 {
                     Directory.Delete(dir, true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Work off a batch of operations.
+        /// </summary>
+        /// <param name="Batch"></param>
+        public static void WorkOffBatch(Batch Batch)
+        {
+            foreach (Operation op in Batch.Operations)
+            {
+                op.Run();
+                if (op.Error != null)
+                {
+                    throw op.Error;
                 }
             }
         }

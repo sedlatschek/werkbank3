@@ -31,11 +31,11 @@ namespace tests.operations
             string zip = Util.GetTempPath() + ".zip";
 
             // we trust the zip operation, as it is tested independetly
-            Zip.Perform(new OperationZipOptions(source, zip));
+            Zip.Perform(source, zip);
             Assert.IsTrue(File.Exists(zip));
-            Assert.IsTrue(Zip.Verify(new OperationZipOptions(source, zip)));
+            Assert.IsTrue(Zip.Verify(source, zip));
 
-            Unzip.Perform(new OperationUnzipOptions(zip, dest));
+            Unzip.Perform(zip, dest);
 
             Assert.IsTrue(File.Exists(hi));
             Assert.IsTrue(File.Exists(ho));
@@ -60,22 +60,22 @@ namespace tests.operations
             string zip = Util.GetTempPath() + ".zip";
 
             // we trust the zip operation, as it is tested independetly
-            Zip.Perform(new OperationZipOptions(source, zip));
+            Zip.Perform(source, zip);
             Assert.IsTrue(File.Exists(zip));
-            Assert.IsTrue(Zip.Verify(new OperationZipOptions(source, zip)));
+            Assert.IsTrue(Zip.Verify(source, zip));
 
-            Unzip.Perform(new OperationUnzipOptions(zip, dest));
-            Assert.IsTrue(Unzip.Verify(new OperationUnzipOptions(zip, dest)));
+            Unzip.Perform(zip, dest);
+            Assert.IsTrue(Unzip.Verify(zip, dest));
 
             string destHi = Path.Combine(dest, "hi.txt");
             File.Delete(destHi);
-            Assert.IsFalse(Unzip.Verify(new OperationUnzipOptions(zip, dest)));
+            Assert.IsFalse(Unzip.Verify(zip, dest));
 
             File.WriteAllText(destHi, "hi");
-            Assert.IsTrue(Unzip.Verify(new OperationUnzipOptions(zip, dest)));
+            Assert.IsTrue(Unzip.Verify(zip, dest));
 
             File.WriteAllText(destHi, "This text was changed!");
-            Assert.IsFalse(Unzip.Verify(new OperationUnzipOptions(zip, dest)));
+            Assert.IsFalse(Unzip.Verify(zip, dest));
         }
     }
 }

@@ -15,7 +15,7 @@ namespace tests.operations
         public void PerformWorks()
         {
             string file = Util.GetTempPath() + ".txt";
-            Write.Perform(new OperationWriteOptions(file, "hi"));
+            Write.Perform("hi", file);
 
             Assert.IsTrue(File.Exists(file));
             Assert.AreEqual("hi", File.ReadAllText(file));
@@ -25,16 +25,15 @@ namespace tests.operations
         public void VerifyWorks()
         {
             string file = Util.GetTempPath() + ".txt";
-            OperationWriteOptions options = new(file, "hi");
-            Write.Perform(options);
+            Write.Perform("hi", file);
 
-            Assert.IsTrue(Write.Verify(options));
+            Assert.IsTrue(Write.Verify("hi", file));
 
             File.WriteAllText(file, "ho");
-            Assert.IsFalse(Write.Verify(options));
+            Assert.IsFalse(Write.Verify("hi", file));
 
             File.Delete(file);
-            Assert.IsFalse(Write.Verify(options));
+            Assert.IsFalse(Write.Verify("hi", file));
         }
     }
 }

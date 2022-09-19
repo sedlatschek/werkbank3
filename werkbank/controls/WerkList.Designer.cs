@@ -61,9 +61,9 @@
             // 
             this.worker.WorkerReportsProgress = true;
             this.worker.WorkerSupportsCancellation = true;
-            this.worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.WorkerDoWork);
-            this.worker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.WorkerProgressChanged);
-            this.worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.WorkerRunWorkerCompleted);
+            this.worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.OnGather);
+            this.worker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.OnGatherProgressChanged);
+            this.worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnGatherCompleted);
             // 
             // progressBar
             // 

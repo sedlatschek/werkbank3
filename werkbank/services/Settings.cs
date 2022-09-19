@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -22,6 +23,12 @@ namespace werkbank.services
 
         [JsonProperty("archiveCompressionLevel")]
         public int ArchiveCompressionLevel { get; set; } = 9;
+
+        [JsonProperty("queueTickInterval")]
+        public int QueueTickInterval { get; set; } = 1000;
+
+        [JsonProperty("operationRetryTimeout")]
+        public int OperationRetryTimeout { get; set; } = 60000;
 
         /// <summary>
         /// Retrieve the latest settings if possible or create new settings.
@@ -49,7 +56,6 @@ namespace werkbank.services
             DirHotVault = Config.DirDefaultHotVault;
             DirColdVault = Config.DirDefaultColdVault;
             DirArchiveVault = Config.DirDefaultArchiveVault;
-            ArchiveCompressionLevel = 9;
         }
 
         private static Settings ApplyDefaultsOnEmpty(Settings Settings)
@@ -69,6 +75,14 @@ namespace werkbank.services
             if (Settings.ArchiveCompressionLevel < 0 || Settings.ArchiveCompressionLevel > 9)
             {
                 Settings.ArchiveCompressionLevel = 9;
+            }
+            if (Settings.OperationRetryTimeout < 0)
+            {
+                Settings.OperationRetryTimeout = 60000;
+            }
+            if (Settings.QueueTickInterval < 0)
+            {
+                Settings.OperationRetryTimeout = 1000;
             }
             return Settings;
         }

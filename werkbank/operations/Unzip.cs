@@ -5,15 +5,21 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using werkbank.exceptions;
 
 namespace werkbank.operations
 {
     public static class Unzip
     {
-        public static bool Perform(OperationUnzipOptions Options)
+        public static bool Perform(string? SourcePath, string? DestinationPath)
         {
-            FileInfo zipFile = new(Options.SourceZip);
-            DirectoryInfo dir = Directory.CreateDirectory(Options.DestinationPath);
+            if (SourcePath == null || DestinationPath == null)
+            {
+                throw new OperationParametersMissingException();
+            }
+
+            FileInfo zipFile = new(SourcePath);
+            DirectoryInfo dir = Directory.CreateDirectory(DestinationPath);
 
             using (ZipInputStream s = new(File.OpenRead(zipFile.FullName)))
             {
@@ -50,10 +56,15 @@ namespace werkbank.operations
             return true;
         }
 
-        public static bool Verify(OperationUnzipOptions Options)
+        public static bool Verify(string? SourcePath, string? DestinationPath)
         {
-            FileInfo zipFile = new(Options.SourceZip);
-            DirectoryInfo dir = new(Options.DestinationPath);
+            if (SourcePath == null || DestinationPath == null)
+            {
+                throw new OperationParametersMissingException();
+            }
+
+            FileInfo zipFile = new(SourcePath);
+            DirectoryInfo dir = new(DestinationPath);
 
             if (!dir.Exists)
             {

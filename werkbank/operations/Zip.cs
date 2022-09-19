@@ -5,15 +5,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using werkbank.exceptions;
 using werkbank.services;
 
 namespace werkbank.operations
 {
     public static class Zip
     {
-        public static bool Perform(OperationZipOptions Options)
+        public static bool Perform(string? SourcePath, string? DestinationPath)
         {
-            ZipDir(new DirectoryInfo(Options.SourcePath), new FileInfo(Options.DestinationPath));
+            if (SourcePath == null || DestinationPath == null)
+            {
+                throw new OperationParametersMissingException();
+            }
+
+            ZipDir(new DirectoryInfo(SourcePath), new FileInfo(DestinationPath));
             return true;
         }
 
@@ -104,16 +110,21 @@ namespace werkbank.operations
             ZipStream.CloseEntry();
         }
 
-        public static bool Verify(OperationZipOptions Options)
+        public static bool Verify(string? SourcePath, string? DestinationPath)
         {
-            if (!File.Exists(Options.DestinationPath))
+            if (SourcePath == null || DestinationPath == null)
+            {
+                throw new OperationParametersMissingException();
+            }
+
+            if (!File.Exists(DestinationPath))
             {
                 return false;
             }
 
-            ZipContents zipContents = GetZipContents(Options.DestinationPath);
+            ZipContents zipContents = GetZipContents(DestinationPath);
 
-            DirectoryInfo dir = new(Options.SourcePath);
+            DirectoryInfo dir = new(SourcePath);
             return FilesExistInZip(ref zipContents, dir)
                 && zipContents.Directories.Count == 0
                 && zipContents.Files.Count == 0;

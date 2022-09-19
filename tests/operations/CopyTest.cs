@@ -21,8 +21,7 @@ namespace tests.operations
             File.WriteAllText(Path.Combine(subDir.FullName, "ho.txt"), "ho");
             string dest = Util.GetTempPath();
 
-            OperationCopyOptions options = new(source, dest);
-            Copy.Perform(options);
+            Copy.Perform(source, dest);
 
             string hi = Path.Combine(dest, "hi.txt");
             string ho = Path.Combine(dest, "subdir", "ho.txt");
@@ -40,8 +39,7 @@ namespace tests.operations
             File.WriteAllText(source, "hi");
             string dest = Util.GetTempPath() + ".txt";
 
-            OperationCopyOptions options = new(source, dest);
-            Copy.Perform(options);
+            Copy.Perform(source, dest);
 
             Assert.IsTrue(File.Exists(dest));
             Assert.AreEqual("hi", File.ReadAllText(dest));
@@ -65,45 +63,43 @@ namespace tests.operations
             File.WriteAllText(Path.Combine(subDir1.FullName, "ho.txt"), "ho");
             File.WriteAllText(Path.Combine(subDir2.FullName, "ho.txt"), "ho");
 
-            OperationCopyOptions options = new(path1, path2);
-
-            Assert.IsTrue(Copy.Verify(options));
+            Assert.IsTrue(Copy.Verify(path1, path2));
 
             File.WriteAllText(Path.Combine(subDir2.FullName, "ho.txt"), "I changed this");
 
-            Assert.IsFalse(Copy.Verify(options));
+            Assert.IsFalse(Copy.Verify(path1, path2));
 
             File.WriteAllText(Path.Combine(subDir1.FullName, "ho.txt"), "I changed this");
 
-            Assert.IsTrue(Copy.Verify(options));
+            Assert.IsTrue(Copy.Verify(path1, path2));
 
             Directory.CreateDirectory(Path.Combine(path1, "somedir"));
 
-            Assert.IsFalse(Copy.Verify(options));
+            Assert.IsFalse(Copy.Verify(path1, path2));
 
             Directory.Delete(Path.Combine(path1, "somedir"));
 
-            Assert.IsTrue(Copy.Verify(options));
+            Assert.IsTrue(Copy.Verify(path1, path2));
 
             Directory.CreateDirectory(Path.Combine(path2, "somedir"));
 
-            Assert.IsFalse(Copy.Verify(options));
+            Assert.IsFalse(Copy.Verify(path1, path2));
 
             Directory.Delete(Path.Combine(path2, "somedir"));
 
-            Assert.IsTrue(Copy.Verify(options));
+            Assert.IsTrue(Copy.Verify(path1, path2));
 
             File.Delete(Path.Combine(path1, "hi.txt"));
 
-            Assert.IsFalse(Copy.Verify(options));
+            Assert.IsFalse(Copy.Verify(path1, path2));
 
             File.Delete(Path.Combine(path2, "hi.txt"));
 
-            Assert.IsTrue(Copy.Verify(options));
+            Assert.IsTrue(Copy.Verify(path1, path2));
 
             File.Delete(Path.Combine(subDir2.FullName, "ho.txt"));
 
-            Assert.IsFalse(Copy.Verify(options));
+            Assert.IsFalse(Copy.Verify(path1, path2));
         }
 
         [TestMethod]
@@ -113,19 +109,18 @@ namespace tests.operations
             File.WriteAllText(source, "hi");
             string dest = Util.GetTempPath() + ".txt";
 
-            OperationCopyOptions options = new(source, dest);
-            Copy.Perform(options);
+            Copy.Perform(source, dest);
 
-            Assert.IsTrue(Copy.Verify(options));
+            Assert.IsTrue(Copy.Verify(source, dest));
 
             File.Delete(dest);
-            Assert.IsFalse(Copy.Verify(options));
+            Assert.IsFalse(Copy.Verify(source, dest));
 
             File.WriteAllText(dest, "hi");
-            Assert.IsTrue(Copy.Verify(options));
+            Assert.IsTrue(Copy.Verify(source, dest));
 
             File.WriteAllText(dest, "ho");
-            Assert.IsFalse(Copy.Verify(options));
+            Assert.IsFalse(Copy.Verify(source, dest));
         }
     }
 }
