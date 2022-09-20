@@ -19,6 +19,7 @@ namespace werkbank
 
         private Werk? selectedWerk;
 
+        #region "start & close"
         public FormWerkbank()
         {
             vaults = new List<WerkList>();
@@ -56,14 +57,6 @@ namespace werkbank
             UpdateQueueProgressBar();
         }
 
-        private void FormQueueChanged(object? sender, EventArgs e)
-        {
-            Invoke(new Action(() =>
-            {
-                UpdateQueueProgressBar();
-            }));
-        }
-
         private void FormWerkbankLoad(object sender, EventArgs e)
         {
             Settings.Save();
@@ -74,7 +67,31 @@ namespace werkbank
         {
             formQueue.Save();
         }
+        #endregion
 
+        #region "queue"
+        private void TimerQueueTick(object sender, EventArgs e)
+        {
+            formQueue.Run();
+        }
+
+        private void FormQueueChanged(object? sender, EventArgs e)
+        {
+            Invoke(new Action(() =>
+            {
+                UpdateQueueProgressBar();
+            }));
+        }
+
+        private void UpdateQueueProgressBar()
+        {
+            progressBar_queue.Visible = formQueue.TotalOperationsCount > 0;
+            progressBar_queue.Maximum = formQueue.TotalOperationsCount;
+            progressBar_queue.Value = formQueue.DoneOperationsCount;
+        }
+        #endregion
+
+        #region "vaults"
         /// <summary>
         /// Clear all werk lists and gather them again.
         /// </summary>
@@ -118,14 +135,9 @@ namespace werkbank
         {
             werk.OpenExplorer();
         }
+        #endregion
 
-        private void UpdateQueueProgressBar()
-        {
-            progressBar_queue.Visible = formQueue.TotalOperationsCount > 0;
-            progressBar_queue.Maximum = formQueue.TotalOperationsCount;
-            progressBar_queue.Value = formQueue.DoneOperationsCount;
-        }
-
+        #region "controls"
         private void UpdateControlsAvailability()
         {
             button_werk_up.Enabled = selectedWerk != null && selectedWerk.State != WerkState.Hot;
@@ -256,10 +268,6 @@ namespace werkbank
         {
             formQueue.ShowDialog();
         }
-
-        private void TimerQueueTick(object sender, EventArgs e)
-        {
-            formQueue.Run();
-        }
+        #endregion
     }
 }
