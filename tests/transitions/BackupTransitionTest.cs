@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,35 +10,35 @@ using werkbank.transitions;
 namespace tests.transitions
 {
     [TestClass]
-    public class ColdToHotTransitionTest
+    public class BackupTransitionTest
     {
         [TestMethod]
         public void Works()
         {
-            Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[0], WerkState.Cold);
+            Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[0], WerkState.Hot);
 
-            ColdToHotTransition transition = new();
+            BackupTransition transition = new();
             Batch batch = transition.Build(werk);
 
             Util.WorkOffBatch(batch);
 
-            string hotMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Hot), werkbank.Config.DirNameWerk, werkbank.Config.FileNameWerkJson);
-
             Assert.IsFalse(werk.Moving);
-            Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
             Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Hot)));
-            Assert.IsTrue(File.Exists(hotMetaFile));
             Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Hot), "my-content.txt")));
-            Assert.AreEqual(JsonConvert.SerializeObject(werk), File.ReadAllText(hotMetaFile));
+            Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Hot), werkbank.Config.DirNameWerk, werkbank.Config.FileNameWerkJson)));
+            Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
+            Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), "my-content.txt")));
+            Assert.IsFalse(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), werkbank.Config.DirNameWerk, werkbank.Config.FileNameWerkJson)));
+            Assert.IsFalse(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), werkbank.Config.DirNameWerk)));
         }
 
         [TestMethod]
         [ExpectedException(typeof(werkbank.exceptions.UnexpectedWerkStateException))]
-        public void ThrowsExceptionIfWerkIsInHotVault()
+        public void ThrowsExceptionIfWerkIsInColdVault()
         {
-            Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[0], WerkState.Hot);
+            Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[0], WerkState.Cold);
 
-            ColdToHotTransition transition = new();
+            BackupTransition transition = new();
             Batch batch = transition.Build(werk);
 
             Util.WorkOffBatch(batch);
@@ -51,7 +50,7 @@ namespace tests.transitions
         {
             Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[0], WerkState.Archived);
 
-            ColdToHotTransition transition = new();
+            BackupTransition transition = new();
             Batch batch = transition.Build(werk);
 
             Util.WorkOffBatch(batch);

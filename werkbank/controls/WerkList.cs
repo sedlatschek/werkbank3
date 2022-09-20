@@ -122,7 +122,7 @@ namespace werkbank.controls
                 AspectName = "CurrentBatch",
                 Text = "Transition",
                 IsEditable = false,
-                Width = 108,
+                Width = 134,
                 AspectToStringConverter = (object x) =>
                 {
                     if (x == null) return "Idle";

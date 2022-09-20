@@ -45,7 +45,7 @@ namespace tests
         /// <param name="Title"></param>
         /// <param name="CreateContent"></param>
         /// <returns></returns>
-        public static Werk CreateDummyWerk(werkbank.environments.Environment Environment, WerkState State = WerkState.Hot, string? Title = null, bool CreateContent = true)
+        public static Werk CreateDummyWerk(werkbank.environments.Environment Environment, WerkState State = WerkState.Hot, string? Title = null, bool CreateContent = true, bool CompressOnArchive = true)
         {
             SlugHelper slugHelper = new();
             string title = Title ?? GetRandomString(8);
@@ -53,7 +53,8 @@ namespace tests
 
             Werk werk = new(name, title, Environment)
             {
-                State = State
+                State = State,
+                CompressOnArchive = CompressOnArchive
             };
 
             Directory.CreateDirectory(werk.CurrentMetaDirectory);
@@ -61,8 +62,20 @@ namespace tests
 
             if (CreateContent)
             {
-                File.WriteAllText(Path.Combine(werk.CurrentDirectory, "my-content.txt"), "just some content\n");
-                File.Copy("../../../../logo.svg", Path.Combine(werk.CurrentDirectory, "logo.svg"));
+                if (State == WerkState.Archived && CompressOnArchive)
+                {
+                    string tmpDir = GetTempPath();
+                    Directory.CreateDirectory(tmpDir);
+                    File.WriteAllText(Path.Combine(tmpDir, "my-content.txt"), "just some content\n");
+                    File.Copy("../../../../logo.svg", Path.Combine(tmpDir, "logo.svg"));
+                    Zip.Perform(tmpDir, Path.Combine(werk.CurrentDirectory, FileService.ReplaceInvalidCharsFromPath(werk.Name) + ".zip"));
+                    Directory.Delete(tmpDir, true);
+                }
+                else
+                {
+                    File.WriteAllText(Path.Combine(werk.CurrentDirectory, "my-content.txt"), "just some content\n");
+                    File.Copy("../../../../logo.svg", Path.Combine(werk.CurrentDirectory, "logo.svg"));
+                }
             }
 
             return werk;

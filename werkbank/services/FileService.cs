@@ -62,5 +62,15 @@ namespace werkbank.services
                 }
             }
         }
+
+        /// <summary>
+        /// Replaces invalid characters from a filesystem path with an underscore.
+        /// </summary>
+        /// <param name="FileName"></param>
+        /// <returns></returns>
+        public static string ReplaceInvalidCharsFromPath(string FileName)
+        {
+            return string.Join("_", FileName.Split(Path.GetInvalidFileNameChars()));
+        }
     }
 }

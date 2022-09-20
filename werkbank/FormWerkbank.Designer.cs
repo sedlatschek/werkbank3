@@ -350,7 +350,6 @@ namespace werkbank
             this.Text = "Werkbank";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormWerkbankClosing);
             this.Load += new System.EventHandler(this.FormWerkbankLoad);
-            this.Shown += new System.EventHandler(this.FormWerkbankShown);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);

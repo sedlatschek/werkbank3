@@ -60,10 +60,6 @@ namespace werkbank
             RefreshWerke();
         }
 
-        private void FormWerkbankShown(object sender, EventArgs e)
-        {
-        }
-
         private void FormWerkbankClosing(object sender, FormClosingEventArgs e)
         {
             formQueue.Save();
@@ -108,8 +104,6 @@ namespace werkbank
             UpdateControlsAvailability();
         }
 
-
-        #region "controls"
         private void WerkDoubleClick(object? sender, Werk werk)
         {
             werk.OpenExplorer();
@@ -132,26 +126,49 @@ namespace werkbank
             RefreshWerke();
         }
 
+        /// <summary>
+        /// Queue a transition of a werk.
+        /// </summary>
+        /// <param name="transitionType"></param>
+        /// <param name="werk"></param>
+        /// <param name="onBatchDone"></param>
+        private void QueueTransition(TransitionType transitionType, Werk werk, Action onBatchDone)
+        {
+            Transition transition = Transition.For(transitionType);
+            Batch batch = transition.Build(werk);
+            batch.OnBatchDone += (sender, e) =>
+            {
+                if (batch.Done)
+                {
+                    Invoke(onBatchDone);
+                }
+            };
+            formQueue.Add(batch);
+        }
+
         private void ButtonWerkUpClick(object sender, EventArgs e)
         {
             if (selectedWerk != null)
             {
                 Werk werk = selectedWerk;
-                ColdToHotTransition transition = new();
-                Batch batch = transition.Build(werk);
-                batch.OnBatchDone += (sender, e) =>
+                if (werk.State == WerkState.Cold)
                 {
-                    if (batch.Done)
+                    QueueTransition(TransitionType.ColdToHot, werk, new Action(() =>
                     {
-                        Invoke(new Action(() =>
-                        {
-                            vaultCold.List.RemoveObject(werk);
-                            vaultHot.List.AddObject(werk);
-                            vaultHot.List.SelectedObject = werk;
-                        }));
-                    }
-                };
-                formQueue.Add(batch);
+                        vaultCold.List.RemoveObject(werk);
+                        vaultHot.List.AddObject(werk);
+                        vaultHot.List.SelectedObject = werk;
+                    }));
+                }
+                else if (werk.State == WerkState.Archived)
+                {
+                    QueueTransition(TransitionType.ArchiveToCold, werk, new Action(() =>
+                    {
+                        vaultArchive.List.RemoveObject(werk);
+                        vaultCold.List.AddObject(werk);
+                        vaultCold.List.SelectedObject = werk;
+                    }));
+                }
             }
         }
 
@@ -160,21 +177,24 @@ namespace werkbank
             if (selectedWerk != null)
             {
                 Werk werk = selectedWerk;
-                HotToColdTransition transition = new();
-                Batch batch = transition.Build(werk);
-                batch.OnBatchDone += (sender, e) =>
+                if (werk.State == WerkState.Hot)
                 {
-                    if (batch.Done)
+                    QueueTransition(TransitionType.HotToCold, werk, new Action(() =>
                     {
-                        Invoke(new Action(() =>
-                        {
-                            vaultHot.List.RemoveObject(werk);
-                            vaultCold.List.AddObject(werk);
-                            vaultCold.List.SelectedObject = werk;
-                        }));
-                    }
-                };
-                formQueue.Add(batch);
+                        vaultHot.List.RemoveObject(werk);
+                        vaultCold.List.AddObject(werk);
+                        vaultCold.List.SelectedObject = werk;
+                    }));
+                }
+                else if (werk.State == WerkState.Cold)
+                {
+                    QueueTransition(TransitionType.ColdToArchive, werk, new Action(() =>
+                    {
+                        vaultCold.List.RemoveObject(werk);
+                        vaultArchive.List.AddObject(werk);
+                        vaultArchive.List.SelectedObject = werk;
+                    }));
+                }
             }
         }
 
@@ -183,19 +203,10 @@ namespace werkbank
             if (selectedWerk != null)
             {
                 Werk werk = selectedWerk;
-                BackupTransition transition = new();
-                Batch batch = transition.Build(werk);
-                batch.OnBatchDone += (sender, e) =>
+                QueueTransition(TransitionType.Backup, werk, new Action(() =>
                 {
-                    if (batch.Done)
-                    {
-                        Invoke(new Action(() =>
-                        {
-                            vaultHot.List.RefreshObject(werk);
-                        }));
-                    }
-                };
-                formQueue.Add(batch);
+                    vaultHot.List.RefreshObject(werk);
+                }));
             }
         }
 
@@ -223,7 +234,7 @@ namespace werkbank
         {
             throw new NotImplementedException();
         }
-        #endregion
+
         private void ButtonQueueClick(object sender, EventArgs e)
         {
             formQueue.ShowDialog();
