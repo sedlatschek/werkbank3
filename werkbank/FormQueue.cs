@@ -1,9 +1,9 @@
-﻿using BrightIdeasSoftware;
-using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO.Packaging;
@@ -11,6 +11,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BrightIdeasSoftware;
+using Newtonsoft.Json;
 using werkbank.models;
 using werkbank.operations;
 using werkbank.transitions;
@@ -19,11 +21,31 @@ namespace werkbank
 {
     public partial class FormQueue : Form
     {
-        protected readonly List<Batch> batches;
+        private readonly List<Batch> batches;
 
-        protected readonly ObjectListView objectListView;
+        private readonly ObjectListView objectListView;
 
         private readonly OLVColumn colBatch;
+
+        private int totalOperationsCount = 0;
+        /// <summary>
+        /// The total count of operations within the queue.
+        /// </summary>
+        public int TotalOperationsCount => totalOperationsCount;
+
+        private int openOperationsCount = 0;
+        /// <summary>
+        /// The count of open operations within the queue.
+        /// </summary>
+        public int OpenOperationsCount => openOperationsCount;
+
+        private int doneOperationsCount = 0;
+        /// <summary>
+        /// The count of done operations within the queue.
+        /// </summary>
+        public int DoneOperationsCount => doneOperationsCount;
+
+        public event EventHandler? Changed;
 
         public FormQueue()
         {
@@ -36,6 +58,8 @@ namespace werkbank
                 MultiSelect = false,
                 FullRowSelect = true
             };
+
+            objectListView.ItemsChanged += ObjectListViewItemsChanged;
 
             OLVColumn colWerk = new()
             {
@@ -248,6 +272,21 @@ namespace werkbank
             panel_objectListView.Controls.Add(objectListView);
             objectListView.Dock = DockStyle.Fill;
         }
+
+        private void ObjectListViewItemsChanged(object? sender, ItemsChangedEventArgs e)
+        {
+            RegisterOperationChange();
+        }
+
+        private void RegisterOperationChange()
+        {
+            List<Operation> operations = objectListView.Objects.Cast<Operation>().ToList();
+            openOperationsCount = operations.Count(op => !op.Success);
+            doneOperationsCount = operations.Count(op => op.Success);
+            totalOperationsCount = openOperationsCount + doneOperationsCount;
+            Changed?.Invoke(this, EventArgs.Empty);
+        }
+
         private void FormQueueShown(object sender, EventArgs e)
         {
             GroupByBatch();
@@ -355,11 +394,13 @@ namespace werkbank
                             objectListView.RefreshObject(op);
                         }));
                     }
+                    RegisterOperationChange();
                     Save();
                 };
                 batch.OnOperationDone += (senderPackage, op) =>
                 {
                     worker.ReportProgress(0, op);
+                    RegisterOperationChange();
                     if (Visible)
                     {
                         Invoke(new Action(() =>
@@ -367,6 +408,7 @@ namespace werkbank
                             objectListView.RefreshObject(op);
                         }));
                     }
+                    RegisterOperationChange();
                     Save();
                 };
 

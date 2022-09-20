@@ -46,7 +46,7 @@ namespace werkbank
             this.button_werk_vscode = new System.Windows.Forms.Button();
             this.button_werk_edit = new System.Windows.Forms.Button();
             this.panel_queue = new System.Windows.Forms.Panel();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.progressBar_queue = new System.Windows.Forms.ProgressBar();
             this.button_queue = new System.Windows.Forms.Button();
             this.timerQueue = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -296,22 +296,22 @@ namespace werkbank
             this.panel_queue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_queue.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.panel_queue.Controls.Add(this.progressBar);
+            this.panel_queue.Controls.Add(this.progressBar_queue);
             this.panel_queue.Controls.Add(this.button_queue);
             this.panel_queue.Location = new System.Drawing.Point(0, 612);
             this.panel_queue.Name = "panel_queue";
             this.panel_queue.Size = new System.Drawing.Size(925, 40);
             this.panel_queue.TabIndex = 5;
             // 
-            // progressBar
+            // progressBar_queue
             // 
-            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.progressBar_queue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar.Location = new System.Drawing.Point(92, 7);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(827, 25);
-            this.progressBar.TabIndex = 13;
+            this.progressBar_queue.Location = new System.Drawing.Point(92, 7);
+            this.progressBar_queue.Name = "progressBar_queue";
+            this.progressBar_queue.Size = new System.Drawing.Size(206, 25);
+            this.progressBar_queue.TabIndex = 13;
             // 
             // button_queue
             // 
@@ -379,6 +379,6 @@ namespace werkbank
         private Panel panel_queue;
         private System.Windows.Forms.Timer timerQueue;
         private Button button_queue;
-        private ProgressBar progressBar;
+        private ProgressBar progressBar_queue;
     }
 }

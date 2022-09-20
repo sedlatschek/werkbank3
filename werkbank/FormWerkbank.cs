@@ -24,6 +24,7 @@ namespace werkbank
             vaults = new List<WerkList>();
             iconList = new ImageList();
             formQueue = new FormQueue();
+            formQueue.Changed += FormQueueChanged;
 
             InitializeComponent();
 
@@ -52,6 +53,15 @@ namespace werkbank
             timerQueue.Interval = Settings.Properties.QueueTickInterval;
 
             UpdateControlsAvailability();
+            UpdateQueueProgressBar();
+        }
+
+        private void FormQueueChanged(object? sender, EventArgs e)
+        {
+            Invoke(new Action(() =>
+            {
+                UpdateQueueProgressBar();
+            }));
         }
 
         private void FormWerkbankLoad(object sender, EventArgs e)
@@ -107,6 +117,13 @@ namespace werkbank
         private void WerkDoubleClick(object? sender, Werk werk)
         {
             werk.OpenExplorer();
+        }
+
+        private void UpdateQueueProgressBar()
+        {
+            progressBar_queue.Visible = formQueue.TotalOperationsCount > 0;
+            progressBar_queue.Maximum = formQueue.TotalOperationsCount;
+            progressBar_queue.Value = formQueue.DoneOperationsCount;
         }
 
         private void UpdateControlsAvailability()
