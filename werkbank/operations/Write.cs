@@ -16,6 +16,11 @@ namespace werkbank.operations
                 throw new OperationParametersMissingException();
             }
 
+            if (File.Exists(DestinationPath))
+            {
+                File.Delete(DestinationPath);
+            }
+
             File.WriteAllText(DestinationPath, Content);
             return true;
         }

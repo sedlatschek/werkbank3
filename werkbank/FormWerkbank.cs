@@ -180,7 +180,23 @@ namespace werkbank
 
         private void ButtonWerkBackupClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (selectedWerk != null)
+            {
+                Werk werk = selectedWerk;
+                BackupTransition transition = new();
+                Batch batch = transition.Build(werk);
+                batch.OnBatchDone += (sender, e) =>
+                {
+                    if (batch.Done)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            vaultHot.List.RefreshObject(werk);
+                        }));
+                    }
+                };
+                formQueue.Add(batch);
+            }
         }
 
         private void ButtonWerkOpenClick(object sender, EventArgs e)

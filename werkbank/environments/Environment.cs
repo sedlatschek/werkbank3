@@ -20,12 +20,12 @@ namespace werkbank.environments
             this.Index = Index;
         }
 
-        public bool BeforeTransition(Batch Batch, WerkState From, WerkState To)
+        public bool BeforeTransition(Batch Batch, Transition Transition)
         {
             return false;
         }
 
-        public bool AfterTransition(Batch Batch, WerkState From, WerkState To)
+        public bool AfterTransition(Batch Batch, Transition Transition)
         {
             return false;
         }

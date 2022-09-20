@@ -7,11 +7,20 @@ using werkbank.models;
 
 namespace werkbank.transitions
 {
+    public enum TransitionType
+    {
+        HotToCold,
+        Backup,
+        ColdToHot,
+        ColdToArchive,
+        ArchiveToCold
+    }
+
     public abstract class Transition
     {
         public abstract string Title { get; }
-        public abstract WerkState From { get; }
-        public abstract WerkState To { get; }
+
+        public abstract TransitionType Type { get; }
 
         /// <summary>
         /// Build a queue batch for this werk state transition.

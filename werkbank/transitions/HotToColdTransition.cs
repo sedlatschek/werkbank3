@@ -12,8 +12,7 @@ namespace werkbank.transitions
     public class HotToColdTransition : Transition
     {
         public override string Title => "Hot to Cold";
-        public override WerkState From => WerkState.Hot;
-        public override WerkState To => WerkState.Cold;
+        public override TransitionType Type => TransitionType.ColdToHot;
 
         public override Batch Build(Werk Werk)
         {
@@ -31,15 +30,15 @@ namespace werkbank.transitions
             string coldDir = Werk.GetDirectoryFor(WerkState.Cold);
             string coldMetaDir = Path.Combine(coldDir, Config.DirNameWerk);
             string coldMetaFile = Path.Combine(coldMetaDir, Config.FileNameWerkJson);
-            string gitDir = Path.Combine(hotDir, ".git");
-            string gitZip = Path.Combine(hotDir, "git.zip");
+            string gitDir = Path.Combine(hotDir, Config.DirNameGit);
+            string gitZip = Path.Combine(hotDir, Config.FileNameGitZip);
 
             // mark werk as moving
             Werk.Moving = true;
             batch.Write(hotMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger before transition events
-            Werk.Environment.BeforeTransition(batch, From, To);
+            Werk.Environment.BeforeTransition(batch, this);
 
             // zip up git
             if (Directory.Exists(gitDir))
@@ -65,7 +64,7 @@ namespace werkbank.transitions
             batch.Write(coldMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger after transition events
-            Werk.Environment.AfterTransition(batch, From, To);
+            Werk.Environment.AfterTransition(batch, this);
 
             return batch;
         }

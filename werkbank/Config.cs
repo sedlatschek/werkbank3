@@ -24,10 +24,12 @@ namespace werkbank
         public const string AppHandle = "werkbank3";
         public const string DirNameWerk = ".werk";
         public const string DirNameTests = "werkbank_tests";
+        public const string DirNameGit = ".git";
         public const string FileNameWerkJson = "werk.json";
         public const string FileNameWerkIcon = "icon.png";
         public const string FileNameSettings = "settings.json";
         public const string FileNameQueue = "queue.json";
+        public const string FileNameGitZip = "git.zip";
 
         public static readonly string DirAppData = Directory.CreateDirectory(GetAppDataPath()).FullName;
         public static readonly string FileSettings = Path.Combine(DirAppData, FileNameSettings);
