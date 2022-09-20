@@ -42,6 +42,8 @@ namespace werkbank.operations
         protected string? source;
         [JsonProperty("dest")]
         protected string? dest;
+        [JsonProperty("ignore")]
+        protected List<string>? ignoreList;
         [JsonIgnore]
         protected Exception? error;
         [JsonIgnore]
@@ -71,6 +73,8 @@ namespace werkbank.operations
         public string? Source => source;
         [JsonIgnore]
         public string? Destination => dest;
+        [JsonIgnore]
+        public List<string>? IgnoreList => ignoreList;
 
         [JsonIgnore]
         public OperationType Type => type;
@@ -86,13 +90,14 @@ namespace werkbank.operations
             }
         }
 
-        public Operation(OperationType Type, Batch Batch, string? Source, string? Destination)
+        public Operation(OperationType Type, Batch Batch, string? Source, string? Destination, List<string>? IgnoreList)
         {
             guid = Guid.NewGuid();
             type = Type;
             created = DateTime.Now;
             source = Source;
             dest = Destination;
+            ignoreList = IgnoreList;
             this.Batch = Batch;
         }
 
@@ -123,7 +128,7 @@ namespace werkbank.operations
         {
             return type switch
             {
-                OperationType.Copy => Copy.Perform(Source, Destination),
+                OperationType.Copy => Copy.Perform(Source, Destination, IgnoreList),
                 OperationType.CreateDirectory => CreateDirectory.Perform(Destination),
                 OperationType.Delete => Delete.Perform(Destination),
                 OperationType.Hide => Hide.Perform(Destination),
@@ -140,7 +145,7 @@ namespace werkbank.operations
         {
             return type switch
             {
-                OperationType.Copy => Copy.Verify(Source, Destination),
+                OperationType.Copy => Copy.Verify(Source, Destination, IgnoreList),
                 OperationType.CreateDirectory => CreateDirectory.Verify(Destination),
                 OperationType.Delete => Delete.Verify(Destination),
                 OperationType.Hide => Hide.Verify(Destination),

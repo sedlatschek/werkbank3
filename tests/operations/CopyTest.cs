@@ -46,6 +46,96 @@ namespace tests.operations
         }
 
         [TestMethod]
+        public void PerformWorksWithIgnoreListForSingleFileInRootDirectory()
+        {
+            string source = Util.GetTempPath();
+            Directory.CreateDirectory(source);
+
+            string hiPath = Path.Combine(source, "hi.txt");
+
+            File.WriteAllText(hiPath, "hi");
+            File.WriteAllText(Path.Combine(source, "ha.txt"), "ha");
+            File.WriteAllText(Path.Combine(source, "ho.txt"), "ho");
+
+            string dest = Util.GetTempPath();
+
+            List<string> ignoreList = new()
+            {
+                hiPath
+            };
+
+            Copy.Perform(source, dest, ignoreList);
+
+            Assert.IsFalse(File.Exists(Path.Combine(dest, "hi.txt")));
+            Assert.IsTrue(File.Exists(Path.Combine(dest, "ha.txt")));
+            Assert.IsTrue(File.Exists(Path.Combine(dest, "ho.txt")));
+        }
+
+        [TestMethod]
+        public void PerformWorksWithIgnoreListForEntireDirectory()
+        {
+            string source = Util.GetTempPath();
+            Directory.CreateDirectory(source);
+
+            string dest = Util.GetTempPath();
+
+            List<string> ignoreList = new()
+            {
+                source
+            };
+
+            Copy.Perform(source, dest, ignoreList);
+
+            Assert.IsFalse(Directory.Exists(dest));
+        }
+
+        [TestMethod]
+        public void PerformWorksWithIgnoreListWithNestedDirectoriesAndFiles()
+        {
+            string source = Util.GetTempPath();
+            Directory.CreateDirectory(source);
+            string dest = Util.GetTempPath();
+
+            string notIgnoredDirSourcePath = Path.Combine(source, "not_ignored");
+            string ignoredDirSourcePath = Path.Combine(source, "ignored");
+            string ignoredFileInNotIgnoredDirSourcePath = Path.Combine(notIgnoredDirSourcePath, "ignored.txt");
+            string notIgnoredFile1InNotIgnoredDirSourcePath = Path.Combine(notIgnoredDirSourcePath, "not_ignored1.txt");
+            string notIgnoredFile2InNotIgnoredDirSourcePath = Path.Combine(notIgnoredDirSourcePath, "not_ignored2.txt");
+            string ignoredFileInIgnoredDirSourcePath = Path.Combine(ignoredDirSourcePath, "ignored_anyways.txt");
+
+            string notIgnoredDirDestPath = Path.Combine(dest, "not_ignored");
+            string ignoredDirDestPath = Path.Combine(dest, "ignored");
+            string ignoredFileInNotIgnoredDirDestPath = Path.Combine(notIgnoredDirDestPath, "ignored.txt");
+            string notIgnoredFile1InNotIgnoredDirDestPath = Path.Combine(notIgnoredDirDestPath, "not_ignored1.txt");
+            string notIgnoredFile2InNotIgnoredDirDestPath = Path.Combine(notIgnoredDirDestPath, "not_ignored2.txt");
+            string ignoredFileInIgnoredDirDestPath = Path.Combine(ignoredDirDestPath, "ignored_anyways.txt");
+
+            Directory.CreateDirectory(notIgnoredDirSourcePath);
+            Directory.CreateDirectory(ignoredDirSourcePath);
+
+            File.WriteAllText(ignoredFileInNotIgnoredDirSourcePath, "I should be ignored");
+            File.WriteAllText(notIgnoredFile1InNotIgnoredDirSourcePath, "I should be copied");
+            File.WriteAllText(notIgnoredFile2InNotIgnoredDirSourcePath, "I should be copied");
+            File.WriteAllText(ignoredFileInIgnoredDirSourcePath, "I should be ignored");
+
+            List<string> ignoreList = new()
+            {
+                ignoredDirSourcePath,
+                ignoredFileInNotIgnoredDirSourcePath
+            };
+
+            Copy.Perform(source, dest, ignoreList);
+
+            Assert.IsTrue(Directory.Exists(dest));
+            Assert.IsTrue(Directory.Exists(notIgnoredDirSourcePath));
+            Assert.IsFalse(Directory.Exists(ignoredDirDestPath));
+            Assert.IsFalse(File.Exists(ignoredFileInNotIgnoredDirDestPath));
+            Assert.IsTrue(File.Exists(notIgnoredFile1InNotIgnoredDirDestPath));
+            Assert.IsTrue(File.Exists(notIgnoredFile2InNotIgnoredDirDestPath));
+            Assert.IsFalse(File.Exists(ignoredFileInIgnoredDirDestPath));
+        }
+
+        [TestMethod]
         public void VerifyWorks()
         {
             string path1 = Util.GetTempPath();
@@ -121,6 +211,129 @@ namespace tests.operations
 
             File.WriteAllText(dest, "ho");
             Assert.IsFalse(Copy.Verify(source, dest));
+        }
+
+        [TestMethod]
+        public void VerifyWorksWithIgnoreListForSingleFileInRootDirectory()
+        {
+            string source = Util.GetTempPath();
+            Directory.CreateDirectory(source);
+            string dest = Util.GetTempPath();
+            Directory.CreateDirectory(dest);
+
+            string hiPath = Path.Combine(source, "hi.txt");
+
+            File.WriteAllText(hiPath, "hi");
+            File.WriteAllText(Path.Combine(source, "ha.txt"), "ha");
+            File.WriteAllText(Path.Combine(source, "ho.txt"), "ho");
+
+            File.WriteAllText(Path.Combine(dest, "ha.txt"), "ha");
+            File.WriteAllText(Path.Combine(dest, "ho.txt"), "ho");
+
+            List<string> ignoreList = new()
+            {
+                hiPath
+            };
+
+            Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
+
+            File.WriteAllText(Path.Combine(dest, "hi.txt"), "hi");
+
+            Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
+
+            File.Delete(Path.Combine(dest, "hi.txt"));
+
+            Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
+
+            File.WriteAllText(Path.Combine(dest, "ha.txt"), "hx");
+
+            Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
+
+            File.WriteAllText(Path.Combine(dest, "ha.txt"), "ha");
+
+            Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
+        }
+
+        [TestMethod]
+        public void VerifyWorksWithIgnoreListForEntireDirectory()
+        {
+            string source = Util.GetTempPath();
+            Directory.CreateDirectory(source);
+            string dest = Util.GetTempPath();
+
+            List<string> ignoreList = new()
+            {
+                source
+            };
+
+            Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
+
+            Directory.CreateDirectory(dest);
+
+            Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
+        }
+
+        [TestMethod]
+        public void VerifyWorksWithIgnoreListWithNestedDirectoriesAndFiles()
+        {
+            string source = Util.GetTempPath();
+            Directory.CreateDirectory(source);
+            string dest = Util.GetTempPath();
+
+            string notIgnoredDirSourcePath = Path.Combine(source, "not_ignored");
+            string ignoredDirSourcePath = Path.Combine(source, "ignored");
+            string ignoredFileInNotIgnoredDirSourcePath = Path.Combine(notIgnoredDirSourcePath, "ignored.txt");
+            string notIgnoredFile1InNotIgnoredDirSourcePath = Path.Combine(notIgnoredDirSourcePath, "not_ignored1.txt");
+            string notIgnoredFile2InNotIgnoredDirSourcePath = Path.Combine(notIgnoredDirSourcePath, "not_ignored2.txt");
+            string ignoredFileInIgnoredDirSourcePath = Path.Combine(ignoredDirSourcePath, "ignored_anyways.txt");
+
+            string notIgnoredDirDestPath = Path.Combine(dest, "not_ignored");
+            string ignoredDirDestPath = Path.Combine(dest, "ignored");
+            string ignoredFileInNotIgnoredDirDestPath = Path.Combine(notIgnoredDirDestPath, "ignored.txt");
+            string notIgnoredFile1InNotIgnoredDirDestPath = Path.Combine(notIgnoredDirDestPath, "not_ignored1.txt");
+            string notIgnoredFile2InNotIgnoredDirDestPath = Path.Combine(notIgnoredDirDestPath, "not_ignored2.txt");
+            string ignoredFileInIgnoredDirDestPath = Path.Combine(ignoredDirDestPath, "ignored_anyways.txt");
+
+            Directory.CreateDirectory(notIgnoredDirSourcePath);
+            Directory.CreateDirectory(ignoredDirSourcePath);
+            File.WriteAllText(ignoredFileInNotIgnoredDirSourcePath, "I should be ignored");
+            File.WriteAllText(notIgnoredFile1InNotIgnoredDirSourcePath, "I should be copied");
+            File.WriteAllText(notIgnoredFile2InNotIgnoredDirSourcePath, "I should be copied");
+            File.WriteAllText(ignoredFileInIgnoredDirSourcePath, "I should be ignored");
+
+            Directory.CreateDirectory(notIgnoredDirDestPath);
+            File.WriteAllText(notIgnoredFile1InNotIgnoredDirDestPath, "I should be copied");
+            File.WriteAllText(notIgnoredFile2InNotIgnoredDirDestPath, "I should be copied");
+
+            List<string> ignoreList = new()
+            {
+                ignoredDirSourcePath,
+                ignoredFileInNotIgnoredDirSourcePath
+            };
+
+            Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
+
+            Directory.CreateDirectory(ignoredDirDestPath);
+
+            Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
+
+            Directory.Delete(ignoredDirDestPath);
+
+            Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
+
+            Directory.CreateDirectory(ignoredDirDestPath);
+            File.WriteAllText(ignoredFileInIgnoredDirDestPath, "hi");
+
+            Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
+
+            Directory.Delete(ignoredDirDestPath, true);            
+
+            Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
+
+            Directory.CreateDirectory(notIgnoredDirSourcePath);
+            File.WriteAllText(ignoredFileInNotIgnoredDirDestPath, "hi");
+
+            Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
         }
     }
 }

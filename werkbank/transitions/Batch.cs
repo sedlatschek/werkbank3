@@ -168,7 +168,21 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Copy(string SourcePath, string DestinationPath)
         {
-            Operation op = new(OperationType.Copy, this, SourcePath, DestinationPath);
+            Operation op = new(OperationType.Copy, this, SourcePath, DestinationPath, null);
+            Operations.Add(op);
+            return op;
+        }
+
+        /// <summary>
+        /// Create operation to copy a file or a directory and add it to the batch.
+        /// </summary>
+        /// <param name="SourcePath"></param>
+        /// <param name="DestinationPath"></param>
+        /// <param name="BlacklistedPaths"></param>
+        /// <returns></returns>
+        public Operation Copy(string SourcePath, string DestinationPath, List<string>? BlacklistedPaths)
+        {
+            Operation op = new(OperationType.Copy, this, SourcePath, DestinationPath, BlacklistedPaths);
             Operations.Add(op);
             return op;
         }
@@ -180,7 +194,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation CreateDirectory(string DestinationPath)
         {
-            Operation op = new(OperationType.CreateDirectory, this, null, DestinationPath);
+            Operation op = new(OperationType.CreateDirectory, this, null, DestinationPath, null);
             Operations.Add(op);
             return op;
         }
@@ -192,7 +206,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Delete(string TargetPath)
         {
-            Operation op = new(OperationType.Delete, this, null, TargetPath);
+            Operation op = new(OperationType.Delete, this, null, TargetPath, null);
             Operations.Add(op);
             return op;
         }
@@ -204,7 +218,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Hide(string TargetPath)
         {
-            Operation op = new(OperationType.Hide, this, null, TargetPath);
+            Operation op = new(OperationType.Hide, this, null, TargetPath, null);
             Operations.Add(op);
             return op;
         }
@@ -217,7 +231,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation MoveFile(string SourcePath, string DestinationPath)
         {
-            Operation op = new(OperationType.MoveFile, this, SourcePath, DestinationPath);
+            Operation op = new(OperationType.MoveFile, this, SourcePath, DestinationPath, null);
             Operations.Add(op);
             return op;
         }
@@ -229,7 +243,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Unhide(string TargetPath)
         {
-            Operation op = new(OperationType.Unhide, this, null, TargetPath);
+            Operation op = new(OperationType.Unhide, this, null, TargetPath, null);
             Operations.Add(op);
             return op;
         }
@@ -242,7 +256,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Unzip(string SourceZip, string DestinationPath)
         {
-            Operation op = new(OperationType.Unzip, this, SourceZip, DestinationPath);
+            Operation op = new(OperationType.Unzip, this, SourceZip, DestinationPath, null);
             Operations.Add(op);
             return op;
         }
@@ -255,7 +269,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Write(string DestinationPath, string Content)
         {
-            Operation op = new(OperationType.Write, this, Content, DestinationPath);
+            Operation op = new(OperationType.Write, this, Content, DestinationPath, null);
             Operations.Add(op);
             return op;
         }
@@ -268,7 +282,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Zip(string SourcePath, string DestinationPath)
         {
-            Operation op = new(OperationType.Zip, this, SourcePath, DestinationPath);
+            Operation op = new(OperationType.Zip, this, SourcePath, DestinationPath, null);
             Operations.Add(op);
             return op;
         }

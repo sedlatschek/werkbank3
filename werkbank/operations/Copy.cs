@@ -1,16 +1,24 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using werkbank.exceptions;
+using werkbank.services;
 
 namespace werkbank.operations
 {
     public static class Copy
     {
         public static bool Perform(string? SourcePath, string? DestinationPath)
+        {
+            return Perform(SourcePath, DestinationPath, null);
+        }
+
+        public static bool Perform(string? SourcePath, string? DestinationPath, IEnumerable<string>? IgnoreList)
         {
             if (SourcePath == null || DestinationPath == null)
             {
@@ -26,8 +34,7 @@ namespace werkbank.operations
                 File.Delete(DestinationPath);
             }
 
-
-            CopyDirOrFile(SourcePath, DestinationPath);
+            CopyDirOrFile(SourcePath, DestinationPath, IgnoreList ?? new List<string>());
             return true;
         }
 
@@ -36,8 +43,14 @@ namespace werkbank.operations
         /// </summary>
         /// <param name="SourcePath"></param>
         /// <param name="DestinationPath"></param>
-        private static void CopyDirOrFile(string SourcePath, string DestinationPath)
+        /// <param name="IgnoreList"></param>
+        private static void CopyDirOrFile(string SourcePath, string DestinationPath, IEnumerable<string> IgnoreList)
         {
+            if (IgnoreList.Contains(SourcePath))
+            {
+                return;
+            }
+
             FileAttributes attributes = File.GetAttributes(SourcePath);
 
             if (attributes.HasFlag(FileAttributes.Directory))
@@ -49,17 +62,27 @@ namespace werkbank.operations
 
                 foreach (FileInfo file in dir.GetFiles())
                 {
+                    if (IgnoreList.Contains(file.FullName))
+                    {
+                        continue;
+                    }
+
                     string targetFilePath = Path.Combine(DestinationPath, file.Name);
                     file.CopyTo(targetFilePath);
                 }
 
                 foreach (DirectoryInfo subDir in dirs)
                 {
+                    if (IgnoreList.Contains(subDir.FullName))
+                    {
+                        continue;
+                    }
+
                     string newDestinationDir = Path.Combine(DestinationPath, subDir.Name);
-                    CopyDirOrFile(subDir.FullName, newDestinationDir);
+                    CopyDirOrFile(subDir.FullName, newDestinationDir, IgnoreList);
                 }
             }
-            else
+            else if (!IgnoreList.Contains(SourcePath))
             {
                 FileInfo file = new(SourcePath);
                 file.CopyTo(DestinationPath);
@@ -68,11 +91,22 @@ namespace werkbank.operations
 
         public static bool Verify(string? SourcePath, string? DestinationPath)
         {
+            return Verify(SourcePath, DestinationPath, null);
+        }
+
+        public static bool Verify(string? SourcePath, string? DestinationPath, IEnumerable<string>? IgnoreList)
+        {
             if (SourcePath == null || DestinationPath == null)
             {
                 throw new OperationParametersMissingException();
             }
-            return IsEqual(SourcePath, DestinationPath) && IsEqual(DestinationPath, SourcePath);
+
+            // we create a second ignore list for the destination path.
+            // this way we can do a "reverse" run
+            IEnumerable<string> sourceIgnoreList = IgnoreList ?? new List<string>();
+            IEnumerable<string> destIgnoreList = sourceIgnoreList.Select(path => path.Replace(SourcePath, DestinationPath));
+
+            return IsEqual(SourcePath, DestinationPath, sourceIgnoreList) && IsEqual(DestinationPath, SourcePath, destIgnoreList);
         }
 
         /// <summary>
@@ -81,66 +115,66 @@ namespace werkbank.operations
         /// <param name="SourcePath"></param>
         /// <param name="DestinationPath"></param>
         /// <returns></returns>
-        private static bool IsEqual(string SourcePath, string DestinationPath)
+        private static bool IsEqual(string SourcePath, string DestinationPath, IEnumerable<string> IgnoreList)
         {
-            FileAttributes sourceAttributes = File.GetAttributes(SourcePath);
-            FileAttributes destinationAttributes = File.GetAttributes(SourcePath);
+            // if source does not exist, dest should not exist either
+            if (!FileService.PathExists(SourcePath, out FileService.PathType? sourcePathType))
+            {
+                return FileService.PathExists(DestinationPath);
+            }
 
-            if (sourceAttributes.HasFlag(FileAttributes.Directory) != destinationAttributes.HasFlag(FileAttributes.Directory))
+            // if dest does not exists, it is either not equal to source or on the ignore list
+            if (!FileService.PathExists(DestinationPath, out FileService.PathType? destPathType))
+            {
+                return IgnoreList.Contains(SourcePath);
+            }
+
+            // if the paths or of a different type, they are definitively not equal
+            if (sourcePathType != destPathType)
             {
                 return false;
             }
 
-            if (sourceAttributes.HasFlag(FileAttributes.Directory))
+            // since both paths exist, source should not be in the ignore list
+            if (IgnoreList.Contains(SourcePath))
             {
-                if (!Directory.Exists(DestinationPath))
-                {
-                    return false;
-                }
-
-                DirectoryInfo dir = new(SourcePath);
-                DirectoryInfo[] dirs = dir.GetDirectories();
-
-                foreach (FileInfo file in dir.GetFiles())
-                {
-                    string targetFilePath = Path.Combine(DestinationPath, file.Name);
-                    if (!File.Exists(targetFilePath) || GetMD5(targetFilePath) != GetMD5(file.FullName))
-                    {
-                        return false;
-                    }
-                }
-
-                foreach (DirectoryInfo subDir in dirs)
-                {
-                    string newDestinationDir = Path.Combine(DestinationPath, subDir.Name);
-                    if (!IsEqual(subDir.FullName, newDestinationDir))
-                    {
-                        return false;
-                    }
-                }
+                return false;
             }
-            else
+
+            if (sourcePathType == FileService.PathType.File)
             {
-                return File.Exists(SourcePath) && File.Exists(DestinationPath) && GetMD5(SourcePath) == GetMD5(DestinationPath);
+                // we know that both paths exist and are files, so to compare them, we only need to compare their MD5 hashes
+                return FileService.GetMD5(SourcePath) == FileService.GetMD5(DestinationPath);
+            }
+
+            if (sourcePathType == FileService.PathType.Directory)
+            {
+                // we know that both paths exist and are directories, so we just need to feed their contents into the function recursively
+                DirectoryInfo sourceDir = new(SourcePath);
+
+                foreach (FileInfo file in sourceDir.GetFiles())
+                {
+                    string sourceFilePath = file.FullName;
+                    string destFilePath = Path.Combine(DestinationPath, file.Name);
+                    if (!IsEqual(sourceFilePath, destFilePath, IgnoreList))
+                    {
+                        return false;
+                    }
+                }
+
+                foreach (DirectoryInfo dir in sourceDir.GetDirectories())
+                {
+                    string sourceDirPath = dir.FullName;
+                    string destDirPath = Path.Combine(DestinationPath, dir.Name);
+
+                    if (!IsEqual(sourceDirPath, destDirPath, IgnoreList))
+                    {
+                        return false;
+                    }
+                }
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Get the MD5 hash of a file.
-        /// </summary>
-        /// <param name="FilePath"></param>
-        /// <returns></returns>
-        private static string GetMD5(string FilePath)
-        {
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(FilePath))
-                {
-                    return Encoding.Default.GetString(md5.ComputeHash(stream));
-                }
-            }
         }
     }
 }
