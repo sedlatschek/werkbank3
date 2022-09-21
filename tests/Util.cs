@@ -51,7 +51,7 @@ namespace tests
             string title = Title ?? GetRandomString(8);
             string name = slugHelper.GenerateSlug(title);
 
-            Werk werk = new(name, title, Environment)
+            Werk werk = new(Guid.NewGuid(), name, title, Environment)
             {
                 State = State,
                 CompressOnArchive = CompressOnArchive

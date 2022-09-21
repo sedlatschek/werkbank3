@@ -73,6 +73,16 @@ namespace werkbank.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap btn_create {
+            get {
+                object obj = ResourceManager.GetObject("btn_create", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap btn_down {
             get {
                 object obj = ResourceManager.GetObject("btn_down", resourceCulture);
@@ -156,6 +166,16 @@ namespace werkbank.Properties {
         internal static System.Drawing.Bitmap btn_web {
             get {
                 object obj = ResourceManager.GetObject("btn_web", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icon_blank {
+            get {
+                object obj = ResourceManager.GetObject("icon_blank", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

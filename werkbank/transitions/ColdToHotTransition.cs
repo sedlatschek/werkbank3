@@ -25,11 +25,11 @@ namespace werkbank.transitions
 
             // determine paths
             string hotDir = Werk.GetDirectoryFor(WerkState.Hot);
-            string hotMetaDir = Path.Combine(hotDir, Config.DirNameWerk);
-            string hotMetaFile = Path.Combine(hotMetaDir, Config.FileNameWerkJson);
+            string hotMetaDir = Path.Combine(hotDir, Config.DirNameMeta);
+            string hotMetaFile = Path.Combine(hotMetaDir, Config.FileNameMetaJson);
             string coldDir = Werk.GetDirectoryFor(WerkState.Cold);
-            string coldMetaDir = Path.Combine(coldDir, Config.DirNameWerk);
-            string coldMetaFile = Path.Combine(coldMetaDir, Config.FileNameWerkJson);
+            string coldMetaDir = Path.Combine(coldDir, Config.DirNameMeta);
+            string coldMetaFile = Path.Combine(coldMetaDir, Config.FileNameMetaJson);
             string gitDir = Path.Combine(hotDir, Config.DirNameGit);
             string hotGitZip = Path.Combine(hotDir, Config.FileNameGitZip);
             string coldGitZip = Path.Combine(coldDir, Config.FileNameGitZip);

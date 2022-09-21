@@ -23,7 +23,7 @@ namespace tests.transitions
 
             Util.WorkOffBatch(batch);
 
-            string archiveMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Archived), werkbank.Config.DirNameWerk, werkbank.Config.FileNameWerkJson);
+            string archiveMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Archived), werkbank.Config.DirNameMeta, werkbank.Config.FileNameMetaJson);
 
             Assert.IsFalse(werk.Moving);
             Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
@@ -42,7 +42,7 @@ namespace tests.transitions
 
             Util.WorkOffBatch(batch);
 
-            string archiveMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Archived), werkbank.Config.DirNameWerk, werkbank.Config.FileNameWerkJson);
+            string archiveMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Archived), werkbank.Config.DirNameMeta, werkbank.Config.FileNameMetaJson);
 
             Assert.IsFalse(werk.Moving);
             Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));

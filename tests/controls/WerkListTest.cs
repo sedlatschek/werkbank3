@@ -71,7 +71,7 @@ namespace tests.controls
             Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[0], WerkState.Cold, "My Painting");
             werk.State = WerkState.Hot;
 
-            string werkJson = Path.Combine(werk.GetDirectoryFor(WerkState.Cold, werk.Environment), Config.DirNameWerk, Config.FileNameWerkJson);
+            string werkJson = Path.Combine(werk.GetDirectoryFor(WerkState.Cold, werk.Environment), Config.DirNameMeta, Config.FileNameMetaJson);
             File.WriteAllText(werkJson, JsonConvert.SerializeObject(werk));
 
             werkList.Gather();

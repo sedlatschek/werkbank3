@@ -29,7 +29,7 @@ namespace werkbank.transitions
 
             // determine paths
             string hotDir = Werk.GetDirectoryFor(WerkState.Hot);
-            string hotMetaDir = Path.Combine(hotDir, Config.DirNameWerk);
+            string hotMetaDir = Path.Combine(hotDir, Config.DirNameMeta);
             string coldDir = Werk.GetDirectoryFor(WerkState.Cold);
             string gitDir = Path.Combine(hotDir, Config.DirNameGit);
             string gitZip = Path.Combine(coldDir, Config.FileNameGitZip);

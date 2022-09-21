@@ -23,7 +23,7 @@ namespace tests.transitions
 
             Util.WorkOffBatch(batch);
 
-            string hotMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Hot), werkbank.Config.DirNameWerk, werkbank.Config.FileNameWerkJson);
+            string hotMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Hot), werkbank.Config.DirNameMeta, werkbank.Config.FileNameMetaJson);
 
             Assert.IsFalse(werk.Moving);
             Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));

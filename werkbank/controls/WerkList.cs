@@ -274,7 +274,7 @@ namespace werkbank.controls
                         if (e.Cancel) break;
 
                         // only look into /werk directories for gathering werke
-                        if (subDir.Name == Config.DirNameWerk)
+                        if (subDir.Name == Config.DirNameMeta)
                         {
                             foreach (FileInfo file in subDir.GetFiles())
                             {
@@ -282,11 +282,12 @@ namespace werkbank.controls
                                 if (e.Cancel) break;
 
                                 // skip if file is not werk.json
-                                if (file.Name != Config.FileNameWerkJson) continue;
+                                if (file.Name != Config.FileNameMetaJson) continue;
 
                                 // deserialize werk.json
                                 string text = File.ReadAllText(file.FullName);
                                 Werk? werk = JsonConvert.DeserializeObject<Werk>(text);
+
                                 if (werk == null)
                                 {
                                     break;

@@ -27,11 +27,11 @@ namespace werkbank.transitions
 
             // determine paths
             string coldDir = Werk.GetDirectoryFor(WerkState.Cold);
-            string coldMetaDir = Path.Combine(coldDir, Config.DirNameWerk);
-            string coldMetaFile = Path.Combine(coldMetaDir, Config.FileNameWerkJson);
+            string coldMetaDir = Path.Combine(coldDir, Config.DirNameMeta);
+            string coldMetaFile = Path.Combine(coldMetaDir, Config.FileNameMetaJson);
             string archiveDir = Werk.GetDirectoryFor(WerkState.Archived);
-            string archiveMetaDir = Path.Combine(archiveDir, Config.DirNameWerk);
-            string archiveMetaFile = Path.Combine(archiveMetaDir, Config.FileNameWerkJson);
+            string archiveMetaDir = Path.Combine(archiveDir, Config.DirNameMeta);
+            string archiveMetaFile = Path.Combine(archiveMetaDir, Config.FileNameMetaJson);
 
             // mark werk as moving
             Werk.Moving = true;

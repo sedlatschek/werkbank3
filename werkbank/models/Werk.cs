@@ -50,7 +50,10 @@ namespace werkbank.models
         public readonly string Name;
 
         [JsonProperty("title")]
-        public readonly string Title;
+        public string Title;
+
+        [JsonProperty("desc")]
+        public string? Description;
 
         [JsonProperty("state")]
         public WerkState State = WerkState.Hot;
@@ -62,7 +65,7 @@ namespace werkbank.models
         public bool CompressOnArchive = true;
 
         [JsonProperty("created")]
-        public readonly DateTime CreatedAt;
+        public DateTime CreatedAt;
 
         [JsonProperty("moving")]
         public bool Moving = false;
@@ -73,12 +76,13 @@ namespace werkbank.models
         [JsonIgnore]
         public DateTime LastModified { get; set; }
 
-        public Werk(string Name, string Title, environments.Environment Environment)
+        public Werk(Guid Id, string Name, string Title, environments.Environment Environment, DateTime? CreatedAt = null)
         {
+            this.Id = Id;
             this.Name = Name;
             this.Title = Title;
             this.Environment = Environment;
-            CreatedAt = DateTime.Now;
+            this.CreatedAt = CreatedAt ?? DateTime.Now;
         }
 
         [JsonIgnore]
@@ -124,7 +128,7 @@ namespace werkbank.models
         {
             get
             {
-                return Path.Combine(CurrentDirectory, Config.DirNameWerk);
+                return Path.Combine(CurrentDirectory, Config.DirNameMeta);
             }
         }
 
@@ -136,8 +140,21 @@ namespace werkbank.models
         {
             get
             {
-                return Path.Combine(CurrentMetaDirectory, Config.FileNameWerkJson);
+                return Path.Combine(CurrentMetaDirectory, Config.FileNameMetaJson);
             }
+        }
+
+        /// <summary>
+        /// Save the meta file of the work to a given path. If no path is provided, use the default path.
+        /// </summary>
+        /// <param name="FilePath"></param>
+        public void Save(string? FilePath = null)
+        {
+            string file = FilePath ?? Path.Combine(CurrentDirectory, Config.DirNameMeta, Config.FileNameMetaJson);
+            File.WriteAllText(
+                file,
+                JsonConvert.SerializeObject(this)
+            );
         }
 
         /// <summary>
@@ -186,7 +203,7 @@ namespace werkbank.models
         /// <summary>
         /// Open the current directory of the werk in the file explorer.
         /// </summary>
-        public void OpenExplorer()
+        public void OpenInFileExplorer()
         {
             System.Diagnostics.Process.Start("explorer.exe", CurrentDirectory);
         }

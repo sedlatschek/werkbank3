@@ -24,7 +24,7 @@ namespace tests.transitions
 
             Util.WorkOffBatch(batch);
 
-            string coldMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Cold), werkbank.Config.DirNameWerk, werkbank.Config.FileNameWerkJson);
+            string coldMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Cold), werkbank.Config.DirNameMeta, werkbank.Config.FileNameMetaJson);
 
             Assert.IsFalse(werk.Moving);
             Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Hot)));

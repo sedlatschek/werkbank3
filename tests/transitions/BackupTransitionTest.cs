@@ -25,11 +25,11 @@ namespace tests.transitions
             Assert.IsFalse(werk.Moving);
             Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Hot)));
             Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Hot), "my-content.txt")));
-            Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Hot), werkbank.Config.DirNameWerk, werkbank.Config.FileNameWerkJson)));
+            Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Hot), werkbank.Config.DirNameMeta, werkbank.Config.FileNameMetaJson)));
             Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
             Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), "my-content.txt")));
-            Assert.IsFalse(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), werkbank.Config.DirNameWerk, werkbank.Config.FileNameWerkJson)));
-            Assert.IsFalse(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), werkbank.Config.DirNameWerk)));
+            Assert.IsFalse(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), werkbank.Config.DirNameMeta, werkbank.Config.FileNameMetaJson)));
+            Assert.IsFalse(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), werkbank.Config.DirNameMeta)));
         }
 
         [TestMethod]

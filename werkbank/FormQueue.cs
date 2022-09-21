@@ -51,6 +51,8 @@ namespace werkbank
         {
             InitializeComponent();
 
+            Text = Application.ProductName + ": Queue";
+
             batches = Restore() ?? new List<Batch>();
 
             objectListView = new ObjectListView()

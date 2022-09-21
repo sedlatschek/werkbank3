@@ -29,6 +29,7 @@ namespace werkbank
 
             InitializeComponent();
 
+            Text = Application.ProductName;
             label_version.Text = "v" + Application.ProductVersion.ToString();
 
             vaultHot = new WerkList(iconList, WerkState.Hot);
@@ -133,7 +134,7 @@ namespace werkbank
 
         private void WerkDoubleClick(object? sender, Werk werk)
         {
-            werk.OpenExplorer();
+            werk.OpenInFileExplorer();
         }
         #endregion
 
@@ -153,6 +154,35 @@ namespace werkbank
         private void ButtonRefreshClick(object sender, EventArgs e)
         {
             RefreshWerke();
+        }
+
+        private void ButtonCreateWerkClick(object sender, EventArgs e)
+        {
+            FormWerk formWerk = new(iconList)
+            {
+                Mode = FormWerk.FormWerkMode.Create
+            };
+            if (formWerk.ShowDialog() == DialogResult.OK && formWerk.Werk != null)
+            {
+                vaultHot.List.AddObject(formWerk.Werk);
+                formWerk.Werk.OpenInFileExplorer();
+            }
+        }
+
+        private void ButtonWerkEditClick(object sender, EventArgs e)
+        {
+            if (selectedWerk != null)
+            {
+                FormWerk formWerk = new(iconList)
+                {
+                    Mode = FormWerk.FormWerkMode.Edit,
+                    Werk = selectedWerk
+                };
+                if (formWerk.ShowDialog() == DialogResult.OK && formWerk.Werk != null)
+                {
+                    vaultHot.List.RefreshObject(formWerk.Werk);
+                }
+            }
         }
 
         /// <summary>
@@ -241,12 +271,7 @@ namespace werkbank
 
         private void ButtonWerkOpenClick(object sender, EventArgs e)
         {
-            selectedWerk?.OpenExplorer();
-        }
-
-        private void ButtonWerkEditClick(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
+            selectedWerk?.OpenInFileExplorer();
         }
 
         private void ButtonWerkVsCodeClick(object sender, EventArgs e)
