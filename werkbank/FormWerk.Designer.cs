@@ -290,6 +290,12 @@
             this.button_cancel.UseVisualStyleBackColor = true;
             this.button_cancel.Click += new System.EventHandler(this.ButtonCancelClick);
             // 
+            // openFileDialog
+            // 
+            this.openFileDialog.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.png, *.ico) | *.jpg; *.jpeg; *.jpe; *.png; *" +
+    ".ico";
+            this.openFileDialog.Title = "Select icon for werk";
+            // 
             // FormWerk
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);

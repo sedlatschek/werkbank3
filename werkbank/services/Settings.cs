@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -11,6 +12,15 @@ namespace werkbank.services
     public class Settings
     {
         public static readonly Settings Properties = Init();
+
+        [JsonProperty("autoStart")]
+        public bool AutoStart { get; set; } = false;
+
+        [JsonProperty("launchMinimized")]
+        public bool LaunchMinimized { get; set; } = false;
+
+        [JsonProperty("gatherAtLaunch")]
+        public bool GatherAtLaunch { get; set; } = true;
 
         [JsonProperty("dirHotVault")]
         public string DirHotVault { get; set; }

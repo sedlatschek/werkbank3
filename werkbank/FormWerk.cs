@@ -114,6 +114,33 @@ namespace werkbank
             UpdateButtonAvailability();
         }
 
+        private void TextBoxTextChanged(object sender, EventArgs e)
+        {
+            UpdateButtonAvailability();
+        }
+
+        private void UpdateButtonAvailability()
+        {
+            button_save.Enabled = !string.IsNullOrEmpty(textBox_werk_id.Text)
+                && !string.IsNullOrEmpty(textBox_werk_name.Text)
+                && !string.IsNullOrEmpty(textBox_werk_title.Text);
+        }
+
+        private void ButtonWerkSelectImageClick(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // load icon without locking it
+                Image icon;
+                using (var bmpTemp = new Bitmap(openFileDialog.FileName))
+                {
+                    icon = new Bitmap(bmpTemp);
+                }
+
+                pictureBox_werk_icon.Image = ImageService.ResizeImage(icon, pictureBox_werk_icon.Width, pictureBox_werk_icon.Height); ;
+            }
+        }
+
         private void ButtonWerkNameClick(object sender, EventArgs e)
         {
             SlugHelper slugHelper = new();
@@ -222,33 +249,6 @@ namespace werkbank
 
             }
             return false;
-        }
-
-        private void TextBoxTextChanged(object sender, EventArgs e)
-        {
-            UpdateButtonAvailability();
-        }
-
-        private void UpdateButtonAvailability()
-        {
-            button_save.Enabled = !string.IsNullOrEmpty(textBox_werk_id.Text)
-                && !string.IsNullOrEmpty(textBox_werk_name.Text)
-                && !string.IsNullOrEmpty(textBox_werk_title.Text);
-        }
-
-        private void ButtonWerkSelectImageClick(object sender, EventArgs e)
-        {
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                // load icon without locking it
-                Image icon;
-                using (var bmpTemp = new Bitmap(openFileDialog.FileName))
-                {
-                    icon = new Bitmap(bmpTemp);
-                }
-
-                pictureBox_werk_icon.Image = ImageService.ResizeImage(icon, pictureBox_werk_icon.Width, pictureBox_werk_icon.Height); ;
-            }
         }
     }
 }

@@ -72,8 +72,21 @@ namespace werkbank
 
         private void FormWerkbankLoad(object sender, EventArgs e)
         {
-            Settings.Save();
-            RefreshWerke();
+            if (Settings.Properties.LaunchMinimized)
+            {
+                WindowState = FormWindowState.Minimized;
+            }
+        }
+        private void FormWerkbankShown(object sender, EventArgs e)
+        {
+            if (!File.Exists(Config.FileSettings))
+            {
+                ShowSettingsForm();
+            }
+            else if (Settings.Properties.GatherAtLaunch)
+            {
+                RefreshWerke();
+            }
         }
 
         private void FormWerkbankClosing(object sender, FormClosingEventArgs e)
@@ -298,12 +311,47 @@ namespace werkbank
 
         private void ButtonSettingsClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            ShowSettingsForm();
+        }
+
+        private void ShowSettingsForm()
+        {
+            FormSettings formSettings = new();
+            formSettings.AutoStartChanged += SettingAutoStartChanged;
+            formSettings.DirHotVaultChanged += SettingDirHotVaultChanged;
+            formSettings.DirColdVaultChanged += SettingDirColdVaultChanged;
+            formSettings.DirArchiveVaultChanged += SettingDirArchiveVaultChanged;
+            formSettings.ShowDialog();
         }
 
         private void ButtonQueueClick(object sender, EventArgs e)
         {
             formQueue.ShowDialog();
+        }
+        #endregion
+
+        #region "settings"
+        private void SettingAutoStartChanged(object? sender, SettingChangedEventArgs e)
+        {
+            if (e.NewValue != null)
+            {
+                bool autoStart = (bool)e.NewValue;
+                RegistryService.UpdateApplicationAutoStart(autoStart);
+            }
+        }
+
+        private void SettingDirHotVaultChanged(object? sender, SettingChangedEventArgs e)
+        {
+            vaultHot.GatherAsync();
+        }
+
+        private void SettingDirColdVaultChanged(object? sender, SettingChangedEventArgs e)
+        {
+            vaultCold.GatherAsync();
+        }
+        private void SettingDirArchiveVaultChanged(object? sender, SettingChangedEventArgs e)
+        {
+            vaultArchive.GatherAsync();
         }
         #endregion
     }
