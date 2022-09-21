@@ -39,6 +39,18 @@ namespace werkbank.controls
         /// </summary>
         public event EventHandler<Werk>? WerkDoubleClick;
 
+        public override string Text
+        {
+            get { return rotatingLabel_title.NewText; }
+            set { rotatingLabel_title.NewText = value; }
+        }
+
+        public Image Icon
+        {
+            get { return pictureBox_vault_icon.Image; }
+            set { pictureBox_vault_icon.Image = value; }
+        }
+
         private DirectoryInfo Directory
         {
             get

@@ -75,7 +75,7 @@ namespace werkbank
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(950, 599);
+            this.splitContainer1.Size = new System.Drawing.Size(985, 599);
             this.splitContainer1.SplitterDistance = 230;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -93,7 +93,7 @@ namespace werkbank
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.BackColor = System.Drawing.Color.LightGray;
-            this.splitContainer2.Size = new System.Drawing.Size(950, 365);
+            this.splitContainer2.Size = new System.Drawing.Size(985, 365);
             this.splitContainer2.SplitterDistance = 183;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -112,7 +112,7 @@ namespace werkbank
             this.panel_controls.Controls.Add(this.button_werk_up);
             this.panel_controls.Controls.Add(this.button_werk_vscode);
             this.panel_controls.Controls.Add(this.button_werk_edit);
-            this.panel_controls.Location = new System.Drawing.Point(950, 0);
+            this.panel_controls.Location = new System.Drawing.Point(985, 0);
             this.panel_controls.Name = "panel_controls";
             this.panel_controls.Size = new System.Drawing.Size(72, 639);
             this.panel_controls.TabIndex = 4;
@@ -321,7 +321,7 @@ namespace werkbank
             this.panel_queue.Controls.Add(this.button_settings);
             this.panel_queue.Location = new System.Drawing.Point(0, 599);
             this.panel_queue.Name = "panel_queue";
-            this.panel_queue.Size = new System.Drawing.Size(950, 40);
+            this.panel_queue.Size = new System.Drawing.Size(985, 40);
             this.panel_queue.TabIndex = 5;
             // 
             // progressBar_queue
@@ -360,12 +360,12 @@ namespace werkbank
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1022, 639);
+            this.ClientSize = new System.Drawing.Size(1057, 639);
             this.Controls.Add(this.panel_queue);
             this.Controls.Add(this.panel_controls);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(1000, 678);
+            this.MinimumSize = new System.Drawing.Size(1073, 678);
             this.Name = "FormWerkbank";
             this.Text = "Werkbank";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormWerkbankClosing);

@@ -35,8 +35,11 @@
             this.label_progress = new System.Windows.Forms.Label();
             this.panel_loading = new System.Windows.Forms.Panel();
             this.timer_hide_loading = new System.Windows.Forms.Timer(this.components);
+            this.pictureBox_vault_icon = new System.Windows.Forms.PictureBox();
+            this.rotatingLabel_title = new werkbank.controls.RotatingLabel();
             ((System.ComponentModel.ISupportInitialize)(this.objectListView)).BeginInit();
             this.panel_loading.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_vault_icon)).BeginInit();
             this.SuspendLayout();
             // 
             // objectListView
@@ -47,10 +50,10 @@
             this.objectListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.objectListView.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.objectListView.FullRowSelect = true;
-            this.objectListView.Location = new System.Drawing.Point(3, 3);
+            this.objectListView.Location = new System.Drawing.Point(40, 3);
             this.objectListView.MultiSelect = false;
             this.objectListView.Name = "objectListView";
-            this.objectListView.Size = new System.Drawing.Size(700, 383);
+            this.objectListView.Size = new System.Drawing.Size(663, 383);
             this.objectListView.TabIndex = 0;
             this.objectListView.View = System.Windows.Forms.View.Details;
             this.objectListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.ObjectListViewItemSelectionChanged);
@@ -91,7 +94,7 @@
             this.panel_loading.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel_loading.Controls.Add(this.progressBar);
             this.panel_loading.Controls.Add(this.label_progress);
-            this.panel_loading.Location = new System.Drawing.Point(144, 156);
+            this.panel_loading.Location = new System.Drawing.Point(147, 163);
             this.panel_loading.Name = "panel_loading";
             this.panel_loading.Size = new System.Drawing.Size(417, 76);
             this.panel_loading.TabIndex = 3;
@@ -102,11 +105,34 @@
             this.timer_hide_loading.Interval = 1000;
             this.timer_hide_loading.Tick += new System.EventHandler(this.TimerHideLoadingTick);
             // 
+            // pictureBox_vault_icon
+            // 
+            this.pictureBox_vault_icon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pictureBox_vault_icon.Image = global::werkbank.Properties.Resources.vault_hot;
+            this.pictureBox_vault_icon.Location = new System.Drawing.Point(3, 354);
+            this.pictureBox_vault_icon.Name = "pictureBox_vault_icon";
+            this.pictureBox_vault_icon.Size = new System.Drawing.Size(32, 32);
+            this.pictureBox_vault_icon.TabIndex = 4;
+            this.pictureBox_vault_icon.TabStop = false;
+            // 
+            // rotatingLabel_title
+            // 
+            this.rotatingLabel_title.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.rotatingLabel_title.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.rotatingLabel_title.Location = new System.Drawing.Point(5, 0);
+            this.rotatingLabel_title.Name = "rotatingLabel_title";
+            this.rotatingLabel_title.NewText = "Hot Vault";
+            this.rotatingLabel_title.RotateAngle = -90;
+            this.rotatingLabel_title.Size = new System.Drawing.Size(30, 97);
+            this.rotatingLabel_title.TabIndex = 6;
+            // 
             // WerkList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel_loading);
+            this.Controls.Add(this.rotatingLabel_title);
+            this.Controls.Add(this.pictureBox_vault_icon);
             this.Controls.Add(this.objectListView);
             this.Name = "WerkList";
             this.Size = new System.Drawing.Size(706, 389);
@@ -114,6 +140,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.objectListView)).EndInit();
             this.panel_loading.ResumeLayout(false);
             this.panel_loading.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_vault_icon)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -126,5 +153,7 @@
         private Label label_progress;
         private Panel panel_loading;
         private System.Windows.Forms.Timer timer_hide_loading;
+        private PictureBox pictureBox_vault_icon;
+        private RotatingLabel rotatingLabel_title;
     }
 }

@@ -32,15 +32,27 @@ namespace werkbank
             Text = Application.ProductName;
             label_version.Text = "v" + Application.ProductVersion.ToString();
 
-            vaultHot = new WerkList(iconList, WerkState.Hot);
+            vaultHot = new WerkList(iconList, WerkState.Hot)
+            {
+                Text = "Hot Vault",
+                Icon = Properties.Resources.vault_hot
+            };
             vaults.Add(vaultHot);
             splitContainer1.Panel1.Controls.Add(vaultHot);
 
-            vaultCold = new WerkList(iconList, WerkState.Cold);
+            vaultCold = new WerkList(iconList, WerkState.Cold)
+            {
+                Text = "Cold Vault",
+                Icon = Properties.Resources.vault_cold
+            };
             vaults.Add(vaultCold);
             splitContainer2.Panel1.Controls.Add(vaultCold);
 
-            vaultArchive = new WerkList(iconList, WerkState.Archived);
+            vaultArchive = new WerkList(iconList, WerkState.Archived)
+            {
+                Text = "Archive",
+                Icon = Properties.Resources.vault_archive
+            };
             vaults.Add(vaultArchive);
             splitContainer2.Panel2.Controls.Add(vaultArchive);
 
