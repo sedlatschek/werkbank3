@@ -105,7 +105,7 @@ namespace werkbank
 
             InitializeComponent();
 
-            foreach (werkbank.environments.Environment environment in EnvironmentRepository.Environments)
+            foreach (environments.Environment environment in EnvironmentRepository.Environments)
             {
                 comboBox_werk_environment.Items.Add(environment.Name);
             }
@@ -249,6 +249,11 @@ namespace werkbank
 
             }
             return false;
+        }
+
+        private void FormWerkShown(object sender, EventArgs e)
+        {
+            textBox_werk_title.Focus();
         }
     }
 }

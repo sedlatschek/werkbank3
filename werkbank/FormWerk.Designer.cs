@@ -309,6 +309,7 @@
             this.Name = "FormWerk";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Werkbank: New Werk";
+            this.Shown += new System.EventHandler(this.FormWerkShown);
             this.groupBox_werk.ResumeLayout(false);
             this.groupBox_werk.PerformLayout();
             this.groupBox_werk_icon.ResumeLayout(false);
