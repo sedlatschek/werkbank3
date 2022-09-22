@@ -13,5 +13,9 @@ namespace werkbank.environments
         public override string Name => "Delphi 7";
         public override string Handle => "delphi7";
         public override string Directory => "code\\delphi\\7";
+
+        public override EnvironmentPreset Preset => new(
+            CompressOnArchive: true
+        );
     }
 }

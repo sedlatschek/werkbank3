@@ -13,5 +13,9 @@ namespace werkbank.environments
         public override string Name => "C#";
         public override string Handle => "csharp";
         public override string Directory => "code\\csharp";
+
+        public override EnvironmentPreset Preset => new(
+            CompressOnArchive: true
+        );
     }
 }

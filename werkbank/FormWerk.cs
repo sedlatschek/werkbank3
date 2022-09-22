@@ -255,5 +255,23 @@ namespace werkbank
         {
             textBox_werk_title.Focus();
         }
+
+        private void ComboBoxWerkEnvironmentSelectedIndexChanged(object sender, EventArgs e)
+        {
+            environments.Environment environment = EnvironmentRepository.Environments[comboBox_werk_environment.SelectedIndex];
+
+            if (environment.Preset == null)
+            {
+                return;
+            }
+
+            if (Werk == null || Werk.State != WerkState.Archived)
+            {
+                if (environment.Preset.CompressOnArchive != null)
+                {
+                    checkBox_werk_compressOnArchive.Checked = (bool)environment.Preset.CompressOnArchive;
+                }
+            }
+        }
     }
 }

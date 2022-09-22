@@ -13,6 +13,8 @@ namespace werkbank.environments
         public abstract string Name { get; }
         public abstract string Handle { get; }
         public abstract string Directory { get; }
+        public abstract EnvironmentPreset Preset { get; }
+
         public int Index { get; }
 
         public Environment(int Index)

@@ -236,6 +236,7 @@
             this.comboBox_werk_environment.Name = "comboBox_werk_environment";
             this.comboBox_werk_environment.Size = new System.Drawing.Size(275, 23);
             this.comboBox_werk_environment.TabIndex = 10;
+            this.comboBox_werk_environment.SelectedIndexChanged += new System.EventHandler(this.ComboBoxWerkEnvironmentSelectedIndexChanged);
             // 
             // dateTimePicker_werk_created
             // 
