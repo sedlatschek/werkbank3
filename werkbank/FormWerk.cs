@@ -189,6 +189,9 @@ namespace werkbank
                 // write meta json
                 werk.Save();
 
+                // trigger created event
+                werk.Environment.Bootstrap(werk);
+
                 Werk = werk;
             }
             else
@@ -205,6 +208,9 @@ namespace werkbank
 
                 // write meta json
                 Werk.Save();
+
+                // trigger updated event
+                Werk.Environment.Updated(Werk);
             }
 
             // icon
@@ -223,8 +229,6 @@ namespace werkbank
                     iconList.Images.Add(Werk.Id.ToString(), pictureBox_werk_icon.Image);
                 }
             }
-
-            // bootstrap event here?
 
             // close dialog
             DialogResult = DialogResult.OK;

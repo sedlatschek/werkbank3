@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using werkbank.models;
 
 namespace werkbank.environments
 {
@@ -17,5 +18,12 @@ namespace werkbank.environments
         public override EnvironmentPreset Preset => new(
             CompressOnArchive: true
         );
+
+        public override bool Created(Werk Werk)
+        {
+            File.WriteAllText(Path.Combine(Werk.CurrentDirectory, ".gitignore"), Properties.Resources.csharp_gitignore);
+            File.WriteAllText(Path.Combine(Werk.CurrentDirectory, ".gitattributes"), Properties.Resources.csharp_gitattributes);
+            return true;
+        }
     }
 }

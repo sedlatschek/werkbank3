@@ -22,24 +22,55 @@ namespace werkbank.environments
             this.Index = Index;
         }
 
-        public bool BeforeTransition(Batch Batch, TransitionType TransitionType)
+        public bool Bootstrap(Werk Werk)
         {
-            return false;
+            return Created(Werk);
         }
 
-        public bool VerifyBeforeTransition(Batch Batch, TransitionType TransitionType)
-        {
-            return true;
-        }
+        /// <summary>
+        /// Is triggered whenever a new werk is created.
+        /// </summary>
+        /// <param name="Werk"></param>
+        /// <returns></returns>
+        public virtual bool Created(Werk Werk) => true;
 
-        public bool AfterTransition(Batch Batch, TransitionType TransitionType)
-        {
-            return false;
-        }
+        /// <summary>
+        /// Is triggered whenever a werk is updated.
+        /// </summary>
+        /// <param name="Werk"></param>
+        /// <returns></returns>
+        public virtual bool Updated(Werk Werk) => true;
 
-        public bool VerifyAfterTransition(Batch Batch, TransitionType TransitionType)
-        {
-            return true;
-        }
+        /// <summary>
+        /// Is triggered whenever a transition of a werk begins.
+        /// </summary>
+        /// <param name="Batch"></param>
+        /// <param name="TransitionType"></param>
+        /// <returns></returns>
+        public virtual bool BeforeTransition(Batch Batch, TransitionType TransitionType) => false;
+
+        /// <summary>
+        /// Can be used to verify the before transition events worked.
+        /// </summary>
+        /// <param name="Batch"></param>
+        /// <param name="TransitionType"></param>
+        /// <returns></returns>
+        public virtual bool VerifyBeforeTransition(Batch Batch, TransitionType TransitionType) => true;
+
+        /// <summary>
+        /// Is triggered whenever a transition of a werk is done.
+        /// </summary>
+        /// <param name="Batch"></param>
+        /// <param name="TransitionType"></param>
+        /// <returns></returns>
+        public virtual bool AfterTransition(Batch Batch, TransitionType TransitionType) => false;
+
+        /// <summary>
+        /// Can be used to verify the after transition events worked.
+        /// </summary>
+        /// <param name="Batch"></param>
+        /// <param name="TransitionType"></param>
+        /// <returns></returns>
+        public virtual bool VerifyAfterTransition(Batch Batch, TransitionType TransitionType) => true;
     }
 }
