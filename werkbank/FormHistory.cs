@@ -42,6 +42,26 @@ namespace werkbank
             };
             objectListView.Columns.Add(colTimestamp);
 
+            OLVColumn colEnvironment = new()
+            {
+                Name = objectListView.Name + "_column_environment",
+                AspectName = "Environment",
+                Text = "Environment",
+                AspectToStringConverter = (object env) =>
+                {
+                    if (env == null)
+                    {
+                        return "Unknown";
+                    }
+                    return ((environments.Environment)env).Name;
+                },
+                IsEditable = false,
+                Searchable = false,
+                Sortable = false,
+                Width = 130,
+            };
+            objectListView.Columns.Add(colEnvironment);
+
             OLVColumn colState = new()
             {
                 Name = objectListView.Name + "_column_state",

@@ -16,7 +16,7 @@ namespace werkbank.transitions
         public override string Title => "Backup";
         public override TransitionType Type => TransitionType.Backup;
 
-        public override Batch Build(Werk Werk)
+        public override Batch Build(Werk Werk, environments.Environment? Environment = null)
         {
             if (Werk.State != WerkState.Hot)
             {

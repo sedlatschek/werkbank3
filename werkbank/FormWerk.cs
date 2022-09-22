@@ -7,7 +7,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using System.Windows.Forms;
 using Slugify;
 using werkbank.environments;
@@ -26,6 +25,20 @@ namespace werkbank
             Create,
             Edit
         }
+
+        public class EnvironmentChangedEventArgs : EventArgs
+        {
+            public environments.Environment OldEnvironment { get; }
+            public environments.Environment NewEnvironment { get; }
+
+            public EnvironmentChangedEventArgs(environments.Environment OldEnvironment, environments.Environment NewEnvironment)
+            {
+                this.OldEnvironment = OldEnvironment;
+                this.NewEnvironment = NewEnvironment;
+            }
+        }
+
+        public event EventHandler<EnvironmentChangedEventArgs>? EnvironmentChanged;
 
         private readonly ImageList? iconList;
 
@@ -87,7 +100,6 @@ namespace werkbank
                     button_save.Text = "Save";
                     textBox_werk_name.Enabled = false;
                     button_werk_name.Enabled = false;
-                    comboBox_werk_environment.Enabled = false;
                 }
             }
         }
@@ -163,7 +175,7 @@ namespace werkbank
         private void ButtonSaveClick(object sender, EventArgs e)
         {
             // retrieve environment
-            environments.Environment environment = EnvironmentRepository.Environments[comboBox_werk_environment.SelectedIndex];
+            environments.Environment selectedEnvironment = EnvironmentRepository.Environments[comboBox_werk_environment.SelectedIndex];
 
             if (Mode == FormWerkMode.Create)
             {
@@ -176,7 +188,7 @@ namespace werkbank
                 }
 
                 // setup werk
-                Werk werk = new(guid, textBox_werk_name.Text, textBox_werk_title.Text, environment, dateTimePicker_werk_created.Value)
+                Werk werk = new(guid, textBox_werk_name.Text, textBox_werk_title.Text, selectedEnvironment, dateTimePicker_werk_created.Value)
                 {
                     Description = textBox_werk_description.Text,
                     CompressOnArchive = checkBox_werk_compressOnArchive.Checked
@@ -187,7 +199,6 @@ namespace werkbank
                 operations.Hide.Perform(metaDir.FullName);
 
                 // write meta json
-                werk.AddToHistory(WerkState.Hot);
                 werk.Save();
 
                 // trigger created event
@@ -212,6 +223,11 @@ namespace werkbank
 
                 // trigger updated event
                 Werk.Environment.Updated(Werk);
+
+                if (Werk.Environment.Handle != selectedEnvironment.Handle)
+                {
+                    EnvironmentChanged?.Invoke(this, new EnvironmentChangedEventArgs(Werk.Environment, selectedEnvironment));
+                }
             }
 
             // icon

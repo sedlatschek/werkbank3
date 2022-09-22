@@ -14,7 +14,7 @@ namespace werkbank.transitions
         public override string Title => "Cold to Hot";
         public override TransitionType Type => TransitionType.ColdToHot;
 
-        public override Batch Build(Werk Werk)
+        public override Batch Build(Werk Werk, environments.Environment? Environment = null)
         {
             if (Werk.State != WerkState.Cold)
             {
@@ -64,7 +64,7 @@ namespace werkbank.transitions
             // change state to hot and save
             Werk.Moving = false;
             Werk.State = WerkState.Hot;
-            Werk.AddToHistory(WerkState.Hot);
+            Werk.UpdateHistory();
             batch.Write(hotMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger after transition events

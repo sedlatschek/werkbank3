@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using werkbank.controls;
+using werkbank.exceptions;
 using werkbank.models;
 using werkbank.services;
 using werkbank.transitions;
@@ -161,6 +162,23 @@ namespace werkbank
         {
             werk.OpenInFileExplorer();
         }
+
+        /// <summary>
+        /// Get the vault list for a given state.
+        /// </summary>
+        /// <param name="State"></param>
+        /// <returns></returns>
+        /// <exception cref="UnhandledWerkStateException"></exception>
+        private WerkList GetVault(WerkState State)
+        {
+            return State switch
+            {
+                WerkState.Hot => vaultHot,
+                WerkState.Cold => vaultCold,
+                WerkState.Archived => vaultArchive,
+                _ => throw new UnhandledWerkStateException(State),
+            };
+        }
         #endregion
 
         #region "controls"
@@ -204,6 +222,7 @@ namespace werkbank
                     Mode = FormWerk.FormWerkMode.Edit,
                     Werk = selectedWerk
                 };
+                formWerk.EnvironmentChanged += WerkEnvironmentChanged;
                 if (formWerk.ShowDialog() == DialogResult.OK && formWerk.Werk != null)
                 {
                     vaultHot.List.RefreshObject(formWerk.Werk);
@@ -211,12 +230,35 @@ namespace werkbank
             }
         }
 
+        private void WerkEnvironmentChanged(object? sender, FormWerk.EnvironmentChangedEventArgs e)
+        {
+            if (selectedWerk != null)
+            {
+                EnvironmentTransition transition = new();
+                Batch batch = transition.Build(selectedWerk, e.NewEnvironment);
+                batch.OnBatchDone += (sender, e) =>
+                {
+                    if (batch.Done)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            WerkList vault = GetVault(selectedWerk.State);
+                            vault.List.RefreshObject(selectedWerk);
+                        }));
+                    }
+                };
+                formQueue.Add(batch);
+            }
+        }
+
         private void ButtonHistoryClick(object sender, EventArgs e)
         {
             if (selectedWerk != null)
             {
-                FormHistory formHistory = new();
-                formHistory.Werk = selectedWerk;
+                FormHistory formHistory = new()
+                {
+                    Werk = selectedWerk
+                };
                 formHistory.ShowDialog();
             }
         }

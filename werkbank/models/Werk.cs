@@ -31,6 +31,9 @@ namespace werkbank.models
         [JsonProperty("ts")]
         public DateTime Timestamp { get; set; }
 
+        [JsonProperty("env"), JsonConverter(typeof(EnvironmentConverter))]
+        public environments.Environment? Environment { get; set; }
+
         [JsonProperty("state")]
         public WerkState State { get; set; }
     }
@@ -59,7 +62,7 @@ namespace werkbank.models
         public WerkState State = WerkState.Hot;
 
         [JsonProperty("env"), JsonConverter(typeof(EnvironmentConverter))]
-        public readonly environments.Environment Environment;
+        public environments.Environment Environment;
 
         [JsonProperty("compressOnArchive")]
         public bool CompressOnArchive = true;
@@ -223,13 +226,13 @@ namespace werkbank.models
         /// <summary>
         /// Add a state to the history.
         /// </summary>
-        /// <param name="State"></param>
-        public void AddToHistory(WerkState State)
+        public void UpdateHistory()
         {
             History.Add(new WerkStateTimestamp()
             {
                 Timestamp = DateTime.Now,
-                State = State
+                State = this.State,
+                Environment = this.Environment
             });
         }
     }

@@ -16,7 +16,7 @@ namespace werkbank.transitions
         public override string Title => "Archive to Cold";
         public override TransitionType Type => TransitionType.ArchiveToCold;
 
-        public override Batch Build(Werk Werk)
+        public override Batch Build(Werk Werk, environments.Environment? Environment = null)
         {
             if (Werk.State != WerkState.Archived)
             {
@@ -71,7 +71,7 @@ namespace werkbank.transitions
             // change state to cold and save
             Werk.Moving = false;
             Werk.State = WerkState.Cold;
-            Werk.AddToHistory(WerkState.Cold);
+            Werk.UpdateHistory();
             batch.Write(coldMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger after transition events

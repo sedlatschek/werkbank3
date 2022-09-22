@@ -14,7 +14,8 @@ namespace werkbank.transitions
         Backup,
         ColdToHot,
         ColdToArchive,
-        ArchiveToCold
+        ArchiveToCold,
+        Environment
     }
 
     public abstract class Transition
@@ -27,13 +28,15 @@ namespace werkbank.transitions
         /// Build a queue batch for this werk state transition.
         /// </summary>
         /// <param name="Werk"></param>
+        /// <param name="Environment"></param>
         /// <returns></returns>
-        public abstract Batch Build(Werk Werk);
+        public abstract Batch Build(Werk Werk, environments.Environment? Environment = null);
 
         public static Transition For(TransitionType Type)
         {
             return Type switch
             {
+                TransitionType.Environment => new EnvironmentTransition(),
                 TransitionType.HotToCold => new HotToColdTransition(),
                 TransitionType.Backup => new BackupTransition(),
                 TransitionType.ColdToHot => new ColdToHotTransition(),
