@@ -20,14 +20,24 @@ namespace werkbank.environments
             this.Index = Index;
         }
 
-        public bool BeforeTransition(Batch Batch, Transition Transition)
+        public bool BeforeTransition(Batch Batch, TransitionType TransitionType)
         {
             return false;
         }
 
-        public bool AfterTransition(Batch Batch, Transition Transition)
+        public bool VerifyBeforeTransition(Batch Batch, TransitionType TransitionType)
+        {
+            return true;
+        }
+
+        public bool AfterTransition(Batch Batch, TransitionType TransitionType)
         {
             return false;
+        }
+
+        public bool VerifyAfterTransition(Batch Batch, TransitionType TransitionType)
+        {
+            return true;
         }
     }
 }

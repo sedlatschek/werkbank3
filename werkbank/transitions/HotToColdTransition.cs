@@ -21,7 +21,7 @@ namespace werkbank.transitions
                 throw new UnexpectedWerkStateException(Werk, WerkState.Hot);
             }
 
-            Batch batch = new(Werk, Title);
+            Batch batch = new(Werk, Type, Title);
 
             // determine paths
             string hotDir = Werk.GetDirectoryFor(WerkState.Hot);
@@ -38,7 +38,7 @@ namespace werkbank.transitions
             batch.Write(hotMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger before transition events
-            Werk.Environment.BeforeTransition(batch, this);
+            batch.TriggerBeforeTransitionEvent();
 
             // zip up git
             if (Directory.Exists(gitDir))
@@ -64,7 +64,7 @@ namespace werkbank.transitions
             batch.Write(coldMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger after transition events
-            Werk.Environment.AfterTransition(batch, this);
+            batch.TriggerAfterTransitionEvent();
 
             return batch;
         }

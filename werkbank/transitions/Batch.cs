@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using werkbank.models;
 using werkbank.operations;
 using werkbank.services;
+using static System.TimeZoneInfo;
 
 namespace werkbank.transitions
 {
@@ -34,6 +35,8 @@ namespace werkbank.transitions
         private readonly string title;
         [JsonIgnore]
         public string Title => title;
+        [JsonProperty("transitionType")]
+        protected TransitionType transitionType;
 
         [JsonProperty("werkId")]
         private Guid werkId;
@@ -60,6 +63,8 @@ namespace werkbank.transitions
         private Exception? error;
         [JsonIgnore]
         public Exception? Error => error;
+        [JsonIgnore]
+        public TransitionType TransitionType => transitionType;
 
         [JsonIgnore]
         public bool Done
@@ -107,11 +112,12 @@ namespace werkbank.transitions
             }
         }
 
-        public Batch(Werk Werk, string Title)
+        public Batch(Werk Werk, TransitionType TransitionType, string Title)
         {
             guid = Guid.NewGuid();
             attempts = 0;
             this.Werk = Werk;
+            transitionType = TransitionType;
             Operations = new List<Operation>();
             title = Title;
         }
@@ -158,6 +164,28 @@ namespace werkbank.transitions
                 Werk.CurrentBatch = null;
                 OnBatchDone?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        /// <summary>
+        /// Create operation to trigger the environments after transition event and add it to the batch.
+        /// </summary>
+        /// <returns></returns>
+        public Operation TriggerAfterTransitionEvent()
+        {
+            Operation op = new(OperationType.AfterTransitionEvent, this, null, null, null);
+            Operations.Add(op);
+            return op;
+        }
+
+        /// <summary>
+        /// Create operation to trigger the environments before transition event and add it to the batch.
+        /// </summary>
+        /// <returns></returns>
+        public Operation TriggerBeforeTransitionEvent()
+        {
+            Operation op = new(OperationType.BeforeTransitionEvent, this, null, null, null);
+            Operations.Add(op);
+            return op;
         }
 
         /// <summary>

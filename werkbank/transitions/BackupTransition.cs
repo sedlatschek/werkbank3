@@ -23,7 +23,7 @@ namespace werkbank.transitions
                 throw new UnexpectedWerkStateException(Werk, WerkState.Hot);
             }
 
-            Batch batch = new(Werk, Title);
+            Batch batch = new(Werk, Type, Title);
 
             List<string> ignoreList = new();
 
@@ -35,7 +35,7 @@ namespace werkbank.transitions
             string gitZip = Path.Combine(coldDir, Config.FileNameGitZip);
 
             // trigger before transition events
-            Werk.Environment.BeforeTransition(batch, this);
+            batch.TriggerBeforeTransitionEvent();
 
             // add .werk directory to blacklist
             ignoreList.Add(hotMetaDir);
@@ -53,9 +53,9 @@ namespace werkbank.transitions
 
             // copy directories that are not blacklisted
             batch.Copy(hotDir, coldDir, ignoreList);
-  
+
             // trigger after transition events
-            Werk.Environment.AfterTransition(batch, this);
+            batch.TriggerAfterTransitionEvent();
 
             return batch;
         }

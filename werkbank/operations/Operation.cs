@@ -15,6 +15,8 @@ namespace werkbank.operations
 {
     public enum OperationType
     {
+        BeforeTransitionEvent,
+        AfterTransitionEvent,
         Copy,
         CreateDirectory,
         Delete,
@@ -48,7 +50,6 @@ namespace werkbank.operations
         protected Exception? error;
         [JsonIgnore]
         protected bool running = false;
-
 
         [JsonProperty("type")]
         protected OperationType type;
@@ -128,6 +129,8 @@ namespace werkbank.operations
         {
             return type switch
             {
+                OperationType.AfterTransitionEvent => AfterTransition.Perform(Batch),
+                OperationType.BeforeTransitionEvent => BeforeTransition.Perform(Batch),
                 OperationType.Copy => Copy.Perform(Source, Destination, IgnoreList),
                 OperationType.CreateDirectory => CreateDirectory.Perform(Destination),
                 OperationType.Delete => Delete.Perform(Destination),
@@ -145,6 +148,8 @@ namespace werkbank.operations
         {
             return type switch
             {
+                OperationType.AfterTransitionEvent => AfterTransition.Verify(Batch),
+                OperationType.BeforeTransitionEvent => BeforeTransition.Verify(Batch),
                 OperationType.Copy => Copy.Verify(Source, Destination, IgnoreList),
                 OperationType.CreateDirectory => CreateDirectory.Verify(Destination),
                 OperationType.Delete => Delete.Verify(Destination),
