@@ -219,5 +219,18 @@ namespace werkbank.models
                 CurrentDirectory
             );
         }
+
+        /// <summary>
+        /// Add a state to the history.
+        /// </summary>
+        /// <param name="State"></param>
+        public void AddToHistory(WerkState State)
+        {
+            History.Add(new WerkStateTimestamp()
+            {
+                Timestamp = DateTime.Now,
+                State = State
+            });
+        }
     }
 }

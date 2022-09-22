@@ -61,6 +61,7 @@ namespace werkbank.transitions
             // change state to cold and save
             Werk.Moving = false;
             Werk.State = WerkState.Cold;
+            Werk.AddToHistory(WerkState.Cold);
             batch.Write(coldMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger after transition events

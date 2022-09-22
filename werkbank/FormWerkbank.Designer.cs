@@ -35,6 +35,7 @@ namespace werkbank
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panel_controls = new System.Windows.Forms.Panel();
+            this.button_werk_history = new System.Windows.Forms.Button();
             this.button_create_werk = new System.Windows.Forms.Button();
             this.button_werk_web = new System.Windows.Forms.Button();
             this.label_version = new System.Windows.Forms.Label();
@@ -75,8 +76,8 @@ namespace werkbank
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(985, 599);
-            this.splitContainer1.SplitterDistance = 230;
+            this.splitContainer1.Size = new System.Drawing.Size(985, 675);
+            this.splitContainer1.SplitterDistance = 259;
             this.splitContainer1.TabIndex = 2;
             // 
             // splitContainer2
@@ -93,8 +94,8 @@ namespace werkbank
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.BackColor = System.Drawing.Color.LightGray;
-            this.splitContainer2.Size = new System.Drawing.Size(985, 365);
-            this.splitContainer2.SplitterDistance = 183;
+            this.splitContainer2.Size = new System.Drawing.Size(985, 412);
+            this.splitContainer2.SplitterDistance = 206;
             this.splitContainer2.TabIndex = 0;
             // 
             // panel_controls
@@ -102,6 +103,7 @@ namespace werkbank
             this.panel_controls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_controls.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panel_controls.Controls.Add(this.button_werk_history);
             this.panel_controls.Controls.Add(this.button_create_werk);
             this.panel_controls.Controls.Add(this.button_werk_web);
             this.panel_controls.Controls.Add(this.label_version);
@@ -114,8 +116,26 @@ namespace werkbank
             this.panel_controls.Controls.Add(this.button_werk_edit);
             this.panel_controls.Location = new System.Drawing.Point(985, 0);
             this.panel_controls.Name = "panel_controls";
-            this.panel_controls.Size = new System.Drawing.Size(72, 639);
+            this.panel_controls.Size = new System.Drawing.Size(72, 715);
             this.panel_controls.TabIndex = 4;
+            // 
+            // button_werk_history
+            // 
+            this.button_werk_history.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_werk_history.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_werk_history.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.button_werk_history.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.button_werk_history.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_werk_history.Image = global::werkbank.Properties.Resources.btn_history;
+            this.button_werk_history.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.button_werk_history.Location = new System.Drawing.Point(4, 204);
+            this.button_werk_history.Name = "button_werk_history";
+            this.button_werk_history.Size = new System.Drawing.Size(64, 61);
+            this.button_werk_history.TabIndex = 6;
+            this.button_werk_history.Text = "History";
+            this.button_werk_history.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.button_werk_history.UseVisualStyleBackColor = false;
+            this.button_werk_history.Click += new System.EventHandler(this.ButtonHistoryClick);
             // 
             // button_create_werk
             // 
@@ -144,10 +164,10 @@ namespace werkbank
             this.button_werk_web.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_werk_web.Image = global::werkbank.Properties.Resources.btn_web;
             this.button_werk_web.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.button_werk_web.Location = new System.Drawing.Point(4, 563);
+            this.button_werk_web.Location = new System.Drawing.Point(4, 632);
             this.button_werk_web.Name = "button_werk_web";
             this.button_werk_web.Size = new System.Drawing.Size(64, 61);
-            this.button_werk_web.TabIndex = 11;
+            this.button_werk_web.TabIndex = 12;
             this.button_werk_web.Text = "Web";
             this.button_werk_web.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.button_werk_web.UseVisualStyleBackColor = false;
@@ -159,7 +179,7 @@ namespace werkbank
             this.label_version.AutoSize = true;
             this.label_version.Font = new System.Drawing.Font("Segoe UI", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label_version.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.label_version.Location = new System.Drawing.Point(41, 626);
+            this.label_version.Location = new System.Drawing.Point(41, 702);
             this.label_version.Name = "label_version";
             this.label_version.Size = new System.Drawing.Size(28, 12);
             this.label_version.TabIndex = 2;
@@ -192,10 +212,10 @@ namespace werkbank
             this.button_werk_open.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_werk_open.Image = global::werkbank.Properties.Resources.btn_open;
             this.button_werk_open.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.button_werk_open.Location = new System.Drawing.Point(4, 429);
+            this.button_werk_open.Location = new System.Drawing.Point(4, 498);
             this.button_werk_open.Name = "button_werk_open";
             this.button_werk_open.Size = new System.Drawing.Size(64, 61);
-            this.button_werk_open.TabIndex = 9;
+            this.button_werk_open.TabIndex = 10;
             this.button_werk_open.Text = "Open";
             this.button_werk_open.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.button_werk_open.UseVisualStyleBackColor = false;
@@ -211,10 +231,10 @@ namespace werkbank
             this.button_werk_backup.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.button_werk_backup.Image = global::werkbank.Properties.Resources.btn_backup;
             this.button_werk_backup.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.button_werk_backup.Location = new System.Drawing.Point(4, 349);
+            this.button_werk_backup.Location = new System.Drawing.Point(4, 418);
             this.button_werk_backup.Name = "button_werk_backup";
             this.button_werk_backup.Size = new System.Drawing.Size(64, 61);
-            this.button_werk_backup.TabIndex = 8;
+            this.button_werk_backup.TabIndex = 9;
             this.button_werk_backup.Text = "Backup";
             this.button_werk_backup.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.button_werk_backup.UseVisualStyleBackColor = false;
@@ -229,10 +249,10 @@ namespace werkbank
             this.button_werk_down.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_werk_down.Image = global::werkbank.Properties.Resources.btn_down;
             this.button_werk_down.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.button_werk_down.Location = new System.Drawing.Point(4, 282);
+            this.button_werk_down.Location = new System.Drawing.Point(4, 351);
             this.button_werk_down.Name = "button_werk_down";
             this.button_werk_down.Size = new System.Drawing.Size(64, 61);
-            this.button_werk_down.TabIndex = 7;
+            this.button_werk_down.TabIndex = 8;
             this.button_werk_down.Text = "Down";
             this.button_werk_down.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.button_werk_down.UseVisualStyleBackColor = false;
@@ -247,10 +267,10 @@ namespace werkbank
             this.button_werk_up.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_werk_up.Image = global::werkbank.Properties.Resources.btn_up;
             this.button_werk_up.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.button_werk_up.Location = new System.Drawing.Point(4, 215);
+            this.button_werk_up.Location = new System.Drawing.Point(4, 284);
             this.button_werk_up.Name = "button_werk_up";
             this.button_werk_up.Size = new System.Drawing.Size(64, 61);
-            this.button_werk_up.TabIndex = 6;
+            this.button_werk_up.TabIndex = 7;
             this.button_werk_up.Text = "Up";
             this.button_werk_up.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.button_werk_up.UseVisualStyleBackColor = false;
@@ -265,10 +285,10 @@ namespace werkbank
             this.button_werk_vscode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_werk_vscode.Image = global::werkbank.Properties.Resources.btn_vscode;
             this.button_werk_vscode.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.button_werk_vscode.Location = new System.Drawing.Point(4, 496);
+            this.button_werk_vscode.Location = new System.Drawing.Point(4, 565);
             this.button_werk_vscode.Name = "button_werk_vscode";
             this.button_werk_vscode.Size = new System.Drawing.Size(64, 61);
-            this.button_werk_vscode.TabIndex = 10;
+            this.button_werk_vscode.TabIndex = 11;
             this.button_werk_vscode.Text = "VS Code";
             this.button_werk_vscode.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.button_werk_vscode.UseVisualStyleBackColor = false;
@@ -319,7 +339,7 @@ namespace werkbank
             this.panel_queue.Controls.Add(this.progressBar_queue);
             this.panel_queue.Controls.Add(this.button_queue);
             this.panel_queue.Controls.Add(this.button_settings);
-            this.panel_queue.Location = new System.Drawing.Point(0, 599);
+            this.panel_queue.Location = new System.Drawing.Point(0, 675);
             this.panel_queue.Name = "panel_queue";
             this.panel_queue.Size = new System.Drawing.Size(985, 40);
             this.panel_queue.TabIndex = 5;
@@ -360,7 +380,7 @@ namespace werkbank
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1057, 639);
+            this.ClientSize = new System.Drawing.Size(1057, 715);
             this.Controls.Add(this.panel_queue);
             this.Controls.Add(this.panel_controls);
             this.Controls.Add(this.splitContainer1);
@@ -402,5 +422,6 @@ namespace werkbank
         private Button button_queue;
         private ProgressBar progressBar_queue;
         private Button button_create_werk;
+        private Button button_werk_history;
     }
 }

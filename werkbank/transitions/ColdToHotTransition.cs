@@ -64,6 +64,7 @@ namespace werkbank.transitions
             // change state to hot and save
             Werk.Moving = false;
             Werk.State = WerkState.Hot;
+            Werk.AddToHistory(WerkState.Hot);
             batch.Write(hotMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger after transition events

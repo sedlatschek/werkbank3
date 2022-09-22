@@ -71,6 +71,7 @@ namespace werkbank.transitions
             // change state to archived and save
             Werk.Moving = false;
             Werk.State = WerkState.Archived;
+            Werk.AddToHistory(WerkState.Archived);
             batch.Write(archiveMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger after transition events

@@ -187,6 +187,7 @@ namespace werkbank
                 operations.Hide.Perform(metaDir.FullName);
 
                 // write meta json
+                werk.AddToHistory(WerkState.Hot);
                 werk.Save();
 
                 // trigger created event

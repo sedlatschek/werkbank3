@@ -172,6 +172,7 @@ namespace werkbank
 
             button_werk_open.Enabled = selectedWerk != null;
             button_werk_edit.Enabled = selectedWerk != null;
+            button_werk_history.Enabled = selectedWerk != null;
             button_werk_vscode.Enabled = selectedWerk != null;
             button_werk_web.Enabled = selectedWerk != null;
         }
@@ -207,6 +208,16 @@ namespace werkbank
                 {
                     vaultHot.List.RefreshObject(formWerk.Werk);
                 }
+            }
+        }
+
+        private void ButtonHistoryClick(object sender, EventArgs e)
+        {
+            if (selectedWerk != null)
+            {
+                FormHistory formHistory = new();
+                formHistory.Werk = selectedWerk;
+                formHistory.ShowDialog();
             }
         }
 

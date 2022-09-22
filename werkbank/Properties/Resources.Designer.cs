@@ -103,6 +103,16 @@ namespace werkbank.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap btn_history {
+            get {
+                object obj = ResourceManager.GetObject("btn_history", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap btn_open {
             get {
                 object obj = ResourceManager.GetObject("btn_open", resourceCulture);
