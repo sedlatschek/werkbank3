@@ -61,7 +61,8 @@ namespace werkbank
             objectListView = new ObjectListView()
             {
                 MultiSelect = false,
-                FullRowSelect = true
+                FullRowSelect = true,
+                UseCellFormatEvents = true
             };
 
             objectListView.ItemsChanged += ObjectListViewItemsChanged;
@@ -89,6 +90,7 @@ namespace werkbank
                     return ((Operation)x).Batch.Title;
                 },
                 Text = "Transition",
+                TextAlign = HorizontalAlignment.Center,
                 IsEditable = false,
                 Searchable = false,
                 Sortable = false,
@@ -151,6 +153,7 @@ namespace werkbank
                         return "Pending";
                 },
                 Text = "State",
+                TextAlign = HorizontalAlignment.Center,
                 IsEditable = false,
                 Searchable = false,
                 Sortable = false,
@@ -163,6 +166,7 @@ namespace werkbank
                 Name = objectListView.Name + "_column_attempt",
                 AspectName = "Attempt",
                 Text = "Attempt",
+                TextAlign = HorizontalAlignment.Center,
                 IsEditable = false,
                 Searchable = false,
                 Sortable = false,
@@ -256,17 +260,17 @@ namespace werkbank
                     Operation op = (Operation)e.Item.RowObject;
                     if (op.Running)
                     {
-                        e.SubItem.BackColor = Color.Blue;
+                        e.SubItem.BackColor = Color.SteelBlue;
                         e.SubItem.ForeColor = Color.White;
                     }
                     else if (op.Success)
                     {
-                        e.SubItem.BackColor = Color.Green;
+                        e.SubItem.BackColor = Color.SeaGreen;
                         e.SubItem.ForeColor = Color.White;
                     }
                     else if (op.IsInTimeout)
                     {
-                        e.SubItem.BackColor = Color.DarkOrange;
+                        e.SubItem.BackColor = Color.IndianRed;
                         e.SubItem.ForeColor = Color.White;
                     }
                 }

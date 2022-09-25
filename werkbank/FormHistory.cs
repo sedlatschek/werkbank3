@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using werkbank.exceptions;
 using werkbank.models;
 
 namespace werkbank
@@ -18,6 +19,10 @@ namespace werkbank
 
         private readonly ObjectListView objectListView;
 
+        public Color ColorHot = Color.RosyBrown;
+        public Color ColorCold = Color.LightBlue;
+        public Color ColorArchived = Color.LightGray;
+
         public FormHistory()
         {
             InitializeComponent();
@@ -27,7 +32,8 @@ namespace werkbank
             objectListView = new ObjectListView()
             {
                 MultiSelect = false,
-                FullRowSelect = true
+                FullRowSelect = true,
+                UseCellFormatEvents = true,
             };
 
             OLVColumn colTimestamp = new()
@@ -46,7 +52,6 @@ namespace werkbank
             {
                 Name = objectListView.Name + "_column_environment",
                 AspectName = "Environment",
-                Text = "Environment",
                 AspectToStringConverter = (object env) =>
                 {
                     if (env == null)
@@ -55,6 +60,8 @@ namespace werkbank
                     }
                     return ((environments.Environment)env).Name;
                 },
+                Text = "Environment",
+                TextAlign = HorizontalAlignment.Center,
                 IsEditable = false,
                 Searchable = false,
                 Sortable = false,
@@ -67,12 +74,22 @@ namespace werkbank
                 Name = objectListView.Name + "_column_state",
                 AspectName = "State",
                 Text = "State",
+                TextAlign = HorizontalAlignment.Center,
                 IsEditable = false,
                 Searchable = false,
                 Sortable = false,
                 Width = 80,
             };
             objectListView.Columns.Add(colState);
+
+            objectListView.FormatCell += (sender, e) =>
+            {
+                if (e.Column == colState)
+                {
+                    WerkStateTimestamp werkStateTimestamp = (WerkStateTimestamp)e.Item.RowObject;
+                    e.SubItem.BackColor = GetColorForState(werkStateTimestamp.State);
+                }
+            };
 
             panel_objectListView.Controls.Add(objectListView);
             objectListView.Dock = DockStyle.Fill;
@@ -84,6 +101,31 @@ namespace werkbank
             {
                 objectListView.SetObjects(Werk.History);
             }
+        }
+
+        private void FormHistoryShown(object sender, EventArgs e)
+        {
+            if (Werk != null)
+            {
+                objectListView.RefreshObjects(Werk.History);
+            }
+        }
+
+        /// <summary>
+        /// Get the configured color for a given werk state.
+        /// </summary>
+        /// <param name="State"></param>
+        /// <returns></returns>
+        /// <exception cref="UnhandledWerkStateException"></exception>
+        private Color GetColorForState(WerkState State)
+        {
+            return State switch
+            {
+                WerkState.Hot => ColorHot,
+                WerkState.Cold => ColorCold,
+                WerkState.Archived => ColorArchived,
+                _ => throw new UnhandledWerkStateException(State),
+            };
         }
     }
 }

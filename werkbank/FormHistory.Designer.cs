@@ -39,21 +39,22 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_objectListView.Location = new System.Drawing.Point(12, 12);
             this.panel_objectListView.Name = "panel_objectListView";
-            this.panel_objectListView.Size = new System.Drawing.Size(344, 203);
+            this.panel_objectListView.Size = new System.Drawing.Size(361, 203);
             this.panel_objectListView.TabIndex = 1;
             // 
             // FormHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(368, 227);
+            this.ClientSize = new System.Drawing.Size(385, 227);
             this.Controls.Add(this.panel_objectListView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(384, 266);
+            this.MinimumSize = new System.Drawing.Size(401, 266);
             this.Name = "FormHistory";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Werkbank: History";
             this.Load += new System.EventHandler(this.FormHistoryLoad);
+            this.Shown += new System.EventHandler(this.FormHistoryShown);
             this.ResumeLayout(false);
 
         }

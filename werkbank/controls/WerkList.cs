@@ -197,11 +197,12 @@ namespace werkbank.controls
                 if (args.Column == colCurTransition)
                 {
                     Werk werk = (Werk)args.Item.RowObject;
-                    if (werk.CurrentBatch != null)
+
+                    if (werk.TransitionType != null)
                     {
                         foreach (OLVListSubItem subItem in args.Item.SubItems)
                         {
-                            subItem.BackColor = Color.MediumTurquoise;
+                            subItem.BackColor = Color.LightSteelBlue;
                         }
                     }
                 }
@@ -210,6 +211,7 @@ namespace werkbank.controls
             objectListView.Sorting = SortOrder.Ascending;
             objectListView.PrimarySortColumn = colName;
             objectListView.ShowGroups = false;
+            objectListView.UseCellFormatEvents = true;
         }
 
         /// <summary>
@@ -527,3 +529,4 @@ namespace werkbank.controls
         }
     }
 }
+

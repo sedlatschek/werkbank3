@@ -323,7 +323,10 @@ namespace werkbank
             {
                 FormHistory formHistory = new()
                 {
-                    Werk = selectedWerk
+                    Werk = selectedWerk,
+                    ColorHot = splitContainer1.Panel1.BackColor,
+                    ColorCold = splitContainer2.Panel1.BackColor,
+                    ColorArchived = splitContainer2.Panel2.BackColor,
                 };
                 formHistory.ShowDialog();
             }
