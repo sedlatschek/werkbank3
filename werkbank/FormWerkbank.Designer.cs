@@ -48,6 +48,8 @@ namespace werkbank
             this.button_werk_edit = new System.Windows.Forms.Button();
             this.button_settings = new System.Windows.Forms.Button();
             this.panel_queue = new System.Windows.Forms.Panel();
+            this.pictureBox_serach = new System.Windows.Forms.PictureBox();
+            this.textBox_search = new System.Windows.Forms.TextBox();
             this.progressBar_queue = new System.Windows.Forms.ProgressBar();
             this.button_queue = new System.Windows.Forms.Button();
             this.timerQueue = new System.Windows.Forms.Timer(this.components);
@@ -58,6 +60,7 @@ namespace werkbank
             this.splitContainer2.SuspendLayout();
             this.panel_controls.SuspendLayout();
             this.panel_queue.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_serach)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -77,7 +80,7 @@ namespace werkbank
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(985, 675);
-            this.splitContainer1.SplitterDistance = 259;
+            this.splitContainer1.SplitterDistance = 258;
             this.splitContainer1.TabIndex = 2;
             // 
             // splitContainer2
@@ -94,8 +97,8 @@ namespace werkbank
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.BackColor = System.Drawing.Color.LightGray;
-            this.splitContainer2.Size = new System.Drawing.Size(985, 412);
-            this.splitContainer2.SplitterDistance = 206;
+            this.splitContainer2.Size = new System.Drawing.Size(985, 413);
+            this.splitContainer2.SplitterDistance = 205;
             this.splitContainer2.TabIndex = 0;
             // 
             // panel_controls
@@ -336,6 +339,8 @@ namespace werkbank
             this.panel_queue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_queue.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panel_queue.Controls.Add(this.pictureBox_serach);
+            this.panel_queue.Controls.Add(this.textBox_search);
             this.panel_queue.Controls.Add(this.progressBar_queue);
             this.panel_queue.Controls.Add(this.button_queue);
             this.panel_queue.Controls.Add(this.button_settings);
@@ -343,6 +348,28 @@ namespace werkbank
             this.panel_queue.Name = "panel_queue";
             this.panel_queue.Size = new System.Drawing.Size(985, 40);
             this.panel_queue.TabIndex = 5;
+            // 
+            // pictureBox_serach
+            // 
+            this.pictureBox_serach.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox_serach.Image = global::werkbank.Properties.Resources.edit_search;
+            this.pictureBox_serach.Location = new System.Drawing.Point(957, 8);
+            this.pictureBox_serach.Name = "pictureBox_serach";
+            this.pictureBox_serach.Size = new System.Drawing.Size(25, 25);
+            this.pictureBox_serach.TabIndex = 5;
+            this.pictureBox_serach.TabStop = false;
+            // 
+            // textBox_search
+            // 
+            this.textBox_search.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_search.BackColor = System.Drawing.SystemColors.Control;
+            this.textBox_search.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.textBox_search.Location = new System.Drawing.Point(678, 10);
+            this.textBox_search.Name = "textBox_search";
+            this.textBox_search.Size = new System.Drawing.Size(273, 23);
+            this.textBox_search.TabIndex = 0;
+            this.textBox_search.TextChanged += new System.EventHandler(this.SearchTextChanged);
             // 
             // progressBar_queue
             // 
@@ -399,6 +426,8 @@ namespace werkbank
             this.panel_controls.ResumeLayout(false);
             this.panel_controls.PerformLayout();
             this.panel_queue.ResumeLayout(false);
+            this.panel_queue.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_serach)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -423,5 +452,7 @@ namespace werkbank
         private ProgressBar progressBar_queue;
         private Button button_create_werk;
         private Button button_werk_history;
+        private TextBox textBox_search;
+        private PictureBox pictureBox_serach;
     }
 }

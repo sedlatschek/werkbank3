@@ -1,4 +1,6 @@
+using BrightIdeasSoftware;
 using System.Diagnostics;
+using System.Globalization;
 using werkbank.controls;
 using werkbank.exceptions;
 using werkbank.models;
@@ -245,6 +247,33 @@ namespace werkbank
                 WerkState.Archived => vaultArchive,
                 _ => throw new UnhandledWerkStateException(State),
             };
+        }
+        #endregion
+
+        #region "search"
+        private void SearchTextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(textBox_search.Text))
+            {
+                foreach (WerkList vault in vaults)
+                {
+                    vault.List.UseFiltering = false;
+                }
+            }
+            else
+            {
+                foreach (WerkList vault in vaults)
+                {
+                    vault.List.ModelFilter = new ModelFilter(delegate (object w)
+                    {
+                        Werk werk = (Werk)w;
+                        return (textBox_search.Text.Length == 36 && Guid.TryParse(textBox_search.Text, out Guid guid) && werk.Id.Equals(guid))
+                          || werk.Name.ToLower(CultureInfo.CurrentCulture).Contains(textBox_search.Text.ToLower(CultureInfo.CurrentCulture))
+                          || werk.Title.ToLower(CultureInfo.CurrentCulture).Contains(textBox_search.Text.ToLower(CultureInfo.CurrentCulture));
+                    });
+                    vault.List.UseFiltering = true;
+                }
+            }
         }
         #endregion
 
