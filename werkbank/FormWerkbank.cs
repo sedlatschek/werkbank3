@@ -31,6 +31,7 @@ namespace werkbank
 
             InitializeComponent();
 
+            Icon = Properties.Resources.logo;
             Text = Application.ProductName;
             label_version.Text = "v" + Application.ProductVersion.ToString();
 

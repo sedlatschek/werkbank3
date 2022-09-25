@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormWerk));
             this.groupBox_werk = new System.Windows.Forms.GroupBox();
             this.groupBox_werk_icon = new System.Windows.Forms.GroupBox();
             this.panel_werk_icon = new System.Windows.Forms.Panel();
@@ -305,7 +304,6 @@
             this.Controls.Add(this.button_cancel);
             this.Controls.Add(this.button_save);
             this.Controls.Add(this.groupBox_werk);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(271, 434);
             this.Name = "FormWerk";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

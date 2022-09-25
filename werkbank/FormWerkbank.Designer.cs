@@ -31,7 +31,6 @@ namespace werkbank
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormWerkbank));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.panel_controls = new System.Windows.Forms.Panel();
@@ -446,7 +445,6 @@ namespace werkbank
             this.Controls.Add(this.panel_queue);
             this.Controls.Add(this.panel_controls);
             this.Controls.Add(this.splitContainer1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(1073, 754);
             this.Name = "FormWerkbank";
             this.Text = "Werkbank";

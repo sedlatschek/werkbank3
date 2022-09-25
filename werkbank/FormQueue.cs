@@ -54,6 +54,7 @@ namespace werkbank
         {
             InitializeComponent();
 
+            Icon = Properties.Resources.logo;
             Text = Application.ProductName + ": Queue";
 
             batches = Restore() ?? new List<Batch>();

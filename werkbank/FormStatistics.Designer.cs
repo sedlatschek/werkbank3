@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormStatistics));
             this.groupBox_environments = new System.Windows.Forms.GroupBox();
             this.panel_environments = new System.Windows.Forms.Panel();
             this.groupBox_environments.SuspendLayout();
@@ -63,7 +62,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(433, 479);
             this.Controls.Add(this.groupBox_environments);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(449, 518);
             this.Name = "FormStatistics";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

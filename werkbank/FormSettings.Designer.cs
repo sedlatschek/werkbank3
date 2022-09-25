@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSettings));
             this.groupBox_settings_startup = new System.Windows.Forms.GroupBox();
             this.checkBox_settings_gather_at_launch = new System.Windows.Forms.CheckBox();
             this.checkBox_settings_launch_minimized = new System.Windows.Forms.CheckBox();
@@ -295,7 +294,6 @@
             this.Controls.Add(this.button_cancel);
             this.Controls.Add(this.groupBox_settings_directories);
             this.Controls.Add(this.groupBox_settings_startup);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(360, 441);
             this.Name = "FormSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

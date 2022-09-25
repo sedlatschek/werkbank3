@@ -16,6 +16,7 @@ namespace werkbank
         {
             InitializeComponent();
 
+            Icon = Properties.Resources.logo;
             Text = Application.ProductName + ": Settings";
 
             checkBox_settings_autostart.Checked = Settings.Properties.AutoStart;

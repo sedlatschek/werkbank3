@@ -118,6 +118,8 @@ namespace werkbank
 
             InitializeComponent();
 
+            Icon = Properties.Resources.logo;
+
             foreach (environments.Environment environment in EnvironmentRepository.Environments)
             {
                 comboBox_werk_environment.Items.Add(environment.Name);

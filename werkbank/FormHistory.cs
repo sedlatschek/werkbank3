@@ -27,6 +27,7 @@ namespace werkbank
         {
             InitializeComponent();
 
+            Icon = Properties.Resources.logo;
             Text = Application.ProductName + ": History";
 
             objectListView = new ObjectListView()

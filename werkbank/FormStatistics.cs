@@ -25,6 +25,7 @@ namespace werkbank
 
             werke = Werke ?? new List<Werk>();
 
+            Icon = Properties.Resources.logo;
             Text = Application.ProductName + ": Statistics";
 
             envListView = new ObjectListView()
