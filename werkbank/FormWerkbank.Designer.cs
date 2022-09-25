@@ -385,7 +385,7 @@ namespace werkbank
             this.Controls.Add(this.panel_controls);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(1073, 678);
+            this.MinimumSize = new System.Drawing.Size(1073, 754);
             this.Name = "FormWerkbank";
             this.Text = "Werkbank";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormWerkbankClosing);

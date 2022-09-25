@@ -27,7 +27,7 @@ namespace werkbank.controls
         /// <summary>
         /// The gather is done.
         /// </summary>
-        public event EventHandler<List<Werk>>? GatherDone;
+        public event EventHandler? GatherDone;
 
         /// <summary>
         /// Triggers whenever a werk is selected.
@@ -79,6 +79,8 @@ namespace werkbank.controls
 
         private void SetupColumns()
         {
+            objectListView.SmallImageList = IconList;
+
             OLVColumn colIcon = new()
             {
                 Name = objectListView.Name + "_column_icon",
@@ -105,7 +107,6 @@ namespace werkbank.controls
                     return "";
                 }
             };
-
             objectListView.Columns.Add(colIcon);
 
             OLVColumn colName = new()
@@ -114,7 +115,8 @@ namespace werkbank.controls
                 AspectName = "Name",
                 Text = "Name",
                 IsEditable = false,
-                Width = 120
+                Width = 120,
+                Sortable = true
             };
             objectListView.Columns.Add(colName);
 
@@ -205,7 +207,9 @@ namespace werkbank.controls
                 }
             };
 
-            objectListView.SmallImageList = IconList;
+            objectListView.Sorting = SortOrder.Ascending;
+            objectListView.PrimarySortColumn = colName;
+            objectListView.ShowGroups = false;
         }
 
         /// <summary>
@@ -271,7 +275,6 @@ namespace werkbank.controls
                 var werkDirs = envDir.EnumerateDirectories().OrderByDescending(d => d.LastWriteTime);
                 int werkCount = werkDirs.Count();
 
-
                 int werkIndex = 0;
                 foreach (DirectoryInfo werkDir in werkDirs)
                 {
@@ -304,23 +307,34 @@ namespace werkbank.controls
                                 {
                                     break;
                                 }
+
+                                // werk is transitioning
+                                if (werk.TransitionType != null)
+                                {
+                                    // if this werk is in the target vault, skip, we only want the source werk.
+                                    if (werk.State != State)
+                                    {
+                                        break;
+                                    }
+                                }
+
                                 werk.LastModified = werkDir.LastWriteTime;
 
                                 // check whether werk state fits expected vault state
                                 // while a werk is moving to another vault the state may not be right
-                                if (werk.State != State && !werk.Moving)
+                                if (werk.State != State && werk.TransitionType == null)
                                 {
                                     throw new UnexpectedWerkStateException(werk, State);
                                 }
 
                                 // check whether the werks environment matches the directory of the werk
-                                if (!werk.CurrentDirectory.StartsWith(envDir.FullName) && !werk.Moving)
+                                if (!werk.CurrentDirectory.StartsWith(envDir.FullName) && werk.TransitionType == null)
                                 {
                                     throw new UnexpectedWerkEnvironmentException(werk, envDir.FullName);
                                 }
 
                                 // check whether the computed path matches the actual path
-                                if (werk.CurrentDirectory != werkDir.FullName && !werk.Moving)
+                                if (werk.CurrentDirectory != werkDir.FullName && werk.TransitionType == null)
                                 {
                                     throw new UnexpectedWerkDirectoryNameException(werk, werkDir.FullName);
                                 }
@@ -358,7 +372,7 @@ namespace werkbank.controls
 
             if (sync)
             {
-                objectListView.SetObjects(werke);
+                SetWerke(werke);
                 panel_loading.Visible = false;
                 objectListView.Enabled = true;
             }
@@ -396,11 +410,46 @@ namespace werkbank.controls
 
             // draw gathered items
             List<Werk> werke = (List<Werk>)e.Result;
-            objectListView.SetObjects(werke);
-
-            GatherDone?.Invoke(this, werke);
+            SetWerke(werke);
         }
 
+        /// <summary>
+        /// Set the werke that are part of the table. Missing werke will be removed, existing ignored, and new will be added.
+        /// </summary>
+        /// <param name="Werke"></param>
+        private void SetWerke(List<Werk> Werke)
+        {
+            List<Werk> curWerke = objectListView.Objects != null ? objectListView.Objects.Cast<Werk>().ToList() : new List<Werk>();
+
+            foreach (Werk werk in Werke)
+            {
+                int existingIndex = curWerke.FindIndex((w) => w.Id == werk.Id);
+                if (existingIndex != -1)
+                {
+                    // do nothing if we have an existing werk
+                }
+                else
+                {
+                    curWerke.Add(werk);
+                }
+            }
+
+            // remove werke that were not picked up during the latest gather
+            foreach (Werk curWerk in curWerke)
+            {
+                int newIndex = Werke.FindIndex((w) => w.Id == curWerk.Id);
+                if (newIndex == -1)
+                {
+                    curWerke.Remove(curWerk);
+                }
+            }
+
+            objectListView.SetObjects(curWerke);
+
+            GatherDone?.Invoke(this, EventArgs.Empty);
+        }
+
+        #region "ui"
         private void WerkListSizeChanged(object sender, EventArgs e)
         {
             AlignLoadingPanel();
@@ -418,6 +467,7 @@ namespace werkbank.controls
             objectListView.Enabled = true;
             panel_loading.Visible = false;
         }
+        #endregion
 
         private void ObjectListViewItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
@@ -448,6 +498,64 @@ namespace werkbank.controls
                     WerkDoubleClick?.Invoke(this, (Werk)objectListView.SelectedObject);
                 }
             }
+        }
+
+        /// <summary>
+        /// Get a werk object from the vault by its id.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public Werk? GetWerkById(Guid Id)
+        {
+            return objectListView.Objects.Cast<Werk>().ToList().Find(w => w.Id == Id);
+        }
+
+        /// <summary>
+        /// Remove a werk object from the vault by its id.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public Werk? RemoveWerkById(Guid Id)
+        {
+            Werk? werk = GetWerkById(Id);
+            if (werk == null)
+            {
+                return null;
+            }
+            objectListView.RemoveObject(werk);
+            return werk;
+        }
+
+        /// <summary>
+        /// Refresh a werk object from the vault by its id.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public Werk? RefreshWerkById(Guid Id)
+        {
+            Werk? werk = GetWerkById(Id);
+            if (werk == null)
+            {
+                return null;
+            }
+            objectListView.RefreshObject(werk);
+            return werk;
+        }
+
+        /// <summary>
+        /// Select a werk object from the vault by its id.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public Werk? SelectWerkbyId(Guid Id)
+        {
+            Werk? werk = GetWerkById(Id);
+            if (werk == null)
+            {
+                return null;
+            }
+            objectListView.SelectObject(werk);
+            return werk;
         }
     }
 }

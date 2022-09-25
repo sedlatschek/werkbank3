@@ -34,8 +34,8 @@ namespace werkbank.transitions
             string hotGitZip = Path.Combine(hotDir, Config.FileNameGitZip);
             string coldGitZip = Path.Combine(coldDir, Config.FileNameGitZip);
 
-            // mark werk as moving
-            Werk.Moving = true;
+            // mark werk as transitioning
+            Werk.TransitionType = Type;
             batch.Write(coldMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger before transition events
@@ -62,15 +62,28 @@ namespace werkbank.transitions
             }
 
             // change state to hot and save
-            Werk.Moving = false;
+            Werk.TransitionType = null;
             Werk.State = WerkState.Hot;
             Werk.UpdateHistory();
             batch.Write(hotMetaFile, JsonConvert.SerializeObject(Werk));
+
+            // reset werk for current runtime
+            Werk.TransitionType = Type;
+            Werk.State = WerkState.Cold;
 
             // trigger after transition events
             batch.TriggerAfterTransitionEvent();
 
             return batch;
+        }
+
+        public override void Finish(Batch Batch)
+        {
+            if (Batch.Werk == null)
+            {
+                throw new NullReferenceException("Batch must have a werk that is not null to finish transition");
+            }
+            Batch.Werk.State = WerkState.Hot;
         }
     }
 }

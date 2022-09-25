@@ -32,6 +32,13 @@ namespace werkbank.transitions
         /// <returns></returns>
         public abstract Batch Build(Werk Werk, environments.Environment? Environment = null);
 
+        /// <summary>
+        /// Finish the transition. Is called after the batch is done.
+        /// </summary>
+        /// <param name="Batch"></param>
+        /// <returns></returns>
+        public abstract void Finish(Batch Batch);
+
         public static Transition For(TransitionType Type)
         {
             return Type switch
@@ -43,6 +50,42 @@ namespace werkbank.transitions
                 TransitionType.ColdToArchive => new ColdToArchiveTransition(),
                 TransitionType.ArchiveToCold => new ArchiveToColdTransition(),
                 _ => throw new UnhandledTransitionTypeException(Type),
+            };
+        }
+
+        /// <summary>
+        /// Get the state a transition transitions from.
+        /// </summary>
+        /// <param name="TransitionType"></param>
+        /// <returns></returns>
+        /// <exception cref="UnhandledTransitionTypeException"></exception>
+        public static WerkState From(TransitionType TransitionType)
+        {
+            return TransitionType switch
+            {
+                TransitionType.HotToCold => WerkState.Hot,
+                TransitionType.ColdToHot => WerkState.Cold,
+                TransitionType.ColdToArchive => WerkState.Cold,
+                TransitionType.ArchiveToCold => WerkState.Archived,
+                _ => throw new UnhandledTransitionTypeException(TransitionType),
+            };
+        }
+
+        /// <summary>
+        /// Get the state a transition transitions to.
+        /// </summary>
+        /// <param name="TransitionType"></param>
+        /// <returns></returns>
+        /// <exception cref="UnhandledTransitionTypeException"></exception>
+        public static WerkState To(TransitionType TransitionType)
+        {
+            return TransitionType switch
+            {
+                TransitionType.HotToCold => WerkState.Cold,
+                TransitionType.ColdToHot => WerkState.Hot,
+                TransitionType.ColdToArchive => WerkState.Archived,
+                TransitionType.ArchiveToCold => WerkState.Cold,
+                _ => throw new UnhandledTransitionTypeException(TransitionType),
             };
         }
     }

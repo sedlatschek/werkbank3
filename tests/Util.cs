@@ -116,6 +116,12 @@ namespace tests
                     throw op.Error;
                 }
             }
+
+            if (Batch.Done && Batch.Werk != null)
+            {
+                Transition.For(Batch.TransitionType).Finish(Batch);
+            }
+            Batch.Untie();
         }
     }
 }

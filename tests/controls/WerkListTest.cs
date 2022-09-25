@@ -35,7 +35,7 @@ namespace tests.controls
 
             werkList.Gather();
 
-            List<Werk> werke = (List<Werk>)werkList.List.Objects;
+            List<Werk> werke = werkList.List.Objects.Cast<Werk>().ToList();
 
             Assert.IsNotNull(werke);
             Assert.AreEqual(2, werke.Count);

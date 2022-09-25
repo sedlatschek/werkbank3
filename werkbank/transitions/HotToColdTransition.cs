@@ -12,7 +12,7 @@ namespace werkbank.transitions
     public class HotToColdTransition : Transition
     {
         public override string Title => "Hot to Cold";
-        public override TransitionType Type => TransitionType.ColdToHot;
+        public override TransitionType Type => TransitionType.HotToCold;
 
         public override Batch Build(Werk Werk, environments.Environment? Environment = null)
         {
@@ -33,8 +33,8 @@ namespace werkbank.transitions
             string gitDir = Path.Combine(hotDir, Config.DirNameGit);
             string gitZip = Path.Combine(hotDir, Config.FileNameGitZip);
 
-            // mark werk as moving
-            Werk.Moving = true;
+            // mark werk as transitioning
+            Werk.TransitionType = Type;
             batch.Write(hotMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger before transition events
@@ -58,16 +58,29 @@ namespace werkbank.transitions
             // hide meta dir
             batch.Hide(coldMetaDir);
 
-            // change state to cold and save
-            Werk.Moving = false;
+            // change state to cold and save            
+            Werk.TransitionType = null;
             Werk.State = WerkState.Cold;
             Werk.UpdateHistory();
             batch.Write(coldMetaFile, JsonConvert.SerializeObject(Werk));
+
+            // reset werk for current runtime
+            Werk.TransitionType = Type;
+            Werk.State = WerkState.Hot;
 
             // trigger after transition events
             batch.TriggerAfterTransitionEvent();
 
             return batch;
+        }
+
+        public override void Finish(Batch Batch)
+        {
+            if (Batch.Werk == null)
+            {
+                throw new NullReferenceException("Batch must have a werk that is not null to finish transition");
+            }
+            Batch.Werk.State = WerkState.Cold;
         }
     }
 }

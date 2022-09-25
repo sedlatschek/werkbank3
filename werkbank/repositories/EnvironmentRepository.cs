@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using werkbank.environments;
+using werkbank.exceptions;
+using werkbank.services;
 
 namespace werkbank.repositories
 {
@@ -28,9 +30,29 @@ namespace werkbank.repositories
         /// </summary>
         public static readonly List<string> Handles = Environments.Select(x => x.Handle).ToList();
 
-        public static environments.Environment ByHandle(string Handle)
-        {            
-            return Environments.Where(x => x.Handle == Handle).First();
+        /// <summary>
+        /// Get an environment by its handle.
+        /// </summary>
+        /// <param name="Handle"></param>
+        /// <returns></returns>
+        public static environments.Environment? ByHandle(string Handle)
+        {
+            return Environments.Find(e => e.Handle == Handle);
+        }
+
+        /// <summary>
+        /// Get an environment by its directory. Can be either the subfolder path or the full path within any vault.
+        /// </summary>
+        /// <param name="Directory"></param>
+        /// <returns></returns>
+        public static environments.Environment? ByDirectory(string Directory)
+        {
+            string dir = Directory.TrimEnd('\\');
+            return Environments.Find(e => e.Directory.TrimEnd('\\') == dir
+                || Path.Combine(Settings.Properties.DirHotVault, e.Directory).TrimEnd('\\') == dir
+                || Path.Combine(Settings.Properties.DirColdVault, e.Directory).TrimEnd('\\') == dir
+                || Path.Combine(Settings.Properties.DirArchiveVault, e.Directory).TrimEnd('\\') == dir
+            );
         }
     }
 }

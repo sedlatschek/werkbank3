@@ -21,6 +21,9 @@ namespace werkbank
 {
     public partial class FormQueue : Form
     {
+        public event EventHandler? Changed;
+        public event EventHandler<Batch>? OnBatchDone;
+
         private readonly List<Batch> batches;
 
         private readonly ObjectListView objectListView;
@@ -45,8 +48,7 @@ namespace werkbank
         /// </summary>
         public int DoneOperationsCount => doneOperationsCount;
 
-        public event EventHandler? Changed;
-
+        #region "start & close"
         public FormQueue()
         {
             InitializeComponent();
@@ -275,20 +277,6 @@ namespace werkbank
             objectListView.Dock = DockStyle.Fill;
         }
 
-        private void ObjectListViewItemsChanged(object? sender, ItemsChangedEventArgs e)
-        {
-            RegisterOperationChange();
-        }
-
-        private void RegisterOperationChange()
-        {
-            List<Operation> operations = objectListView.Objects.Cast<Operation>().ToList();
-            openOperationsCount = operations.Count(op => !op.Success);
-            doneOperationsCount = operations.Count(op => op.Success);
-            totalOperationsCount = openOperationsCount + doneOperationsCount;
-            Changed?.Invoke(this, EventArgs.Empty);
-        }
-
         private void FormQueueShown(object sender, EventArgs e)
         {
             GroupByBatch();
@@ -307,50 +295,20 @@ namespace werkbank
             }
             return null;
         }
-        /// <summary>
-        /// Relates the current queue with the current list of werke. Needs to be called upon Deserialization.
-        /// </summary>
-        /// <param name="Werke"></param>
-        public void RelateWithWerke(List<Werk> Werke)
-        {
-            foreach (Werk werk in Werke)
-            {
-                foreach (Batch batch in batches)
-                {
-                    if (batch.WerkId == werk.Id)
-                    {
-                        batch.Werk = werk;
-                        werk.CurrentBatch = batch;
-                        foreach (Operation op in batch.Operations)
-                        {
-                            objectListView.RefreshObject(op);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
+        #endregion
 
-        /// <summary>
-        /// Save the current state of the queue to the hard drive.
-        /// </summary>
-        public void Save()
+        #region "list"
+        private void ObjectListViewItemsChanged(object? sender, ItemsChangedEventArgs e)
         {
-            File.WriteAllText(
-                Config.FileQueue,
-                JsonConvert.SerializeObject(batches)
-            );
+            RegisterOperationChange();
         }
-
-        /// <summary>
-        /// Run the queue
-        /// </summary>
-        public void Run()
+        private void RegisterOperationChange()
         {
-            if (!worker.IsBusy)
-            {
-                worker.RunWorkerAsync();
-            }
+            List<Operation> operations = objectListView.Objects.Cast<Operation>().ToList();
+            openOperationsCount = operations.Count(op => !op.Success);
+            doneOperationsCount = operations.Count(op => op.Success);
+            totalOperationsCount = openOperationsCount + doneOperationsCount;
+            Changed?.Invoke(this, EventArgs.Empty);
         }
 
         private void SyncLists()
@@ -379,6 +337,82 @@ namespace werkbank
         private void GroupByBatch()
         {
             objectListView.BuildGroups(colBatch, SortOrder.Ascending);
+        }
+        #endregion
+
+        #region "api"
+        /// <summary>
+        /// Relates the current queue with the a given list of werke. Needs to be called upon deserialization.
+        /// </summary>
+        /// <param name="Werke"></param>
+        public void RelateWithWerke(List<Werk> Werke)
+        {
+            foreach (Werk werk in Werke)
+            {
+                RelateWithWerk(werk);
+            }
+        }
+
+        /// <summary>
+        /// Relates the current queue with a given werk. Needs to be called upon deserialization.
+        /// </summary>
+        /// <param name="Werk"></param>
+        public void RelateWithWerk(Werk Werk)
+        {
+            foreach (Batch batch in batches)
+            {
+                if (batch.WerkId == Werk.Id)
+                {
+                    batch.Werk = Werk;
+                    Werk.CurrentBatch = batch;
+                    objectListView.RefreshObjects(batch.Operations);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Save the current state of the queue to the hard drive.
+        /// </summary>
+        public void Save()
+        {
+            File.WriteAllText(
+                Config.FileQueue,
+                JsonConvert.SerializeObject(batches)
+            );
+        }
+
+        /// <summary>
+        /// Queue in a new batch of operations.
+        /// </summary>
+        /// <param name="Batch"></param>
+        public void Add(Batch Batch)
+        {
+            batches.Add(Batch);
+            objectListView.AddObjects(Batch.Operations);
+        }
+
+        /// <summary>
+        /// Remove a batch from the queue.
+        /// </summary>
+        /// <param name="Batch"></param>
+        private void RemoveBatch(Batch Batch)
+        {
+            batches.Remove(Batch);
+            objectListView.RemoveObjects(Batch.Operations);
+        }
+        #endregion
+
+        #region "work"
+        /// <summary>
+        /// Run the queue
+        /// </summary>
+        public void Run()
+        {
+            if (!worker.IsBusy)
+            {
+                worker.RunWorkerAsync();
+            }
         }
 
         private void OnWork(object sender, DoWorkEventArgs e)
@@ -419,6 +453,7 @@ namespace werkbank
                 if (batch.Done)
                 {
                     RemoveBatch(batch);
+                    OnBatchDone?.Invoke(this, batch);
                 }
                 else
                 {
@@ -452,26 +487,6 @@ namespace werkbank
         }
 
         /// <summary>
-        /// Queue in a new batch of operations.
-        /// </summary>
-        /// <param name="Batch"></param>
-        public void Add(Batch Batch)
-        {
-            batches.Add(Batch);
-            objectListView.AddObjects(Batch.Operations);
-        }
-
-        /// <summary>
-        /// Remove a batch from the queue.
-        /// </summary>
-        /// <param name="Batch"></param>
-        private void RemoveBatch(Batch Batch)
-        {
-            batches.Remove(Batch);
-            objectListView.RemoveObjects(Batch.Operations);
-        }
-
-        /// <summary>
         /// Get the next batch in line.
         /// </summary>
         /// <returns></returns>
@@ -486,5 +501,6 @@ namespace werkbank
             }
             return null;
         }
+        #endregion
     }
 }

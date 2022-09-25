@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using werkbank.exceptions;
 using werkbank.models;
+using werkbank.repositories;
 
 namespace werkbank.transitions
 {
@@ -36,8 +37,8 @@ namespace werkbank.transitions
             string targetMetaDir = Path.Combine(targetDir, Config.DirNameMeta);
             string targetMetaFile = Path.Combine(targetMetaDir, Config.FileNameMetaJson);
 
-            // mark werk as moving
-            Werk.Moving = true;
+            // mark werk as transitioning
+            Werk.TransitionType = Type;
             batch.Write(curMetaFile, JsonConvert.SerializeObject(Werk));
 
             // trigger before transition events
@@ -52,14 +53,45 @@ namespace werkbank.transitions
             batch.Delete(curDir);
 
             // change state to archived and save
-            Werk.Moving = false;
+            environments.Environment currentEnvironment = Werk.Environment;
+            Werk.TransitionType = null;
             Werk.Environment = TargetEnvironment;
             batch.Write(targetMetaFile, JsonConvert.SerializeObject(Werk));
+
+            // reset werk for current runtime
+            Werk.TransitionType = Type;
+            Werk.Environment = currentEnvironment;
 
             // trigger after transition events
             batch.TriggerAfterTransitionEvent();
 
             return batch;
+        }
+
+        public override void Finish(Batch Batch)
+        {
+            if (Batch.Werk == null)
+            {
+                throw new NullReferenceException("Batch must have a werk that is not null to finish transition");
+            }
+
+            operations.Operation? createDirOp = Batch.Operations.Find((op) => op.Type == operations.OperationType.CreateDirectory);
+            if (createDirOp == null || createDirOp.Destination == null)
+            {
+                throw new NullReferenceException("Could not retrieve target environment from batch. Operation is null.");
+            }
+
+            // remove werk name from the path
+            // string envDir = createDirOp.Destination.Substring(0, createDirOp.Destination.Length - (Batch.Werk.Name.Length + 1));
+            string envDir = createDirOp.Destination.Substring(0, createDirOp.Destination.Length - Batch.Werk.Name.Length);
+
+            environments.Environment? targetEnvironment = EnvironmentRepository.ByDirectory(envDir);
+            if (targetEnvironment == null)
+            {
+                throw new NullReferenceException("Could not retrieve target environment from batch. TargetEnvironment is null.");
+            }
+
+            Batch.Werk.Environment = targetEnvironment;
         }
     }
 }

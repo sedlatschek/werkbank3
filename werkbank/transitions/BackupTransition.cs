@@ -59,5 +59,10 @@ namespace werkbank.transitions
 
             return batch;
         }
+
+        public override void Finish(Batch Batch)
+        {
+            return;
+        }
     }
 }

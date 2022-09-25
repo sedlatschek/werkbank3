@@ -22,7 +22,7 @@ namespace tests.transitions
 
             Util.WorkOffBatch(batch);
 
-            Assert.IsFalse(werk.Moving);
+            Assert.IsNull(werk.TransitionType);
 
             Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(EnvironmentRepository.Environments[0])));
             Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(EnvironmentRepository.Environments[1])));

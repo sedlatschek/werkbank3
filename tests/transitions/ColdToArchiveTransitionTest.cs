@@ -25,7 +25,7 @@ namespace tests.transitions
 
             string archiveMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Archived), werkbank.Config.DirNameMeta, werkbank.Config.FileNameMetaJson);
 
-            Assert.IsFalse(werk.Moving);
+            Assert.IsNull(werk.TransitionType);
             Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
             Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Archived)));
             Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Archived), "my-content.txt")));
@@ -44,7 +44,7 @@ namespace tests.transitions
 
             string archiveMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Archived), werkbank.Config.DirNameMeta, werkbank.Config.FileNameMetaJson);
 
-            Assert.IsFalse(werk.Moving);
+            Assert.IsNull(werk.TransitionType);
             Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
             Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Archived)));
             Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Archived), werk.Name + ".zip")));

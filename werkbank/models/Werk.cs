@@ -31,7 +31,7 @@ namespace werkbank.models
         [JsonProperty("ts")]
         public DateTime Timestamp { get; set; }
 
-        [JsonProperty("env"), JsonConverter(typeof(EnvironmentConverter))]
+        [JsonProperty("env"), JsonConverter(typeof(NullableEnvironmentConverter))]
         public environments.Environment? Environment { get; set; }
 
         [JsonProperty("state")]
@@ -70,8 +70,8 @@ namespace werkbank.models
         [JsonProperty("created")]
         public DateTime CreatedAt;
 
-        [JsonProperty("moving")]
-        public bool Moving = false;
+        [JsonProperty("transitionType")]
+        public TransitionType? TransitionType;
 
         [JsonProperty("history")]
         public readonly List<WerkStateTimestamp> History = new();
@@ -97,55 +97,33 @@ namespace werkbank.models
             get
             {
                 if (Environment == null)
+                {
                     return false;
+                }
                 return File.Exists(IconFile);
             }
         }
 
         [JsonIgnore]
-        public string IconFile
-        {
-            get
-            {
-                return Path.Combine(CurrentMetaDirectory, Config.FileNameWerkIcon);
-            }
-        }
+        public string IconFile => Path.Combine(CurrentMetaDirectory, Config.FileNameWerkIcon);
 
         /// <summary>
         /// The path of the directory the werk currently resides.
         /// </summary>
         [JsonIgnore]
-        public string CurrentDirectory
-        {
-            get
-            {
-                return GetDirectoryFor(State, Environment, Name);
-            }
-        }
+        public string CurrentDirectory => GetDirectoryFor(State, Environment, Name);
 
         /// <summary>
         /// The path to the current meta directory (.werk) of the werk.
         /// </summary>
         [JsonIgnore]
-        public string CurrentMetaDirectory
-        {
-            get
-            {
-                return Path.Combine(CurrentDirectory, Config.DirNameMeta);
-            }
-        }
+        public string CurrentMetaDirectory => Path.Combine(CurrentDirectory, Config.DirNameMeta);
 
         /// <summary>
         /// The path to the current werk file (.werk/werk.json).
         /// </summary>
         [JsonIgnore]
-        public string CurrentWerkJson
-        {
-            get
-            {
-                return Path.Combine(CurrentMetaDirectory, Config.FileNameMetaJson);
-            }
-        }
+        public string CurrentWerkJson => Path.Combine(CurrentMetaDirectory, Config.FileNameMetaJson);
 
         /// <summary>
         /// Save the meta file of the work to a given path. If no path is provided, use the default path.

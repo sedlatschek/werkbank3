@@ -22,7 +22,7 @@ namespace tests.transitions
 
             Util.WorkOffBatch(batch);
 
-            Assert.IsFalse(werk.Moving);
+            Assert.IsNull(werk.TransitionType);
             Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Hot)));
             Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Hot), "my-content.txt")));
             Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Hot), werkbank.Config.DirNameMeta, werkbank.Config.FileNameMetaJson)));

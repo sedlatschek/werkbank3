@@ -8,16 +8,17 @@ using Newtonsoft.Json;
 using werkbank.models;
 using werkbank.operations;
 using werkbank.services;
-using static System.TimeZoneInfo;
 
 namespace werkbank.transitions
 {
     public class Batch
     {
-        public event EventHandler? OnBatchStart;
-        public event EventHandler? OnBatchDone;
         public event EventHandler<Operation>? OnOperationStart;
         public event EventHandler<Operation>? OnOperationDone;
+
+        public delegate void BatchDone(Batch Batch, TransitionType? TransitionType, Werk werk);
+
+        public BatchDone? TestBatchDone;
 
         [JsonProperty("id")]
         private readonly Guid guid;
@@ -42,10 +43,11 @@ namespace werkbank.transitions
         private Guid werkId;
         [JsonIgnore]
         public Guid WerkId => werkId;
+
         [JsonIgnore]
-        private Werk werk;
+        private Werk? werk;
         [JsonIgnore]
-        public Werk Werk
+        public Werk? Werk
         {
             get => werk;
             set
@@ -67,36 +69,10 @@ namespace werkbank.transitions
         public TransitionType TransitionType => transitionType;
 
         [JsonIgnore]
-        public bool Done
-        {
-            get
-            {
-                foreach (Operation op in Operations)
-                {
-                    if (!op.Success)
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
+        public bool Done => Operations.All((op) => op.Success);
 
         [JsonIgnore]
-        public bool IsInTimeout
-        {
-            get
-            {
-                foreach (Operation op in Operations)
-                {
-                    if (op.IsInTimeout)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
+        public bool IsInTimeout => Operations.Any((op) => op.IsInTimeout);
 
         [JsonIgnore]
         public int ProgressPercentage
@@ -117,7 +93,15 @@ namespace werkbank.transitions
             guid = Guid.NewGuid();
             attempts = 0;
             this.Werk = Werk;
+            werkId = Werk.Id;
             transitionType = TransitionType;
+            Operations = new List<Operation>();
+            title = Title;
+        }
+
+        [JsonConstructor]
+        public Batch(string Title)
+        {
             Operations = new List<Operation>();
             title = Title;
         }
@@ -129,7 +113,11 @@ namespace werkbank.transitions
         {
             attempts += 1;
 
-            OnBatchStart?.Invoke(this, EventArgs.Empty);
+            if (Werk == null)
+            {
+                error = new ArgumentNullException("Werk");
+                return;
+            }
 
             foreach (Operation op in Operations)
             {
@@ -161,8 +149,20 @@ namespace werkbank.transitions
 
             if (Done)
             {
+                Transition.For(TransitionType).Finish(this);
+            }
+        }
+
+        /// <summary>
+        /// Untie the batch from its werk.
+        /// </summary>
+        public void Untie()
+        {
+            if (Werk != null)
+            {
                 Werk.CurrentBatch = null;
-                OnBatchDone?.Invoke(this, EventArgs.Empty);
+                Werk.TransitionType = null;
+                Werk = null;
             }
         }
 

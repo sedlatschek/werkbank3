@@ -26,7 +26,7 @@ namespace tests.transitions
 
             string coldMetaFile = Path.Combine(werk.GetDirectoryFor(WerkState.Cold), werkbank.Config.DirNameMeta, werkbank.Config.FileNameMetaJson);
 
-            Assert.IsFalse(werk.Moving);
+            Assert.IsNull(werk.TransitionType);
             Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Hot)));
             Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
             Assert.IsTrue(File.Exists(coldMetaFile));
