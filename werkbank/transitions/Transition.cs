@@ -30,14 +30,33 @@ namespace werkbank.transitions
         /// <param name="Werk"></param>
         /// <param name="Environment"></param>
         /// <returns></returns>
-        public abstract Batch Build(Werk Werk, environments.Environment? Environment = null);
+        public Batch Build(Werk Werk, environments.Environment? Environment = null)
+        {
+            if (Werk.CurrentBatch != null)
+            {
+                throw new WerkIsAlreadyTransitioningException(Werk.CurrentBatch);
+            }
+            if (Werk.TransitionType != null)
+            {
+                throw new WerkIsAlreadyTransitioningException(Werk);
+            }
+
+            return OnBuild(Werk, Environment);
+        }
+
+        protected abstract Batch OnBuild(Werk Werk, environments.Environment? Environment = null);
 
         /// <summary>
         /// Finish the transition. Is called after the batch is done.
         /// </summary>
         /// <param name="Batch"></param>
         /// <returns></returns>
-        public abstract void Finish(Batch Batch);
+        public void Finish(Batch Batch)
+        {
+            OnFinish(Batch);
+        }
+
+        protected abstract void OnFinish(Batch Batch);
 
         public static Transition For(TransitionType Type)
         {

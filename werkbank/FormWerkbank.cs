@@ -25,7 +25,8 @@ namespace werkbank
             iconList = new ImageList();
             formQueue = new FormQueue();
             formQueue.Changed += FormQueueChanged;
-            formQueue.OnBatchDone += FormQueueOnBatchDone;
+            formQueue.BatchDone += FormQueueBatchDone;
+            formQueue.BatchAdded += FormQueueBatchAdded;
 
             InitializeComponent();
 
@@ -127,9 +128,15 @@ namespace werkbank
             Batch batch = Transition.For(transitionType).Build(werk);
             formQueue.Add(batch);
         }
-
-        private void FormQueueOnBatchDone(object? sender, Batch batch)
+        private void FormQueueBatchAdded(object? sender, Batch batch)
         {
+            UpdateControlsAvailability();
+        }
+
+        private void FormQueueBatchDone(object? sender, Batch batch)
+        {
+            Werk? werk = batch.Werk;
+
             Invoke(new Action(() =>
             {
                 switch (batch.TransitionType)
@@ -150,16 +157,21 @@ namespace werkbank
                         break;
                     case TransitionType.Backup:
                     case TransitionType.Environment:
-                        if (batch.Werk != null)
-                        {
-                            GetVaultFor(batch.Werk.State).RefreshWerkById(batch.WerkId);
-                        }
                         break;
                     default: throw new UnhandledTransitionTypeException(batch.TransitionType);
                 }
             }));
 
             batch.Untie();
+
+            Invoke(new Action(() =>
+            {
+                UpdateControlsAvailability();
+                if (werk != null)
+                {
+                    GetVaultFor(werk.State).List.RefreshObject(werk);
+                }
+            }));
         }
         #endregion
 
@@ -194,6 +206,8 @@ namespace werkbank
             {
                 timerQueue.Start();
             }
+
+            UpdateControlsAvailability();
         }
 
         private void WerkSelected(object? sender, Werk? werk)
@@ -237,14 +251,24 @@ namespace werkbank
         #region "controls"
         private void UpdateControlsAvailability()
         {
-            button_werk_up.Enabled = selectedWerk != null && selectedWerk.State != WerkState.Hot;
-            button_werk_down.Enabled = selectedWerk != null && selectedWerk.State != WerkState.Archived;
-            button_werk_backup.Enabled = selectedWerk != null && selectedWerk.State == WerkState.Hot;
+            button_werk_up.Enabled = selectedWerk != null
+                && selectedWerk.State != WerkState.Hot
+                && selectedWerk.TransitionType == null;
+            button_werk_down.Enabled = selectedWerk != null
+                && selectedWerk.State != WerkState.Archived
+                && selectedWerk.TransitionType == null;
+            button_werk_backup.Enabled = selectedWerk != null
+                && selectedWerk.State == WerkState.Hot
+                && selectedWerk.TransitionType == null;
 
-            button_werk_open.Enabled = selectedWerk != null;
-            button_werk_edit.Enabled = selectedWerk != null;
-            button_werk_history.Enabled = selectedWerk != null;
-            button_werk_vscode.Enabled = selectedWerk != null;
+            button_werk_open.Enabled = selectedWerk != null
+                && selectedWerk.TransitionType == null;
+            button_werk_edit.Enabled = selectedWerk != null
+                && selectedWerk.TransitionType == null;
+            button_werk_history.Enabled = selectedWerk != null
+                && selectedWerk.TransitionType == null;
+            button_werk_vscode.Enabled = selectedWerk != null
+                && selectedWerk.TransitionType == null;
             button_werk_web.Enabled = selectedWerk != null;
         }
 

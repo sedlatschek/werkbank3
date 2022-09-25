@@ -15,13 +15,12 @@ namespace werkbank.transitions
         public override string Title => "Environment";
         public override TransitionType Type => TransitionType.Environment;
 
-        public override Batch Build(Werk Werk, environments.Environment? TargetEnvironment)
+        protected override Batch OnBuild(Werk Werk, environments.Environment? TargetEnvironment)
         {
             if (TargetEnvironment == null)
             {
                 throw new ArgumentNullException(nameof(TargetEnvironment));
             }
-
             if (Werk.Environment.Handle == TargetEnvironment.Handle)
             {
                 throw new InvalidTargetEnvironmentException(TargetEnvironment);
@@ -68,7 +67,7 @@ namespace werkbank.transitions
             return batch;
         }
 
-        public override void Finish(Batch Batch)
+        protected override void OnFinish(Batch Batch)
         {
             if (Batch.Werk == null)
             {
@@ -82,8 +81,7 @@ namespace werkbank.transitions
             }
 
             // remove werk name from the path
-            // string envDir = createDirOp.Destination.Substring(0, createDirOp.Destination.Length - (Batch.Werk.Name.Length + 1));
-            string envDir = createDirOp.Destination.Substring(0, createDirOp.Destination.Length - Batch.Werk.Name.Length);
+            string envDir = createDirOp.Destination[..^Batch.Werk.Name.Length];
 
             environments.Environment? targetEnvironment = EnvironmentRepository.ByDirectory(envDir);
             if (targetEnvironment == null)

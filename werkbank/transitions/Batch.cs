@@ -13,8 +13,8 @@ namespace werkbank.transitions
 {
     public class Batch
     {
-        public event EventHandler<Operation>? OnOperationStart;
-        public event EventHandler<Operation>? OnOperationDone;
+        public event EventHandler<Operation>? OperationStarted;
+        public event EventHandler<Operation>? OperationDone;
 
         public delegate void BatchDone(Batch Batch, TransitionType? TransitionType, Werk werk);
 
@@ -130,14 +130,14 @@ namespace werkbank.transitions
                     break;
                 }
 
-                OnOperationStart?.Invoke(this, op);
+                OperationStarted?.Invoke(this, op);
 
                 // wait a little before running the next operation
                 Thread.Sleep(100);
 
                 op.Run();
 
-                OnOperationDone?.Invoke(this, op);
+                OperationDone?.Invoke(this, op);
 
                 // stop if operation failed
                 if (!op.Success)

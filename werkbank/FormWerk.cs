@@ -62,6 +62,7 @@ namespace werkbank
                     dateTimePicker_werk_created.Value = werk.CreatedAt;
 
                     comboBox_werk_environment.SelectedIndex = werk.Environment.Index;
+                    comboBox_werk_environment.Enabled = werk.TransitionType == null;
 
                     checkBox_werk_compressOnArchive.Enabled = werk.State != WerkState.Archived;
                     checkBox_werk_compressOnArchive.Checked = werk.CompressOnArchive;

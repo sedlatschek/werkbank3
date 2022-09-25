@@ -22,7 +22,8 @@ namespace werkbank
     public partial class FormQueue : Form
     {
         public event EventHandler? Changed;
-        public event EventHandler<Batch>? OnBatchDone;
+        public event EventHandler<Batch>? BatchDone;
+        public event EventHandler<Batch>? BatchAdded;
 
         private readonly List<Batch> batches;
 
@@ -390,6 +391,7 @@ namespace werkbank
         {
             batches.Add(Batch);
             objectListView.AddObjects(Batch.Operations);
+            BatchAdded?.Invoke(this, Batch);
         }
 
         /// <summary>
@@ -420,7 +422,7 @@ namespace werkbank
             Batch? batch = GetNextBatch();
             while (batch != null)
             {
-                batch.OnOperationStart += (senderPackage, op) =>
+                batch.OperationStarted += (senderPackage, op) =>
                 {
                     worker.ReportProgress(0, op);
                     if (Visible)
@@ -433,7 +435,7 @@ namespace werkbank
                     RegisterOperationChange();
                     Save();
                 };
-                batch.OnOperationDone += (senderPackage, op) =>
+                batch.OperationDone += (senderPackage, op) =>
                 {
                     worker.ReportProgress(0, op);
                     RegisterOperationChange();
@@ -453,7 +455,7 @@ namespace werkbank
                 if (batch.Done)
                 {
                     RemoveBatch(batch);
-                    OnBatchDone?.Invoke(this, batch);
+                    BatchDone?.Invoke(this, batch);
                 }
                 else
                 {

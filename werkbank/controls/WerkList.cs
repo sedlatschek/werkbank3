@@ -525,37 +525,5 @@ namespace werkbank.controls
             objectListView.RemoveObject(werk);
             return werk;
         }
-
-        /// <summary>
-        /// Refresh a werk object from the vault by its id.
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <returns></returns>
-        public Werk? RefreshWerkById(Guid Id)
-        {
-            Werk? werk = GetWerkById(Id);
-            if (werk == null)
-            {
-                return null;
-            }
-            objectListView.RefreshObject(werk);
-            return werk;
-        }
-
-        /// <summary>
-        /// Select a werk object from the vault by its id.
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <returns></returns>
-        public Werk? SelectWerkbyId(Guid Id)
-        {
-            Werk? werk = GetWerkById(Id);
-            if (werk == null)
-            {
-                return null;
-            }
-            objectListView.SelectObject(werk);
-            return werk;
-        }
     }
 }

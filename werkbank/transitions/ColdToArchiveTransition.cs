@@ -16,7 +16,7 @@ namespace werkbank.transitions
         public override string Title => "Cold to Archive";
         public override TransitionType Type => TransitionType.ColdToArchive;
 
-        public override Batch Build(Werk Werk, environments.Environment? Environment = null)
+        protected override Batch OnBuild(Werk Werk, environments.Environment? Environment = null)
         {
             if (Werk.State != WerkState.Cold)
             {
@@ -84,7 +84,7 @@ namespace werkbank.transitions
             return batch;
         }
 
-        public override void Finish(Batch Batch)
+        protected override void OnFinish(Batch Batch)
         {
             if (Batch.Werk == null)
             {
