@@ -48,6 +48,7 @@ namespace werkbank
             this.button_werk_edit = new System.Windows.Forms.Button();
             this.button_settings = new System.Windows.Forms.Button();
             this.panel_queue = new System.Windows.Forms.Panel();
+            this.button_statistics = new System.Windows.Forms.Button();
             this.pictureBox_serach = new System.Windows.Forms.PictureBox();
             this.textBox_search = new System.Windows.Forms.TextBox();
             this.progressBar_queue = new System.Windows.Forms.ProgressBar();
@@ -339,6 +340,7 @@ namespace werkbank
             this.panel_queue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel_queue.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panel_queue.Controls.Add(this.button_statistics);
             this.panel_queue.Controls.Add(this.pictureBox_serach);
             this.panel_queue.Controls.Add(this.textBox_search);
             this.panel_queue.Controls.Add(this.progressBar_queue);
@@ -348,6 +350,25 @@ namespace werkbank
             this.panel_queue.Name = "panel_queue";
             this.panel_queue.Size = new System.Drawing.Size(985, 40);
             this.panel_queue.TabIndex = 5;
+            // 
+            // button_statistics
+            // 
+            this.button_statistics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button_statistics.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_statistics.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_statistics.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.button_statistics.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.button_statistics.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_statistics.Image = global::werkbank.Properties.Resources.btn_stats;
+            this.button_statistics.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button_statistics.Location = new System.Drawing.Point(92, 4);
+            this.button_statistics.Name = "button_statistics";
+            this.button_statistics.Size = new System.Drawing.Size(87, 34);
+            this.button_statistics.TabIndex = 3;
+            this.button_statistics.Text = "Statistics";
+            this.button_statistics.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.button_statistics.UseVisualStyleBackColor = false;
+            this.button_statistics.Click += new System.EventHandler(this.ButtonStatisticsClick);
             // 
             // pictureBox_serach
             // 
@@ -368,16 +389,16 @@ namespace werkbank
             this.textBox_search.Location = new System.Drawing.Point(678, 10);
             this.textBox_search.Name = "textBox_search";
             this.textBox_search.Size = new System.Drawing.Size(273, 23);
-            this.textBox_search.TabIndex = 0;
+            this.textBox_search.TabIndex = 6;
             this.textBox_search.TextChanged += new System.EventHandler(this.SearchTextChanged);
             // 
             // progressBar_queue
             // 
             this.progressBar_queue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.progressBar_queue.Location = new System.Drawing.Point(181, 8);
+            this.progressBar_queue.Location = new System.Drawing.Point(268, 8);
             this.progressBar_queue.Name = "progressBar_queue";
             this.progressBar_queue.Size = new System.Drawing.Size(206, 25);
-            this.progressBar_queue.TabIndex = 4;
+            this.progressBar_queue.TabIndex = 5;
             // 
             // button_queue
             // 
@@ -389,10 +410,10 @@ namespace werkbank
             this.button_queue.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_queue.Image = global::werkbank.Properties.Resources.btn_queue;
             this.button_queue.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button_queue.Location = new System.Drawing.Point(92, 4);
+            this.button_queue.Location = new System.Drawing.Point(185, 4);
             this.button_queue.Name = "button_queue";
-            this.button_queue.Size = new System.Drawing.Size(83, 34);
-            this.button_queue.TabIndex = 3;
+            this.button_queue.Size = new System.Drawing.Size(77, 34);
+            this.button_queue.TabIndex = 4;
             this.button_queue.Text = "Queue";
             this.button_queue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.button_queue.UseVisualStyleBackColor = false;
@@ -454,5 +475,6 @@ namespace werkbank
         private Button button_werk_history;
         private TextBox textBox_search;
         private PictureBox pictureBox_serach;
+        private Button button_statistics;
     }
 }

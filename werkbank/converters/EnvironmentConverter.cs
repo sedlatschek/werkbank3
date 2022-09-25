@@ -1,9 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using werkbank.exceptions;
 using werkbank.repositories;
 
@@ -16,7 +11,7 @@ namespace werkbank.converters
             if (reader.Value != null)
             {
                 string handle = (string)reader.Value;
-                return EnvironmentRepository.ByHandle(handle);
+                return EnvironmentRepository.ByHandle(handle) ?? throw new NullReferenceException("Environment by handle \"" + handle + "\" is null");
             }
             throw new WerkDeserializationException("Can not deserialize environment from null");
         }

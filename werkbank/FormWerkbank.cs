@@ -178,6 +178,27 @@ namespace werkbank
 
         #region "vaults"
         /// <summary>
+        /// Get a list of all werke from all vaults.
+        /// </summary>
+        /// <returns></returns>
+        public List<Werk> GetWerke()
+        {
+            if (vaultHot == null
+                || vaultHot.List.Objects == null
+                || vaultCold == null
+                || vaultCold.List.Objects == null
+                || vaultArchive == null
+                || vaultArchive.List.Objects == null)
+            {
+                return new List<Werk>();
+            }
+            return vaultHot.List.Objects.Cast<Werk>()
+                .Concat(vaultCold.List.Objects.Cast<Werk>())
+                .Concat(vaultArchive.List.Objects.Cast<Werk>())
+                .ToList();
+        }
+
+        /// <summary>
         /// Clear all werk lists and gather them again.
         /// </summary>
         private void RefreshWerke()
@@ -426,6 +447,11 @@ namespace werkbank
             formSettings.DirColdVaultChanged += SettingDirColdVaultChanged;
             formSettings.DirArchiveVaultChanged += SettingDirArchiveVaultChanged;
             formSettings.ShowDialog();
+        }
+        private void ButtonStatisticsClick(object sender, EventArgs e)
+        {
+            FormStatistics formStatistics = new(GetWerke());
+            formStatistics.ShowDialog();
         }
 
         private void ButtonQueueClick(object sender, EventArgs e)

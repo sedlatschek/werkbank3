@@ -153,6 +153,16 @@ namespace werkbank.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap btn_stats {
+            get {
+                object obj = ResourceManager.GetObject("btn_stats", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap btn_up {
             get {
                 object obj = ResourceManager.GetObject("btn_up", resourceCulture);
@@ -246,8 +256,7 @@ namespace werkbank.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///[*]
+        ///   Looks up a localized string similar to [*]
         ///indent_style = space
         ///indent_size = 2
         ///end_of_line = lf
