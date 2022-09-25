@@ -354,11 +354,15 @@ namespace werkbank.controls
                                         icon = new Bitmap(bmpTemp);
                                     }
 
-                                    if (IconList.Images.ContainsKey(werk.Id.ToString()))
+                                    // experimental: ImageList does not seem to be thread safe
+                                    Invoke(new Action(() =>
                                     {
-                                        IconList.Images.RemoveByKey(werk.Id.ToString());
-                                    }
-                                    IconList.Images.Add(werk.Id.ToString(), icon);
+                                        if (IconList.Images.ContainsKey(werk.Id.ToString()))
+                                        {
+                                            IconList.Images.RemoveByKey(werk.Id.ToString());
+                                        }
+                                        IconList.Images.Add(werk.Id.ToString(), icon);
+                                    }));
                                 }
                                 break;
                             }
@@ -428,7 +432,8 @@ namespace werkbank.controls
                 int existingIndex = curWerke.FindIndex((w) => w.Id == werk.Id);
                 if (existingIndex != -1)
                 {
-                    // do nothing if we have an existing werk
+                    // only update some properties
+                    curWerke[existingIndex].LastModified = werk.LastModified;
                 }
                 else
                 {
@@ -447,6 +452,9 @@ namespace werkbank.controls
             }
 
             objectListView.SetObjects(curWerke);
+
+            // we do this so updated objects will also display the changes
+            objectListView.RefreshObjects(curWerke);
 
             GatherDone?.Invoke(this, EventArgs.Empty);
         }

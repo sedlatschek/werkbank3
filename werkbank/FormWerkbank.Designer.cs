@@ -54,6 +54,8 @@ namespace werkbank
             this.progressBar_queue = new System.Windows.Forms.ProgressBar();
             this.button_queue = new System.Windows.Forms.Button();
             this.timerQueue = new System.Windows.Forms.Timer(this.components);
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.notifyContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -424,6 +426,18 @@ namespace werkbank
             this.timerQueue.Interval = 1000;
             this.timerQueue.Tick += new System.EventHandler(this.TimerQueueTick);
             // 
+            // notifyIcon
+            // 
+            this.notifyIcon.ContextMenuStrip = this.notifyContextMenuStrip;
+            this.notifyIcon.Text = "Werkbank";
+            this.notifyIcon.Visible = true;
+            this.notifyIcon.Click += new System.EventHandler(this.NotifyIconClick);
+            // 
+            // notifyContextMenuStrip
+            // 
+            this.notifyContextMenuStrip.Name = "notifyContextMenuStrip";
+            this.notifyContextMenuStrip.Size = new System.Drawing.Size(61, 4);
+            // 
             // FormWerkbank
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -439,6 +453,7 @@ namespace werkbank
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormWerkbankClosing);
             this.Load += new System.EventHandler(this.FormWerkbankLoad);
             this.Shown += new System.EventHandler(this.FormWerkbankShown);
+            this.Resize += new System.EventHandler(this.FormWerkbankResize);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
@@ -476,5 +491,7 @@ namespace werkbank
         private TextBox textBox_search;
         private PictureBox pictureBox_serach;
         private Button button_statistics;
+        private NotifyIcon notifyIcon;
+        private ContextMenuStrip notifyContextMenuStrip;
     }
 }

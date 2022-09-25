@@ -68,6 +68,8 @@ namespace werkbank
 
             timerQueue.Interval = Settings.Properties.QueueTickInterval;
 
+            notifyIcon.Icon = Properties.Resources.logo;
+
             UpdateControlsAvailability();
             UpdateQueueProgressBar();
         }
@@ -93,7 +95,15 @@ namespace werkbank
 
         private void FormWerkbankClosing(object sender, FormClosingEventArgs e)
         {
-            formQueue.Save();
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                WinApiService.ShowWindow(Handle, WinApiService.ShowWindowCommands.Minimize);
+            }
+            else
+            {
+                formQueue.Save();
+            }
         }
         #endregion
 
@@ -168,6 +178,7 @@ namespace werkbank
             Invoke(new Action(() =>
             {
                 UpdateControlsAvailability();
+                UpdateNotifyIconContextMenu();
                 if (werk != null)
                 {
                     GetVaultFor(werk.State).List.RefreshObject(werk);
@@ -227,6 +238,7 @@ namespace werkbank
             if (gatherDoneCount >= 3)
             {
                 timerQueue.Start();
+                UpdateNotifyIconContextMenu();
             }
 
             UpdateControlsAvailability();
@@ -328,28 +340,36 @@ namespace werkbank
 
         private void ButtonCreateWerkClick(object sender, EventArgs e)
         {
-            FormWerk formWerk = new(iconList)
-            {
-                Mode = FormWerk.FormWerkMode.Create
-            };
-            if (formWerk.ShowDialog() == DialogResult.OK && formWerk.Werk != null)
-            {
-                vaultHot.List.AddObject(formWerk.Werk);
-                formWerk.Werk.OpenInFileExplorer();
-            }
+            ShowWerkForm(FormWerk.FormWerkMode.Create);
         }
 
         private void ButtonWerkEditClick(object sender, EventArgs e)
         {
-            if (selectedWerk != null)
+            ShowWerkForm(FormWerk.FormWerkMode.Edit);
+        }
+
+        private void ShowWerkForm(FormWerk.FormWerkMode WerkMode, FormStartPosition StartPosition = FormStartPosition.CenterParent)
+        {
+            FormWerk formWerk = new(iconList)
             {
-                FormWerk formWerk = new(iconList)
-                {
-                    Mode = FormWerk.FormWerkMode.Edit,
-                    Werk = selectedWerk
-                };
+                Mode = WerkMode,
+                StartPosition = StartPosition
+            };
+
+            if (WerkMode == FormWerk.FormWerkMode.Edit)
+            {
                 formWerk.EnvironmentChanged += WerkEnvironmentChanged;
-                if (formWerk.ShowDialog() == DialogResult.OK && formWerk.Werk != null)
+                formWerk.Werk = selectedWerk ?? throw new NullReferenceException("selectedWerk");
+            }
+
+            if (formWerk.ShowDialog() == DialogResult.OK && formWerk.Werk != null)
+            {
+                if (WerkMode == FormWerk.FormWerkMode.Create)
+                {
+                    vaultHot.List.AddObject(formWerk.Werk);
+                    formWerk.Werk.OpenInFileExplorer();
+                }
+                else if (WerkMode == FormWerk.FormWerkMode.Edit)
                 {
                     GetVaultFor(formWerk.Werk.State).List.RefreshObject(formWerk.Werk);
                 }
@@ -482,6 +502,53 @@ namespace werkbank
         private void SettingDirArchiveVaultChanged(object? sender, SettingChangedEventArgs e)
         {
             vaultArchive.GatherAsync();
+        }
+        #endregion
+
+        #region "notify icon"
+        private void FormWerkbankResize(object sender, EventArgs e)
+        {
+            ShowInTaskbar = WindowState != FormWindowState.Minimized;
+        }
+
+        private void NotifyIconClick(object sender, EventArgs e)
+        {
+            WinApiService.ShowWindow(Handle, WinApiService.ShowWindowCommands.Restore);
+        }
+
+        private void UpdateNotifyIconContextMenu()
+        {
+            notifyContextMenuStrip.Items.Clear();
+
+            notifyContextMenuStrip.ImageList = iconList;
+
+            foreach (Werk werk in GetWerke().OrderByDescending(w => w.LastModified).Take(10))
+            {
+                ToolStripItem item = notifyContextMenuStrip.Items.Add(werk.Name);
+                if (werk.HasIcon)
+                {
+                    item.ImageKey = werk.Id.ToString();
+                }
+                else
+                {
+                    item.ImageKey = "dummy";
+                }
+                item.Click += (sender, e) =>
+                {
+                    werk.OpenInFileExplorer();
+                };
+            }
+
+            notifyContextMenuStrip.Items.Add(new ToolStripSeparator());
+
+            notifyContextMenuStrip.Items.Add("Create Werk").Click += (sender, e) =>
+            {
+                ShowWerkForm(FormWerk.FormWerkMode.Create, FormStartPosition.CenterScreen);
+            };
+            notifyContextMenuStrip.Items.Add("Exit").Click += (sender, e) =>
+            {
+                Application.Exit();
+            };
         }
         #endregion
     }
