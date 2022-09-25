@@ -16,8 +16,24 @@ namespace werkbank.repositories
         /// </summary>
         public static readonly List<environments.Environment> Environments = new()
         {
-            new CSharpEnvironment(0),
-            new Delphi7Environment(1),
+            new AudioEnvironment(0),
+            new CppEnvironment(1),
+            new CSharpEnvironment(2),
+            new Delphi7Environment(3),
+            new Delphi10Environment(4),
+            new DockerEnvironment(5),
+            new JavaEnvironment(6),
+            new JavascriptEnvironment(7),
+            new MarkdownEnvironment(8),
+            new PhotoshopEnvironment(9),
+            new PhpEnvironment(10),
+            new PictureEnvironment(11),
+            new PremiereEnvironment(12),
+            new PythonEnvironment(13),
+            new TerraformEnvironment(14),
+            new UmlEnvironment(15),
+            new VegasEnvironment(16),
+            new WmmEnvironment(17),
         };
 
         /// <summary>

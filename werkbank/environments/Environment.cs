@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using werkbank.models;
+﻿using werkbank.models;
 using werkbank.transitions;
 
 namespace werkbank.environments
@@ -72,5 +67,35 @@ namespace werkbank.environments
         /// <param name="TransitionType"></param>
         /// <returns></returns>
         public virtual bool VerifyAfterTransition(Batch Batch, TransitionType TransitionType) => true;
+
+        /// <summary>
+        /// Write the werks .gitattributes file.
+        /// </summary>
+        /// <param name="Werk"></param>
+        /// <param name="Content"></param>
+        protected void WriteGitAttributes(Werk Werk, string Content)
+        {
+            File.WriteAllText(Path.Combine(Werk.CurrentDirectory, Config.FileNameGitAttributes), Content);
+        }
+
+        /// <summary>
+        /// Write the werks .gitignore file.
+        /// </summary>
+        /// <param name="Werk"></param>
+        /// <param name="Content"></param>
+        protected void WriteGitIgnore(Werk Werk, string Content)
+        {
+            File.WriteAllText(Path.Combine(Werk.CurrentDirectory, Config.FileNameGitIgnore), Content);
+        }
+
+        /// <summary>
+        /// Write the werks .editorconfig file
+        /// </summary>
+        /// <param name="Werk"></param>
+        /// <param name="Content"></param>
+        protected void WriteEditorConfig(Werk Werk, string Content)
+        {
+            File.WriteAllText(Path.Combine(Werk.CurrentDirectory, Config.FileNameEditorConfig), Content);
+        }
     }
 }

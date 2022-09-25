@@ -30,6 +30,9 @@ namespace werkbank
         public const string FileNameSettings = "settings.json";
         public const string FileNameQueue = "queue.json";
         public const string FileNameGitZip = "git.zip";
+        public const string FileNameGitAttributes = ".gitattributes";
+        public const string FileNameGitIgnore = ".gitignore";
+        public const string FileNameEditorConfig = ".editorconfig";
 
         public static readonly string DirAppData = Directory.CreateDirectory(GetAppDataPath()).FullName;
         public static readonly string FileSettings = Path.Combine(DirAppData, FileNameSettings);

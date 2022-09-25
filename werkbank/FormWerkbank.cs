@@ -1,5 +1,4 @@
 using BrightIdeasSoftware;
-using System.Diagnostics;
 using System.Globalization;
 using werkbank.controls;
 using werkbank.exceptions;

@@ -160,6 +160,12 @@
   <data name="csharp_gitignore" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\csharp_gitignore.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="default_editorconfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\default_editorconfig.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="default_gitattributes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\default_gitattributes.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
   <data name="delphi_gitignore" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\delphi_gitignore.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -168,6 +174,21 @@
   </data>
   <data name="icon_blank" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icon_blank.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="java_gitattributes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\java_gitattributes.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="java_gitignore" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\java_gitignore.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="js_gitignore" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\js_gitignore.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="php_gitignore" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\php_gitignore.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="python_gitignore" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\python_gitignore.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="vault_archive" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\vault_archive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

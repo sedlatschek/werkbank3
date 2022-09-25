@@ -29,9 +29,9 @@ namespace tests.controls
             ImageList IconList = new();
             WerkList werkList = new(IconList, WerkState.Hot);
 
-            Util.CreateDummyWerk(EnvironmentRepository.Environments[0], WerkState.Hot, "My C# Project");
-            Util.CreateDummyWerk(EnvironmentRepository.Environments[1], WerkState.Hot, "My Delphi 7 Project");
-            Util.CreateDummyWerk(EnvironmentRepository.Environments[1], WerkState.Cold, "Cold werk that should not be picked up");
+            Util.CreateDummyWerk(EnvironmentRepository.Environments[2], WerkState.Hot, "My C# Project");
+            Util.CreateDummyWerk(EnvironmentRepository.Environments[3], WerkState.Hot, "My Delphi 7 Project");
+            Util.CreateDummyWerk(EnvironmentRepository.Environments[3], WerkState.Cold, "Cold werk that should not be picked up");
 
             werkList.Gather();
 
@@ -51,7 +51,7 @@ namespace tests.controls
             ImageList IconList = new();
             WerkList werkList = new(IconList, WerkState.Cold);
 
-            Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[0], WerkState.Cold, "My Painting");
+            Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[2], WerkState.Cold, "My Painting");
 
             File.WriteAllText(
                 werk.CurrentWerkJson,

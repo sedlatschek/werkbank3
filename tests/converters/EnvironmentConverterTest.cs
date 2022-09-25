@@ -13,7 +13,7 @@ namespace tests.converters
     internal class Dummy
     {
         [JsonProperty("env"), JsonConverter(typeof(EnvironmentConverter))]
-        public werkbank.environments.Environment Environment = EnvironmentRepository.Environments[0];
+        public werkbank.environments.Environment Environment = EnvironmentRepository.Environments[2];
     }
 
     [TestClass]
