@@ -432,6 +432,11 @@ namespace werkbank.controls
                 int existingIndex = curWerke.FindIndex((w) => w.Id == werk.Id);
                 if (existingIndex != -1)
                 {
+                    if (werk.Name != curWerke[existingIndex].Name)
+                    {
+                        throw new DuplicateWerkException(werk.Id);
+                    }
+
                     // only update some properties
                     curWerke[existingIndex].LastModified = werk.LastModified;
                 }

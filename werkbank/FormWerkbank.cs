@@ -241,6 +241,7 @@ namespace werkbank
             {
                 timerQueue.Start();
                 UpdateNotifyIconContextMenu();
+                VerifyIntegrity();
             }
 
             UpdateControlsAvailability();
@@ -281,6 +282,40 @@ namespace werkbank
                 WerkState.Archived => vaultArchive,
                 _ => throw new UnhandledWerkStateException(State),
             };
+        }
+
+        private void VerifyIntegrity()
+        {
+            List<Werk> werke = GetWerke();
+
+            // check whether some ids have been assigned multiple times
+            // this will likely only occur when somebody copied a werk
+            var duplicateId = werke.GroupBy(w => w.Id)
+                    .Select(group => new
+                    {
+                        Id = group.Key,
+                        Count = group.Count()
+                    })
+                    .Where(w => w.Count > 1)
+                    .FirstOrDefault();
+            if (duplicateId != null)
+            {
+                throw new DuplicateWerkException(duplicateId.Id);
+            }
+
+            // check whether some names have been assigned multiple times
+            var duplicateName = werke.GroupBy(w => w.Name)
+                .Select(group => new
+                {
+                    Name = group.Key,
+                    Count = group.Count()
+                })
+                .Where(w => w.Count > 1)
+                .FirstOrDefault();
+            if (duplicateName != null)
+            {
+                throw new DuplicateWerkException(duplicateName.Name);
+            }
         }
         #endregion
 
