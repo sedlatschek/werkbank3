@@ -39,10 +39,6 @@ Currently operation ignore lists only apply to the copy operation, as it was not
 
 ## ToDos
 
-### Core ToDos
-
-- CAD environment
-
 ### Optional ToDos
 
 - Integrate GitHub Api to automatically create repositories for new werke

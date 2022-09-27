@@ -14,27 +14,49 @@ namespace werkbank.repositories
         /// <summary>
         /// List of all environments.
         /// </summary>
-        public static readonly List<environments.Environment> Environments = new()
+        public static readonly List<environments.Environment> Environments = Init();
+
+        /// <summary>
+        /// Initiate the environment repository.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        private static List<environments.Environment> Init()
         {
-            new AudioEnvironment(0),
-            new CppEnvironment(1),
-            new CSharpEnvironment(2),
-            new Delphi7Environment(3),
-            new Delphi10Environment(4),
-            new DockerEnvironment(5),
-            new JavaEnvironment(6),
-            new JavascriptEnvironment(7),
-            new MarkdownEnvironment(8),
-            new PhotoshopEnvironment(9),
-            new PhpEnvironment(10),
-            new PictureEnvironment(11),
-            new PremiereEnvironment(12),
-            new PythonEnvironment(13),
-            new TerraformEnvironment(14),
-            new UmlEnvironment(15),
-            new VegasEnvironment(16),
-            new WmmEnvironment(17),
-        };
+            List<environments.Environment> list = new();
+
+            var add = delegate (Type type)
+            {
+                object? obj = Activator.CreateInstance(type, list.Count);
+                if (obj == null)
+                {
+                    throw new Exception("Could not initiate environments dynamically");
+                }
+                list.Add((environments.Environment)obj);
+            };
+
+            add(typeof(AudioEnvironment));
+            add(typeof(CadEnvironment));
+            add(typeof(CppEnvironment));
+            add(typeof(CSharpEnvironment));
+            add(typeof(Delphi7Environment));
+            add(typeof(Delphi10Environment));
+            add(typeof(DockerEnvironment));
+            add(typeof(JavaEnvironment));
+            add(typeof(JavascriptEnvironment));
+            add(typeof(MarkdownEnvironment));
+            add(typeof(PhotoshopEnvironment));
+            add(typeof(PhpEnvironment));
+            add(typeof(PictureEnvironment));
+            add(typeof(PremiereEnvironment));
+            add(typeof(PythonEnvironment));
+            add(typeof(TerraformEnvironment));
+            add(typeof(UmlEnvironment));
+            add(typeof(VegasEnvironment));
+            add(typeof(WmmEnvironment));
+
+            return list;
+        }
 
         /// <summary>
         /// List of the directories of all environments.
