@@ -1,4 +1,5 @@
 using BrightIdeasSoftware;
+using System.Diagnostics;
 using System.Globalization;
 using werkbank.controls;
 using werkbank.exceptions;
@@ -351,7 +352,20 @@ namespace werkbank
 
         private void ShowWerkForm(FormWerk.FormWerkMode WerkMode, FormStartPosition StartPosition = FormStartPosition.CenterParent)
         {
-            FormWerk formWerk = new(iconList)
+            // retrieve the most used environment for create mode preselection
+            environments.Environment? environment = WerkMode == FormWerk.FormWerkMode.Edit
+                ? null
+                : GetWerke()
+                    .GroupBy(w => w.Environment)
+                    .Select(group => new
+                    {
+                        Environment = group.Key,
+                        Count = group.Count()
+                    })
+                    .OrderByDescending(w => w.Count)
+                    .First().Environment;
+
+            FormWerk formWerk = new(iconList, environment)
             {
                 Mode = WerkMode,
                 StartPosition = StartPosition

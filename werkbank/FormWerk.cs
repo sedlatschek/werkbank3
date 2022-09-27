@@ -105,7 +105,7 @@ namespace werkbank
             }
         }
 
-        public FormWerk(ImageList? IconList = null)
+        public FormWerk(ImageList? IconList = null, environments.Environment? PreselectEnvironment = null)
         {
             if (IconList != null)
             {
@@ -124,7 +124,9 @@ namespace werkbank
             {
                 comboBox_werk_environment.Items.Add(environment.Name);
             }
-            comboBox_werk_environment.SelectedIndex = 0;
+
+            comboBox_werk_environment.SelectedIndex = PreselectEnvironment == null ? 0
+                : EnvironmentRepository.Environments.IndexOf(PreselectEnvironment);
 
             UpdateButtonAvailability();
         }
