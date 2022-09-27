@@ -44,16 +44,24 @@
             this.textBox_settings_dir_hot = new System.Windows.Forms.TextBox();
             this.button_cancel = new System.Windows.Forms.Button();
             this.button_save = new System.Windows.Forms.Button();
-            this.groupBox_archiving = new System.Windows.Forms.GroupBox();
+            this.groupBox_settings_archiving = new System.Windows.Forms.GroupBox();
             this.label_settings_archiving_compression_desc2 = new System.Windows.Forms.Label();
             this.label_settings_archiving_compression_desc1 = new System.Windows.Forms.Label();
             this.label_settings_archiving_compression = new System.Windows.Forms.Label();
             this.trackBar_settings_archiving_compression = new System.Windows.Forms.TrackBar();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.groupBox_settings_queue = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.numericUpDown_settings_queue_retry_timeout = new System.Windows.Forms.NumericUpDown();
+            this.label_settings_queue_tick_interval = new System.Windows.Forms.Label();
+            this.numericUpDown_settings_queue_tick_interval = new System.Windows.Forms.NumericUpDown();
             this.groupBox_settings_startup.SuspendLayout();
             this.groupBox_settings_directories.SuspendLayout();
-            this.groupBox_archiving.SuspendLayout();
+            this.groupBox_settings_archiving.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_settings_archiving_compression)).BeginInit();
+            this.groupBox_settings_queue.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_settings_queue_retry_timeout)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_settings_queue_tick_interval)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox_settings_startup
@@ -65,7 +73,7 @@
             this.groupBox_settings_startup.Controls.Add(this.checkBox_settings_autostart);
             this.groupBox_settings_startup.Location = new System.Drawing.Point(12, 12);
             this.groupBox_settings_startup.Name = "groupBox_settings_startup";
-            this.groupBox_settings_startup.Size = new System.Drawing.Size(325, 97);
+            this.groupBox_settings_startup.Size = new System.Drawing.Size(320, 97);
             this.groupBox_settings_startup.TabIndex = 0;
             this.groupBox_settings_startup.TabStop = false;
             this.groupBox_settings_startup.Text = "Startup";
@@ -115,7 +123,7 @@
             this.groupBox_settings_directories.Controls.Add(this.textBox_settings_dir_hot);
             this.groupBox_settings_directories.Location = new System.Drawing.Point(12, 115);
             this.groupBox_settings_directories.Name = "groupBox_settings_directories";
-            this.groupBox_settings_directories.Size = new System.Drawing.Size(325, 157);
+            this.groupBox_settings_directories.Size = new System.Drawing.Size(320, 157);
             this.groupBox_settings_directories.TabIndex = 1;
             this.groupBox_settings_directories.TabStop = false;
             this.groupBox_settings_directories.Text = "Directories";
@@ -132,7 +140,7 @@
             // button_settings_dir_archive_select
             // 
             this.button_settings_dir_archive_select.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_settings_dir_archive_select.Location = new System.Drawing.Point(244, 122);
+            this.button_settings_dir_archive_select.Location = new System.Drawing.Point(239, 122);
             this.button_settings_dir_archive_select.Name = "button_settings_dir_archive_select";
             this.button_settings_dir_archive_select.Size = new System.Drawing.Size(75, 25);
             this.button_settings_dir_archive_select.TabIndex = 9;
@@ -146,7 +154,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox_settings_dir_archive.Location = new System.Drawing.Point(6, 123);
             this.textBox_settings_dir_archive.Name = "textBox_settings_dir_archive";
-            this.textBox_settings_dir_archive.Size = new System.Drawing.Size(232, 23);
+            this.textBox_settings_dir_archive.Size = new System.Drawing.Size(227, 23);
             this.textBox_settings_dir_archive.TabIndex = 8;
             // 
             // label_settings_dir_cold
@@ -161,7 +169,7 @@
             // button_settings_dir_cold_select
             // 
             this.button_settings_dir_cold_select.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_settings_dir_cold_select.Location = new System.Drawing.Point(244, 78);
+            this.button_settings_dir_cold_select.Location = new System.Drawing.Point(239, 78);
             this.button_settings_dir_cold_select.Name = "button_settings_dir_cold_select";
             this.button_settings_dir_cold_select.Size = new System.Drawing.Size(75, 25);
             this.button_settings_dir_cold_select.TabIndex = 6;
@@ -175,7 +183,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox_settings_dir_cold.Location = new System.Drawing.Point(6, 79);
             this.textBox_settings_dir_cold.Name = "textBox_settings_dir_cold";
-            this.textBox_settings_dir_cold.Size = new System.Drawing.Size(232, 23);
+            this.textBox_settings_dir_cold.Size = new System.Drawing.Size(227, 23);
             this.textBox_settings_dir_cold.TabIndex = 5;
             // 
             // label_settings_dir_hot
@@ -190,7 +198,7 @@
             // button_settings_dir_hot_select
             // 
             this.button_settings_dir_hot_select.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_settings_dir_hot_select.Location = new System.Drawing.Point(244, 34);
+            this.button_settings_dir_hot_select.Location = new System.Drawing.Point(239, 34);
             this.button_settings_dir_hot_select.Name = "button_settings_dir_hot_select";
             this.button_settings_dir_hot_select.Size = new System.Drawing.Size(75, 25);
             this.button_settings_dir_hot_select.TabIndex = 3;
@@ -204,13 +212,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox_settings_dir_hot.Location = new System.Drawing.Point(6, 35);
             this.textBox_settings_dir_hot.Name = "textBox_settings_dir_hot";
-            this.textBox_settings_dir_hot.Size = new System.Drawing.Size(232, 23);
+            this.textBox_settings_dir_hot.Size = new System.Drawing.Size(227, 23);
             this.textBox_settings_dir_hot.TabIndex = 2;
             // 
             // button_cancel
             // 
             this.button_cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button_cancel.Location = new System.Drawing.Point(12, 376);
+            this.button_cancel.Location = new System.Drawing.Point(12, 491);
             this.button_cancel.Name = "button_cancel";
             this.button_cancel.Size = new System.Drawing.Size(75, 23);
             this.button_cancel.TabIndex = 4;
@@ -221,7 +229,7 @@
             // button_save
             // 
             this.button_save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_save.Location = new System.Drawing.Point(262, 376);
+            this.button_save.Location = new System.Drawing.Point(257, 491);
             this.button_save.Name = "button_save";
             this.button_save.Size = new System.Drawing.Size(75, 23);
             this.button_save.TabIndex = 5;
@@ -229,21 +237,20 @@
             this.button_save.UseVisualStyleBackColor = true;
             this.button_save.Click += new System.EventHandler(this.ButtonSaveClick);
             // 
-            // groupBox_archiving
+            // groupBox_settings_archiving
             // 
-            this.groupBox_archiving.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupBox_settings_archiving.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox_archiving.Controls.Add(this.label_settings_archiving_compression_desc2);
-            this.groupBox_archiving.Controls.Add(this.label_settings_archiving_compression_desc1);
-            this.groupBox_archiving.Controls.Add(this.label_settings_archiving_compression);
-            this.groupBox_archiving.Controls.Add(this.trackBar_settings_archiving_compression);
-            this.groupBox_archiving.Location = new System.Drawing.Point(13, 277);
-            this.groupBox_archiving.Name = "groupBox_archiving";
-            this.groupBox_archiving.Size = new System.Drawing.Size(324, 93);
-            this.groupBox_archiving.TabIndex = 3;
-            this.groupBox_archiving.TabStop = false;
-            this.groupBox_archiving.Text = "Archiving";
+            this.groupBox_settings_archiving.Controls.Add(this.label_settings_archiving_compression_desc2);
+            this.groupBox_settings_archiving.Controls.Add(this.label_settings_archiving_compression_desc1);
+            this.groupBox_settings_archiving.Controls.Add(this.label_settings_archiving_compression);
+            this.groupBox_settings_archiving.Controls.Add(this.trackBar_settings_archiving_compression);
+            this.groupBox_settings_archiving.Location = new System.Drawing.Point(13, 277);
+            this.groupBox_settings_archiving.Name = "groupBox_settings_archiving";
+            this.groupBox_settings_archiving.Size = new System.Drawing.Size(319, 84);
+            this.groupBox_settings_archiving.TabIndex = 2;
+            this.groupBox_settings_archiving.TabStop = false;
+            this.groupBox_settings_archiving.Text = "Archiving";
             // 
             // label_settings_archiving_compression_desc2
             // 
@@ -284,17 +291,96 @@
             this.trackBar_settings_archiving_compression.TabIndex = 1;
             this.trackBar_settings_archiving_compression.Value = 9;
             // 
+            // groupBox_settings_queue
+            // 
+            this.groupBox_settings_queue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox_settings_queue.Controls.Add(this.label1);
+            this.groupBox_settings_queue.Controls.Add(this.numericUpDown_settings_queue_retry_timeout);
+            this.groupBox_settings_queue.Controls.Add(this.label_settings_queue_tick_interval);
+            this.groupBox_settings_queue.Controls.Add(this.numericUpDown_settings_queue_tick_interval);
+            this.groupBox_settings_queue.Location = new System.Drawing.Point(12, 367);
+            this.groupBox_settings_queue.Name = "groupBox_settings_queue";
+            this.groupBox_settings_queue.Size = new System.Drawing.Size(320, 117);
+            this.groupBox_settings_queue.TabIndex = 3;
+            this.groupBox_settings_queue.TabStop = false;
+            this.groupBox_settings_queue.Text = "Queue";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 66);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(108, 15);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Retry Timeout [ms]";
+            // 
+            // numericUpDown_settings_queue_retry_timeout
+            // 
+            this.numericUpDown_settings_queue_retry_timeout.Location = new System.Drawing.Point(7, 83);
+            this.numericUpDown_settings_queue_retry_timeout.Maximum = new decimal(new int[] {
+            10800000,
+            0,
+            0,
+            0});
+            this.numericUpDown_settings_queue_retry_timeout.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDown_settings_queue_retry_timeout.Name = "numericUpDown_settings_queue_retry_timeout";
+            this.numericUpDown_settings_queue_retry_timeout.Size = new System.Drawing.Size(102, 23);
+            this.numericUpDown_settings_queue_retry_timeout.TabIndex = 9;
+            this.numericUpDown_settings_queue_retry_timeout.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            // 
+            // label_settings_queue_tick_interval
+            // 
+            this.label_settings_queue_tick_interval.AutoSize = true;
+            this.label_settings_queue_tick_interval.Location = new System.Drawing.Point(6, 19);
+            this.label_settings_queue_tick_interval.Name = "label_settings_queue_tick_interval";
+            this.label_settings_queue_tick_interval.Size = new System.Drawing.Size(97, 15);
+            this.label_settings_queue_tick_interval.TabIndex = 8;
+            this.label_settings_queue_tick_interval.Text = "Tick Interval [ms]";
+            // 
+            // numericUpDown_settings_queue_tick_interval
+            // 
+            this.numericUpDown_settings_queue_tick_interval.Location = new System.Drawing.Point(7, 36);
+            this.numericUpDown_settings_queue_tick_interval.Maximum = new decimal(new int[] {
+            3600000,
+            0,
+            0,
+            0});
+            this.numericUpDown_settings_queue_tick_interval.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.numericUpDown_settings_queue_tick_interval.Name = "numericUpDown_settings_queue_tick_interval";
+            this.numericUpDown_settings_queue_tick_interval.Size = new System.Drawing.Size(102, 23);
+            this.numericUpDown_settings_queue_tick_interval.TabIndex = 0;
+            this.numericUpDown_settings_queue_tick_interval.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(349, 411);
-            this.Controls.Add(this.groupBox_archiving);
+            this.ClientSize = new System.Drawing.Size(344, 526);
+            this.Controls.Add(this.groupBox_settings_queue);
+            this.Controls.Add(this.groupBox_settings_archiving);
             this.Controls.Add(this.button_save);
             this.Controls.Add(this.button_cancel);
             this.Controls.Add(this.groupBox_settings_directories);
             this.Controls.Add(this.groupBox_settings_startup);
-            this.MinimumSize = new System.Drawing.Size(360, 441);
+            this.MinimumSize = new System.Drawing.Size(360, 565);
             this.Name = "FormSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Werkbank: Settings";
@@ -302,9 +388,13 @@
             this.groupBox_settings_startup.PerformLayout();
             this.groupBox_settings_directories.ResumeLayout(false);
             this.groupBox_settings_directories.PerformLayout();
-            this.groupBox_archiving.ResumeLayout(false);
-            this.groupBox_archiving.PerformLayout();
+            this.groupBox_settings_archiving.ResumeLayout(false);
+            this.groupBox_settings_archiving.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_settings_archiving_compression)).EndInit();
+            this.groupBox_settings_queue.ResumeLayout(false);
+            this.groupBox_settings_queue.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_settings_queue_retry_timeout)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_settings_queue_tick_interval)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -327,11 +417,16 @@
         private Label label_settings_dir_cold;
         private Button button_settings_dir_cold_select;
         private TextBox textBox_settings_dir_cold;
-        private GroupBox groupBox_archiving;
+        private GroupBox groupBox_settings_archiving;
         private Label label_settings_archiving_compression;
         private TrackBar trackBar_settings_archiving_compression;
         private Label label_settings_archiving_compression_desc2;
         private Label label_settings_archiving_compression_desc1;
         private FolderBrowserDialog folderBrowserDialog;
+        private GroupBox groupBox_settings_queue;
+        private Label label1;
+        private NumericUpDown numericUpDown_settings_queue_retry_timeout;
+        private Label label_settings_queue_tick_interval;
+        private NumericUpDown numericUpDown_settings_queue_tick_interval;
     }
 }

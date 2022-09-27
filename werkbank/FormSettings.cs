@@ -11,6 +11,8 @@ namespace werkbank
         public event EventHandler<SettingChangedEventArgs>? DirColdVaultChanged;
         public event EventHandler<SettingChangedEventArgs>? DirArchiveVaultChanged;
         public event EventHandler<SettingChangedEventArgs>? ArchiveCompressionLevelChanged;
+        public event EventHandler<SettingChangedEventArgs>? QueueTickIntervalChanged;
+        public event EventHandler<SettingChangedEventArgs>? OperationRetryTimeoutChanged;
 
         public FormSettings()
         {
@@ -28,6 +30,9 @@ namespace werkbank
             textBox_settings_dir_archive.Text = Settings.Properties.DirArchiveVault;
 
             trackBar_settings_archiving_compression.Value = Settings.Properties.ArchiveCompressionLevel;
+
+            numericUpDown_settings_queue_tick_interval.Value = Settings.Properties.QueueTickInterval;
+            numericUpDown_settings_queue_retry_timeout.Value = Settings.Properties.OperationRetryTimeout;
         }
         private void ButtonSettingsDirHotSelectClick(object sender, EventArgs e)
         {
@@ -103,6 +108,18 @@ namespace werkbank
             {
                 ArchiveCompressionLevelChanged?.Invoke(this, new SettingChangedEventArgs() { OldValue = Settings.Properties.ArchiveCompressionLevel, NewValue = trackBar_settings_archiving_compression.Value });
                 Settings.Properties.ArchiveCompressionLevel = trackBar_settings_archiving_compression.Value;
+            }
+
+            if ((int)numericUpDown_settings_queue_tick_interval.Value != Settings.Properties.QueueTickInterval)
+            {
+                QueueTickIntervalChanged?.Invoke(this, new SettingChangedEventArgs() { OldValue = Settings.Properties.QueueTickInterval, NewValue = (int)numericUpDown_settings_queue_tick_interval.Value });
+                Settings.Properties.QueueTickInterval = (int)numericUpDown_settings_queue_tick_interval.Value;
+            }
+
+            if ((int)numericUpDown_settings_queue_retry_timeout.Value != Settings.Properties.OperationRetryTimeout)
+            {
+                OperationRetryTimeoutChanged?.Invoke(this, new SettingChangedEventArgs() { OldValue = Settings.Properties.OperationRetryTimeout, NewValue = (int)numericUpDown_settings_queue_retry_timeout.Value });
+                Settings.Properties.OperationRetryTimeout = (int)numericUpDown_settings_queue_retry_timeout.Value;
             }
 
             Settings.Save();
