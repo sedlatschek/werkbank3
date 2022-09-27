@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using werkbank.converters;
 using werkbank.exceptions;
 using werkbank.services;
 using werkbank.transitions;
@@ -44,8 +42,6 @@ namespace werkbank.operations
         protected string? source;
         [JsonProperty("dest")]
         protected string? dest;
-        [JsonProperty("ignore")]
-        protected List<string>? ignoreList;
         [JsonIgnore]
         protected Exception? error;
         [JsonIgnore]
@@ -74,8 +70,6 @@ namespace werkbank.operations
         public string? Source => source;
         [JsonIgnore]
         public string? Destination => dest;
-        [JsonIgnore]
-        public List<string>? IgnoreList => ignoreList;
 
         [JsonIgnore]
         public OperationType Type => type;
@@ -91,14 +85,13 @@ namespace werkbank.operations
             }
         }
 
-        public Operation(OperationType Type, Batch Batch, string? Source, string? Destination, List<string>? IgnoreList)
+        public Operation(OperationType Type, Batch Batch, string? Source, string? Destination)
         {
             guid = Guid.NewGuid();
             type = Type;
             created = DateTime.Now;
             source = Source;
             dest = Destination;
-            ignoreList = IgnoreList;
             this.Batch = Batch;
         }
 
@@ -131,7 +124,7 @@ namespace werkbank.operations
             {
                 OperationType.AfterTransitionEvent => AfterTransition.Perform(Batch),
                 OperationType.BeforeTransitionEvent => BeforeTransition.Perform(Batch),
-                OperationType.Copy => Copy.Perform(Source, Destination, IgnoreList),
+                OperationType.Copy => Copy.Perform(Source, Destination, Batch.IgnoreList),
                 OperationType.CreateDirectory => CreateDirectory.Perform(Destination),
                 OperationType.Delete => Delete.Perform(Destination),
                 OperationType.Hide => Hide.Perform(Destination),
@@ -150,7 +143,7 @@ namespace werkbank.operations
             {
                 OperationType.AfterTransitionEvent => AfterTransition.Verify(Batch),
                 OperationType.BeforeTransitionEvent => BeforeTransition.Verify(Batch),
-                OperationType.Copy => Copy.Verify(Source, Destination, IgnoreList),
+                OperationType.Copy => Copy.Verify(Source, Destination, Batch.IgnoreList),
                 OperationType.CreateDirectory => CreateDirectory.Verify(Destination),
                 OperationType.Delete => Delete.Verify(Destination),
                 OperationType.Hide => Hide.Verify(Destination),

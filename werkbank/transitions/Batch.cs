@@ -36,9 +36,6 @@ namespace werkbank.transitions
         private readonly string title;
         [JsonIgnore]
         public string Title => title;
-        [JsonProperty("transitionType")]
-        protected TransitionType transitionType;
-
         [JsonProperty("werkId")]
         private Guid werkId;
         [JsonIgnore]
@@ -65,8 +62,16 @@ namespace werkbank.transitions
         private Exception? error;
         [JsonIgnore]
         public Exception? Error => error;
+
+        [JsonProperty("transitionType")]
+        protected TransitionType transitionType;
         [JsonIgnore]
         public TransitionType TransitionType => transitionType;
+
+        [JsonProperty("ignore")]
+        protected List<string> ignoreList;
+        [JsonIgnore]
+        public List<string> IgnoreList => ignoreList;
 
         [JsonIgnore]
         public bool Done => Operations.All((op) => op.Success);
@@ -96,6 +101,7 @@ namespace werkbank.transitions
             werkId = Werk.Id;
             transitionType = TransitionType;
             Operations = new List<Operation>();
+            ignoreList = new List<string>();
             title = Title;
         }
 
@@ -103,6 +109,7 @@ namespace werkbank.transitions
         public Batch(string Title)
         {
             Operations = new List<Operation>();
+            ignoreList = new List<string>();
             title = Title;
         }
 
@@ -172,7 +179,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation TriggerAfterTransitionEvent()
         {
-            Operation op = new(OperationType.AfterTransitionEvent, this, null, null, null);
+            Operation op = new(OperationType.AfterTransitionEvent, this, null, null);
             Operations.Add(op);
             return op;
         }
@@ -180,10 +187,11 @@ namespace werkbank.transitions
         /// <summary>
         /// Create operation to trigger the environments before transition event and add it to the batch.
         /// </summary>
+        /// <param name="IgnoreList"></param>
         /// <returns></returns>
         public Operation TriggerBeforeTransitionEvent()
         {
-            Operation op = new(OperationType.BeforeTransitionEvent, this, null, null, null);
+            Operation op = new(OperationType.BeforeTransitionEvent, this, null, null);
             Operations.Add(op);
             return op;
         }
@@ -196,21 +204,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Copy(string SourcePath, string DestinationPath)
         {
-            Operation op = new(OperationType.Copy, this, SourcePath, DestinationPath, null);
-            Operations.Add(op);
-            return op;
-        }
-
-        /// <summary>
-        /// Create operation to copy a file or a directory and add it to the batch.
-        /// </summary>
-        /// <param name="SourcePath"></param>
-        /// <param name="DestinationPath"></param>
-        /// <param name="BlacklistedPaths"></param>
-        /// <returns></returns>
-        public Operation Copy(string SourcePath, string DestinationPath, List<string>? BlacklistedPaths)
-        {
-            Operation op = new(OperationType.Copy, this, SourcePath, DestinationPath, BlacklistedPaths);
+            Operation op = new(OperationType.Copy, this, SourcePath, DestinationPath);
             Operations.Add(op);
             return op;
         }
@@ -222,7 +216,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation CreateDirectory(string DestinationPath)
         {
-            Operation op = new(OperationType.CreateDirectory, this, null, DestinationPath, null);
+            Operation op = new(OperationType.CreateDirectory, this, null, DestinationPath);
             Operations.Add(op);
             return op;
         }
@@ -234,7 +228,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Delete(string TargetPath)
         {
-            Operation op = new(OperationType.Delete, this, null, TargetPath, null);
+            Operation op = new(OperationType.Delete, this, null, TargetPath);
             Operations.Add(op);
             return op;
         }
@@ -246,7 +240,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Hide(string TargetPath)
         {
-            Operation op = new(OperationType.Hide, this, null, TargetPath, null);
+            Operation op = new(OperationType.Hide, this, null, TargetPath);
             Operations.Add(op);
             return op;
         }
@@ -259,7 +253,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation MoveFile(string SourcePath, string DestinationPath)
         {
-            Operation op = new(OperationType.MoveFile, this, SourcePath, DestinationPath, null);
+            Operation op = new(OperationType.MoveFile, this, SourcePath, DestinationPath);
             Operations.Add(op);
             return op;
         }
@@ -271,7 +265,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Unhide(string TargetPath)
         {
-            Operation op = new(OperationType.Unhide, this, null, TargetPath, null);
+            Operation op = new(OperationType.Unhide, this, null, TargetPath);
             Operations.Add(op);
             return op;
         }
@@ -284,7 +278,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Unzip(string SourceZip, string DestinationPath)
         {
-            Operation op = new(OperationType.Unzip, this, SourceZip, DestinationPath, null);
+            Operation op = new(OperationType.Unzip, this, SourceZip, DestinationPath);
             Operations.Add(op);
             return op;
         }
@@ -297,7 +291,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Write(string DestinationPath, string Content)
         {
-            Operation op = new(OperationType.Write, this, Content, DestinationPath, null);
+            Operation op = new(OperationType.Write, this, Content, DestinationPath);
             Operations.Add(op);
             return op;
         }
@@ -310,7 +304,7 @@ namespace werkbank.transitions
         /// <returns></returns>
         public Operation Zip(string SourcePath, string DestinationPath)
         {
-            Operation op = new(OperationType.Zip, this, SourcePath, DestinationPath, null);
+            Operation op = new(OperationType.Zip, this, SourcePath, DestinationPath);
             Operations.Add(op);
             return op;
         }

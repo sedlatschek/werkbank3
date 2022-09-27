@@ -58,7 +58,7 @@ namespace werkbank.transitions
             // hide meta dir
             batch.Hide(coldMetaDir);
 
-            // change state to cold and save            
+            // change state to cold and save
             Werk.TransitionType = null;
             Werk.State = WerkState.Cold;
             Werk.UpdateHistory();

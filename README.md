@@ -33,12 +33,15 @@ Additionaly environments allow to preset werk configurations. I want my video fi
 
 This is actually the third version of this software, going from a C# implementation that was done quick and dirty, an electron implementation that was far too much work to get running reliably, to this, another C# implementation with an additional focus on tests.
 
+## Code
+
+Currently operation ignore lists only apply to the copy operation, as it was not needed yet for any other operation. Be aware of that when using ignore lists to program transitions.
+
 ## ToDos
 
 ### Core ToDos
 
 - CAD environment
-- Ignore lists for `node_modules`, `vendor` and `packages`
 
 ### Optional ToDos
 
@@ -46,3 +49,4 @@ This is actually the third version of this software, going from a C# implementat
 - Add automatic backup trigger
 - Installer/Updater
 - GitHub CI/CD for releases and tests
+- Implement ignore list for all operations

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Packaging;
 using System.Linq;
 using System.Text;
@@ -25,8 +26,6 @@ namespace werkbank.transitions
 
             Batch batch = new(Werk, Type, Title);
 
-            List<string> ignoreList = new();
-
             // determine paths
             string hotDir = Werk.GetDirectoryFor(WerkState.Hot);
             string hotMetaDir = Path.Combine(hotDir, Config.DirNameMeta);
@@ -38,7 +37,7 @@ namespace werkbank.transitions
             batch.TriggerBeforeTransitionEvent();
 
             // add .werk directory to blacklist
-            ignoreList.Add(hotMetaDir);
+            batch.IgnoreList.Add(hotMetaDir);
 
             // clean up cold dir
             batch.Delete(coldDir);
@@ -47,12 +46,12 @@ namespace werkbank.transitions
             // zip up git dir
             if (Directory.Exists(gitDir))
             {
-                ignoreList.Add(gitDir);
+                batch.IgnoreList.Add(gitDir);
                 batch.Zip(gitDir, gitZip);
             }
 
             // copy directories that are not blacklisted
-            batch.Copy(hotDir, coldDir, ignoreList);
+            batch.Copy(hotDir, coldDir);
 
             // trigger after transition events
             batch.TriggerAfterTransitionEvent();
