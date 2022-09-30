@@ -1,12 +1,17 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Drawing;
+using System.Runtime.InteropServices;
+using static werkbank.services.WinApiService;
 
 namespace werkbank.services
 {
     internal static class WinApiService
     {
         [DllImport("user32.dll")]
-        public static extern bool ShowWindow(IntPtr hWnd, ShowWindowCommands nCmdShow);
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, ShowWindowCommands nCmdShow);
         public enum ShowWindowCommands
         {
             /// <summary>
@@ -80,5 +85,106 @@ namespace werkbank.services
             /// </summary>
             ForceMinimize = 11
         }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
+
+        /// <summary>
+        /// Contains information about the placement of a window on the screen.
+        /// </summary>
+        [Serializable]
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct WindowPlacement
+        {
+            /// <summary>
+            /// The length of the structure, in bytes. Before calling the GetWindowPlacement or SetWindowPlacement functions, set this member to sizeof(WINDOWPLACEMENT).
+            /// <para>
+            /// GetWindowPlacement and SetWindowPlacement fail if this member is not set correctly.
+            /// </para>
+            /// </summary>
+            public int Length;
+
+            /// <summary>
+            /// Specifies flags that control the position of the minimized window and the method by which the window is restored.
+            /// </summary>
+            public int Flags;
+
+            /// <summary>
+            /// The current show state of the window.
+            /// </summary>
+            public ShowWindowCommands ShowCmd;
+
+            /// <summary>
+            /// The coordinates of the window's upper-left corner when the window is minimized.
+            /// </summary>
+            public System.Drawing.Point MinPosition;
+
+            /// <summary>
+            /// The coordinates of the window's upper-left corner when the window is maximized.
+            /// </summary>
+            public System.Drawing.Point MaxPosition;
+
+            /// <summary>
+            /// The window's coordinates when the window is in the restored position.
+            /// </summary>
+            public System.Drawing.Rectangle NormalPosition;
+
+            /// <summary>
+            /// Gets the default (empty) value.
+            /// </summary>
+            public static WindowPlacement Default
+            {
+                get
+                {
+                    WindowPlacement result = new WindowPlacement();
+                    result.Length = Marshal.SizeOf(result);
+                    return result;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Retrieves a handle to the top-level window whose class name and window name match the specified strings. This
+        ///     function does not search child windows. This function does not perform a case-sensitive search. To search child
+        ///     windows, beginning with a specified child window, use the
+        ///     <see cref="!:https://msdn.microsoft.com/en-us/library/windows/desktop/ms633500%28v=vs.85%29.aspx">FindWindowEx</see>
+        ///     function.
+        ///     <para>
+        ///     Go to https://msdn.microsoft.com/en-us/library/windows/desktop/ms633499%28v=vs.85%29.aspx for FindWindow
+        ///     information or https://msdn.microsoft.com/en-us/library/windows/desktop/ms633500%28v=vs.85%29.aspx for
+        ///     FindWindowEx
+        ///     </para>
+        /// </summary>
+        /// <param name="lpClassName">
+        ///     C++ ( lpClassName [in, optional]. Type: LPCTSTR )<br />The class name or a class atom created by a previous call to
+        ///     the RegisterClass or RegisterClassEx function. The atom must be in the low-order word of lpClassName; the
+        ///     high-order word must be zero.
+        ///     <para>
+        ///     If lpClassName points to a string, it specifies the window class name. The class name can be any name
+        ///     registered with RegisterClass or RegisterClassEx, or any of the predefined control-class names.
+        ///     </para>
+        ///     <para>If lpClassName is NULL, it finds any window whose title matches the lpWindowName parameter.</para>
+        /// </param>
+        /// <param name="lpWindowName">
+        ///     C++ ( lpWindowName [in, optional]. Type: LPCTSTR )<br />The window name (the window's
+        ///     title). If this parameter is NULL, all window names match.
+        /// </param>
+        /// <returns>
+        ///     C++ ( Type: HWND )<br />If the function succeeds, the return value is a handle to the window that has the
+        ///     specified class name and window name. If the function fails, the return value is NULL.
+        ///     <para>To get extended error information, call GetLastError.</para>
+        /// </returns>
+        /// <remarks>
+        ///     If the lpWindowName parameter is not NULL, FindWindow calls the <see cref="M:GetWindowText" /> function to
+        ///     retrieve the window name for comparison. For a description of a potential problem that can arise, see the Remarks
+        ///     for <see cref="M:GetWindowText" />.
+        /// </remarks>
+        // For Windows Mobile, replace user32.dll with coredll.dll
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr FindWindow(IntPtr ZeroOnly, string lpWindowName);
     }
 }
