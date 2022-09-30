@@ -78,6 +78,12 @@ namespace werkbank.repositories
             return Environments.Find(e => e.Handle == Handle);
         }
 
+        public static environments.Environment ByHandleOrDie(string Handle)
+        {
+            return Environments.Find(e => e.Handle == Handle) ?? throw new NotFoundException("Environment with handle \"" + Handle + "\" not found");
+        }
+
+
         /// <summary>
         /// Get an environment by its directory. Can be either the subfolder path or the full path within any vault.
         /// </summary>
