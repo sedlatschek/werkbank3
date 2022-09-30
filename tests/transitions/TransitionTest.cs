@@ -12,6 +12,12 @@ namespace tests.transitions
     [TestClass]
     public class TransitionTest
     {
+        [TestCleanup]
+        public void Cleanup()
+        {
+            Util.ClearDummyWerke();
+        }
+
         [TestMethod]
         [ExpectedException(typeof(werkbank.exceptions.WerkIsAlreadyTransitioningException))]
         public void ThrowsExceptionIfMultipleTransitionsAreBuiltForOneWerk()

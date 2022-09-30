@@ -13,6 +13,12 @@ namespace tests.transitions
     [TestClass]
     public class ColdToHotTransitionTest
     {
+        [TestCleanup]
+        public void Cleanup()
+        {
+            Util.ClearDummyWerke();
+        }
+
         [TestMethod]
         public void Works()
         {

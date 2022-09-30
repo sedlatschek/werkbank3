@@ -46,3 +46,13 @@ Currently operation ignore lists only apply to the copy operation, as it was not
 - Installer/Updater
 - GitHub CI/CD for releases and tests
 - Implement ignore list for all operations
+
+## Development
+
+### Testing
+
+Core functionality should be ensured through a test. Tests are run for each commit through a GitHub workflow.
+
+### Release
+
+Do not change the assembly and file versions of the project manually. The configured GitHub workflow that is triggered von git version tags (v*X.X.X*) replaces the default assembly version *3.0.0.0* with the tags value. Therefor, tags should always contain four segment versions.

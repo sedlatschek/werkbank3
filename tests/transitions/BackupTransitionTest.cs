@@ -12,6 +12,12 @@ namespace tests.transitions
     [TestClass]
     public class BackupTransitionTest
     {
+        [TestCleanup]
+        public void Cleanup()
+        {
+            Util.ClearDummyWerke();
+        }
+
         [TestMethod]
         public void Works()
         {

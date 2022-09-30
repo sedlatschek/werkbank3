@@ -1,0 +1,45 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+      - name: Build
+        shell: pwsh
+        run: |
+          $env:VERSION = '${{ github.ref_name }}' -replace '^v',''
+          ((Get-Content -path ./werkbank/werkbank.csproj -Raw) -replace '3.0.0.0',$env:VERSION) | Set-Content -Path ./werkbank/werkbank.csproj
+          dotnet build --configuration Release
+          Compress-Archive werkbank/bin/Release/net6.0-windows/* bin.zip
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: Please refer to CHANGELOG.md for details.
+          draft: false
+          prerelease: false
+      - name: Upload asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bin.zip
+          asset_name: werkank-${{ github.ref_name }}.windows-amd64.zip
+          asset_content_type: application/zip
