@@ -74,6 +74,7 @@ namespace werkbank
 
             UpdateControlsAvailability();
             UpdateQueueProgressBar();
+            UpdateNotifyIconContextMenu();
         }
 
         private void FormWerkbankLoad(object sender, EventArgs e)
@@ -572,7 +573,9 @@ namespace werkbank
 
             notifyContextMenuStrip.ImageList = iconList;
 
-            foreach (Werk werk in GetWerke().OrderByDescending(w => w.LastModified).Take(10))
+            List<Werk> werke = GetWerke();
+
+            foreach (Werk werk in werke.OrderByDescending(w => w.LastModified).Take(10))
             {
                 ToolStripItem item = notifyContextMenuStrip.Items.Add(werk.Name);
                 if (werk.HasIcon)
@@ -589,7 +592,10 @@ namespace werkbank
                 };
             }
 
-            notifyContextMenuStrip.Items.Add(new ToolStripSeparator());
+            if (werke.Count > 0)
+            {
+                notifyContextMenuStrip.Items.Add(new ToolStripSeparator());
+            }
 
             notifyContextMenuStrip.Items.Add("Create Werk").Click += (sender, e) =>
             {

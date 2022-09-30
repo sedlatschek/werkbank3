@@ -20,9 +20,13 @@ jobs:
         shell: pwsh
         run: |
           $env:VERSION = '${{ github.ref_name }}' -replace '^v',''
+          ((Get-Content -path ./installer/installer.csproj -Raw) -replace '3.0.0.0',$env:VERSION) | Set-Content -Path ./installer/installer.csproj
           ((Get-Content -path ./werkbank/werkbank.csproj -Raw) -replace '3.0.0.0',$env:VERSION) | Set-Content -Path ./werkbank/werkbank.csproj
           dotnet build --configuration Release
           Compress-Archive werkbank/bin/Release/net6.0-windows/* bin.zip
+          Copy-Item bin.zip -Destination ./installer/Resources
+          cd ./installer
+          dotnet publish -p:PublishSingleFile=true -r:win-x64 --configuration Release
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -34,7 +38,7 @@ jobs:
           body: Please refer to CHANGELOG.md for details.
           draft: false
           prerelease: false
-      - name: Upload asset
+      - name: Upload binaries
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -43,3 +47,12 @@ jobs:
           asset_path: ./bin.zip
           asset_name: werkank-${{ github.ref_name }}.windows-amd64.zip
           asset_content_type: application/zip
+      - name: Upload installer
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./installer/bin/Release/net6.0-windows/win-x64/publish/werkbank-installer.exe
+          asset_name: werkank-${{ github.ref_name }}.windows-amd64.exe
+          asset_content_type: application/exe
