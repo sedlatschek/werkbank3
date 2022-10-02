@@ -15,7 +15,8 @@ namespace werkbank.transitions
         ColdToHot,
         ColdToArchive,
         ArchiveToCold,
-        Environment
+        Environment,
+        Delete
     }
 
     public abstract class Transition
@@ -63,6 +64,7 @@ namespace werkbank.transitions
             return Type switch
             {
                 TransitionType.Environment => new EnvironmentTransition(),
+                TransitionType.Delete => new DeleteTransition(),
                 TransitionType.HotToCold => new HotToColdTransition(),
                 TransitionType.Backup => new BackupTransition(),
                 TransitionType.ColdToHot => new ColdToHotTransition(),

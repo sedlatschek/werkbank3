@@ -171,6 +171,12 @@ namespace werkbank
                             toVault.List.SelectObject(werk);
                         }
                         break;
+                    case TransitionType.Delete:
+                        if (batch.Werk != null)
+                        {
+                            GetVaultFor(batch.Werk.State).RemoveWerkById(batch.WerkId);
+                        }
+                        break;
                     case TransitionType.Backup:
                     case TransitionType.Environment:
                         break;
@@ -366,6 +372,8 @@ namespace werkbank
                 && selectedWerk.TransitionType == null;
             button_werk_edit.Enabled = selectedWerk != null
                 && selectedWerk.TransitionType == null;
+            button_werk_delete.Enabled = selectedWerk != null
+                && selectedWerk.TransitionType == null;
             button_werk_history.Enabled = selectedWerk != null
                 && selectedWerk.TransitionType == null;
             button_werk_vscode.Enabled = selectedWerk != null
@@ -425,6 +433,18 @@ namespace werkbank
                 else if (WerkMode == FormWerk.FormWerkMode.Edit)
                 {
                     GetVaultFor(formWerk.Werk.State).List.RefreshObject(formWerk.Werk);
+                }
+            }
+        }
+
+        private void ButtonWerkDeleteClick(object sender, EventArgs e)
+        {
+            if (selectedWerk != null)
+            {
+                string message = "Do you really want to delete " + selectedWerk.Name + " (" + selectedWerk.Title + ")?";
+                if (MessageBox.Show(message, Text + ": Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    QueueTransition(TransitionType.Delete, selectedWerk);
                 }
             }
         }
