@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using werkbank.models;
 using werkbank.operations;
 
 namespace tests.operations
@@ -59,10 +61,10 @@ namespace tests.operations
 
             string dest = Util.GetTempPath();
 
-            List<string> ignoreList = new()
+            MatchingList ignoreList = new(new List<string>()
             {
                 hiPath
-            };
+            });
 
             Copy.Perform(source, dest, ignoreList);
 
@@ -79,10 +81,10 @@ namespace tests.operations
 
             string dest = Util.GetTempPath();
 
-            List<string> ignoreList = new()
+            MatchingList ignoreList = new(new List<string>()
             {
                 source
-            };
+            });
 
             Copy.Perform(source, dest, ignoreList);
 
@@ -118,11 +120,11 @@ namespace tests.operations
             File.WriteAllText(notIgnoredFile2InNotIgnoredDirSourcePath, "I should be copied");
             File.WriteAllText(ignoredFileInIgnoredDirSourcePath, "I should be ignored");
 
-            List<string> ignoreList = new()
+            MatchingList ignoreList = new(new List<string>()
             {
                 ignoredDirSourcePath,
                 ignoredFileInNotIgnoredDirSourcePath
-            };
+            });
 
             Copy.Perform(source, dest, ignoreList);
 
@@ -133,6 +135,49 @@ namespace tests.operations
             Assert.IsTrue(File.Exists(notIgnoredFile1InNotIgnoredDirDestPath));
             Assert.IsTrue(File.Exists(notIgnoredFile2InNotIgnoredDirDestPath));
             Assert.IsFalse(File.Exists(ignoredFileInIgnoredDirDestPath));
+        }
+
+        [TestMethod]
+        public void PerformWorksWithIgnorePattern()
+        {
+            string source = Util.GetTempPath();
+            Directory.CreateDirectory(source);
+            string dest = Util.GetTempPath();
+
+            string sourceNodeModulesDir = Directory.CreateDirectory(Path.Combine(source, "node_modules")).FullName;
+            string destNodeModulesDir = Path.Combine(dest, "node_modules");
+            string sourceNestedDir = Path.Combine(source, "hi");
+            string destNestedDir = Path.Combine(dest, "hi");
+            string sourceNestedNodeModulesDir = Directory.CreateDirectory(Path.Combine(sourceNestedDir, "node_modules")).FullName;
+            string destNestedNodeModulesDir = Path.Combine(destNestedDir, "node_modules");
+            string sourceRootLevelFile = Path.Combine(source, "hi.txt");
+            string destRootLevelFile = Path.Combine(dest, "hi.txt");
+            string sourceNodeModulesFile = Path.Combine(sourceNodeModulesDir, "ho.txt");
+            string destNodeModulesFile = Path.Combine(destNodeModulesDir, "ho.txt");
+            string sourceNestedFile = Path.Combine(sourceNestedDir, "hu.txt");
+            string destNestedFile = Path.Combine(destNestedDir, "hu.txt");
+            string sourceNestedNodeModulesFile = Path.Combine(sourceNestedNodeModulesDir, "ha.txt");
+            string destNestedNodeModulesFile = Path.Combine(destNestedNodeModulesDir, "ha.txt");
+
+            File.WriteAllText(sourceRootLevelFile, "hi");
+            File.WriteAllText(sourceNodeModulesFile, "ho");
+            File.WriteAllText(sourceNestedNodeModulesFile, "ha");
+            File.WriteAllText(sourceNestedFile, "ha");
+
+            MatchingList ignoreList = new(null, new List<string>()
+            {
+                @".*\\node_modules\\{0,1}.*"
+            });
+
+            Copy.Perform(source, dest, ignoreList);
+
+            Assert.IsTrue(Directory.Exists(dest));
+            Assert.IsTrue(File.Exists(destRootLevelFile));
+            Assert.IsTrue(File.Exists(destNestedFile));
+            Assert.IsFalse(Directory.Exists(destNodeModulesDir));
+            Assert.IsFalse(File.Exists(destNodeModulesFile));
+            Assert.IsFalse(Directory.Exists(destNestedNodeModulesDir));
+            Assert.IsFalse(File.Exists(destNestedNodeModulesFile));
         }
 
         [TestMethod]
@@ -230,10 +275,10 @@ namespace tests.operations
             File.WriteAllText(Path.Combine(dest, "ha.txt"), "ha");
             File.WriteAllText(Path.Combine(dest, "ho.txt"), "ho");
 
-            List<string> ignoreList = new()
+            MatchingList ignoreList = new(new List<string>()
             {
                 hiPath
-            };
+            });
 
             Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
 
@@ -261,10 +306,10 @@ namespace tests.operations
             Directory.CreateDirectory(source);
             string dest = Util.GetTempPath();
 
-            List<string> ignoreList = new()
+            MatchingList ignoreList = new(new List<string>()
             {
                 source
-            };
+            });
 
             Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
 
@@ -305,11 +350,11 @@ namespace tests.operations
             File.WriteAllText(notIgnoredFile1InNotIgnoredDirDestPath, "I should be copied");
             File.WriteAllText(notIgnoredFile2InNotIgnoredDirDestPath, "I should be copied");
 
-            List<string> ignoreList = new()
+            MatchingList ignoreList = new(new List<string>()
             {
                 ignoredDirSourcePath,
                 ignoredFileInNotIgnoredDirSourcePath
-            };
+            });
 
             Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
 
@@ -326,7 +371,7 @@ namespace tests.operations
 
             Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
 
-            Directory.Delete(ignoredDirDestPath, true);            
+            Directory.Delete(ignoredDirDestPath, true);
 
             Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
 
@@ -334,6 +379,65 @@ namespace tests.operations
             File.WriteAllText(ignoredFileInNotIgnoredDirDestPath, "hi");
 
             Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
+        }
+
+        [TestMethod]
+        public void VerifyWorksWithIgnorePattern()
+        {
+            string source = Util.GetTempPath();
+            Directory.CreateDirectory(source);
+            string dest = Util.GetTempPath();
+
+            string sourceNodeModulesDir = Directory.CreateDirectory(Path.Combine(source, "node_modules")).FullName;
+            string destNodeModulesDir = Path.Combine(dest, "node_modules");
+            string sourceNestedDir = Path.Combine(source, "hi");
+            string destNestedDir = Path.Combine(dest, "hi");
+            string sourceNestedNodeModulesDir = Directory.CreateDirectory(Path.Combine(sourceNestedDir, "node_modules")).FullName;
+            string destNestedNodeModulesDir = Path.Combine(destNestedDir, "node_modules");
+            string sourceRootLevelFile = Path.Combine(source, "hi.txt");
+            string destRootLevelFile = Path.Combine(dest, "hi.txt");
+            string sourceNodeModulesFile = Path.Combine(sourceNodeModulesDir, "ho.txt");
+            string sourceNestedFile = Path.Combine(sourceNestedDir, "hu.txt");
+            string destNestedFile = Path.Combine(destNestedDir, "hu.txt");
+            string sourceNestedNodeModulesFile = Path.Combine(sourceNestedNodeModulesDir, "ha.txt");
+            string destNestedNodeModulesFile = Path.Combine(destNestedNodeModulesDir, "ha.txt");
+
+            File.WriteAllText(sourceRootLevelFile, "hi");
+            File.WriteAllText(sourceNodeModulesFile, "ho");
+            File.WriteAllText(sourceNestedNodeModulesFile, "ha");
+            File.WriteAllText(sourceNestedFile, "ha");
+
+            MatchingList ignoreList = new(null, new List<string>()
+            {
+                @".*\\node_modules\\{0,1}.*"
+            });
+
+            Directory.CreateDirectory(dest);
+            File.WriteAllText(destRootLevelFile, "hi");
+            Directory.CreateDirectory(destNestedDir);
+            File.WriteAllText(destNestedFile, "ha");
+
+            Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
+
+            Directory.CreateDirectory(destNodeModulesDir);
+
+            Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
+
+            Directory.Delete(destNodeModulesDir);
+
+            Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
+
+            Directory.CreateDirectory(destNestedNodeModulesDir);
+
+            Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
+
+            File.WriteAllText(destNestedNodeModulesFile, "ha");
+
+            Assert.IsFalse(Copy.Verify(source, dest, ignoreList));
+
+            Directory.Delete(destNestedNodeModulesDir, true);
+
+            Assert.IsTrue(Copy.Verify(source, dest, ignoreList));
         }
     }
 }

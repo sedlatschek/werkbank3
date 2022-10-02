@@ -5,9 +5,6 @@ namespace werkbank.environments
 {
     public class PhpEnvironment : Environment
     {
-        private const string DIR_NAME_NODE_MODULES = "node_modules";
-        private const string DIR_NAME_VENDOR = "vendor";
-
         public PhpEnvironment(int Index) : base(Index) { }
 
         public override string Name => "PHP";
@@ -35,8 +32,8 @@ namespace werkbank.environments
 
             if (TransitionType == TransitionType.HotToCold || TransitionType == TransitionType.Backup)
             {
-                Batch.IgnoreList.Add(Path.Combine(Batch.Werk.CurrentDirectory, DIR_NAME_NODE_MODULES));
-                Batch.IgnoreList.Add(Path.Combine(Batch.Werk.CurrentDirectory, DIR_NAME_VENDOR));
+                Batch.IgnoreList.AddPattern(@".*\\node_modules\\{0,1}.*");
+                Batch.IgnoreList.AddPattern(@".*\\vendor\\{0,1}.*");
             }
 
             return true;

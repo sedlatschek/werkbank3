@@ -5,9 +5,6 @@ namespace werkbank.environments
 {
     public class JavascriptEnvironment : Environment
     {
-        private const string DIR_NAME_BOWER_COMPONENTS = "bower_components";
-        private const string DIR_NAME_NODE_MODULES = "node_modules";
-
         public JavascriptEnvironment(int Index) : base(Index) { }
 
         public override string Name => "JavaScript";
@@ -35,8 +32,8 @@ namespace werkbank.environments
 
             if (TransitionType == TransitionType.HotToCold || TransitionType == TransitionType.Backup)
             {
-                Batch.IgnoreList.Add(Path.Combine(Batch.Werk.CurrentDirectory, DIR_NAME_BOWER_COMPONENTS));
-                Batch.IgnoreList.Add(Path.Combine(Batch.Werk.CurrentDirectory, DIR_NAME_NODE_MODULES));
+                Batch.IgnoreList.AddPattern(@".*\\bower_components\\{0,1}.*");
+                Batch.IgnoreList.AddPattern(@".*\\node_modules\\{0,1}.*");
             }
 
             return true;

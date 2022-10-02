@@ -37,7 +37,7 @@ namespace werkbank.transitions
             batch.TriggerBeforeTransitionEvent();
 
             // add .werk directory to blacklist
-            batch.IgnoreList.Add(hotMetaDir);
+            batch.IgnoreList.AddPath(hotMetaDir);
 
             // clean up cold dir
             batch.Delete(coldDir);
@@ -46,7 +46,7 @@ namespace werkbank.transitions
             // zip up git dir
             if (Directory.Exists(gitDir))
             {
-                batch.IgnoreList.Add(gitDir);
+                batch.IgnoreList.AddPath(gitDir);
                 batch.Zip(gitDir, gitZip);
             }
 

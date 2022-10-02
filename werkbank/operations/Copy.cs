@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using werkbank.exceptions;
+using werkbank.models;
 using werkbank.services;
 
 namespace werkbank.operations
@@ -18,7 +20,7 @@ namespace werkbank.operations
             return Perform(SourcePath, DestinationPath, null);
         }
 
-        public static bool Perform(string? SourcePath, string? DestinationPath, IEnumerable<string>? IgnoreList)
+        public static bool Perform(string? SourcePath, string? DestinationPath, MatchingList? IgnoreList)
         {
             if (SourcePath == null || DestinationPath == null)
             {
@@ -34,7 +36,7 @@ namespace werkbank.operations
                 File.Delete(DestinationPath);
             }
 
-            CopyDirOrFile(SourcePath, DestinationPath, IgnoreList ?? new List<string>());
+            CopyDirOrFile(SourcePath, DestinationPath, IgnoreList ?? new MatchingList());
             return true;
         }
 
@@ -44,9 +46,9 @@ namespace werkbank.operations
         /// <param name="SourcePath"></param>
         /// <param name="DestinationPath"></param>
         /// <param name="IgnoreList"></param>
-        private static void CopyDirOrFile(string SourcePath, string DestinationPath, IEnumerable<string> IgnoreList)
+        private static void CopyDirOrFile(string SourcePath, string DestinationPath, MatchingList IgnoreList)
         {
-            if (IgnoreList.Contains(SourcePath))
+            if (IgnoreList.Matches(SourcePath))
             {
                 return;
             }
@@ -62,7 +64,7 @@ namespace werkbank.operations
 
                 foreach (FileInfo file in dir.GetFiles())
                 {
-                    if (IgnoreList.Contains(file.FullName))
+                    if (IgnoreList.Matches(file.FullName))
                     {
                         continue;
                     }
@@ -73,7 +75,7 @@ namespace werkbank.operations
 
                 foreach (DirectoryInfo subDir in dirs)
                 {
-                    if (IgnoreList.Contains(subDir.FullName))
+                    if (IgnoreList.Matches(subDir.FullName))
                     {
                         continue;
                     }
@@ -82,7 +84,7 @@ namespace werkbank.operations
                     CopyDirOrFile(subDir.FullName, newDestinationDir, IgnoreList);
                 }
             }
-            else if (!IgnoreList.Contains(SourcePath))
+            else if (!IgnoreList.Matches(SourcePath))
             {
                 FileInfo file = new(SourcePath);
                 file.CopyTo(DestinationPath);
@@ -94,7 +96,7 @@ namespace werkbank.operations
             return Verify(SourcePath, DestinationPath, null);
         }
 
-        public static bool Verify(string? SourcePath, string? DestinationPath, IEnumerable<string>? IgnoreList)
+        public static bool Verify(string? SourcePath, string? DestinationPath, MatchingList? IgnoreList)
         {
             if (SourcePath == null || DestinationPath == null)
             {
@@ -103,8 +105,8 @@ namespace werkbank.operations
 
             // we create a second ignore list for the destination path.
             // this way we can do a "reverse" run
-            IEnumerable<string> sourceIgnoreList = IgnoreList ?? new List<string>();
-            IEnumerable<string> destIgnoreList = sourceIgnoreList.Select(path => path.Replace(SourcePath, DestinationPath));
+            MatchingList sourceIgnoreList = IgnoreList ?? new MatchingList();
+            MatchingList destIgnoreList = new(sourceIgnoreList.Paths.Select(path => path.Replace(SourcePath, DestinationPath)).ToList());
 
             return IsEqual(SourcePath, DestinationPath, sourceIgnoreList) && IsEqual(DestinationPath, SourcePath, destIgnoreList);
         }
@@ -114,8 +116,9 @@ namespace werkbank.operations
         /// </summary>
         /// <param name="SourcePath"></param>
         /// <param name="DestinationPath"></param>
+        /// <param name="IgnoreList"></param>
         /// <returns></returns>
-        private static bool IsEqual(string SourcePath, string DestinationPath, IEnumerable<string> IgnoreList)
+        private static bool IsEqual(string SourcePath, string DestinationPath, MatchingList IgnoreList)
         {
             // if source does not exist, dest should not exist either
             if (!FileService.PathExists(SourcePath, out FileService.PathType? sourcePathType))
@@ -126,7 +129,7 @@ namespace werkbank.operations
             // if dest does not exists, it is either not equal to source or on the ignore list
             if (!FileService.PathExists(DestinationPath, out FileService.PathType? destPathType))
             {
-                return IgnoreList.Contains(SourcePath);
+                return IgnoreList.Matches(SourcePath);
             }
 
             // if the paths or of a different type, they are definitively not equal
@@ -136,7 +139,7 @@ namespace werkbank.operations
             }
 
             // since both paths exist, source should not be in the ignore list
-            if (IgnoreList.Contains(SourcePath))
+            if (IgnoreList.Matches(SourcePath))
             {
                 return false;
             }

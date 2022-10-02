@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using werkbank.models;
 using werkbank.operations;
 using werkbank.services;
+using werkbank.transitions;
 
-namespace werkbank.transitions
+namespace werkbank.models
 {
     public class Batch
     {
@@ -69,9 +69,9 @@ namespace werkbank.transitions
         public TransitionType TransitionType => transitionType;
 
         [JsonProperty("ignore")]
-        protected List<string> ignoreList;
+        protected MatchingList ignoreList;
         [JsonIgnore]
-        public List<string> IgnoreList => ignoreList;
+        public MatchingList IgnoreList => ignoreList;
 
         [JsonIgnore]
         public bool Done => Operations.All((op) => op.Success);
@@ -89,7 +89,7 @@ namespace werkbank.transitions
                 {
                     return 100;
                 }
-                return (100 / Operations.Count) * doneOperations;
+                return 100 / Operations.Count * doneOperations;
             }
         }
 
@@ -101,7 +101,7 @@ namespace werkbank.transitions
             werkId = Werk.Id;
             transitionType = TransitionType;
             Operations = new List<Operation>();
-            ignoreList = new List<string>();
+            ignoreList = new MatchingList();
             title = Title;
         }
 
@@ -109,7 +109,7 @@ namespace werkbank.transitions
         public Batch(string Title)
         {
             Operations = new List<Operation>();
-            ignoreList = new List<string>();
+            ignoreList = new MatchingList();
             title = Title;
         }
 
