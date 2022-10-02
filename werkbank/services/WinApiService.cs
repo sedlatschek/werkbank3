@@ -1,6 +1,7 @@
-﻿using System.Drawing;
+﻿using System.Collections;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
-using static werkbank.services.WinApiService;
+using System.Text;
 
 namespace werkbank.services
 {
@@ -137,7 +138,7 @@ namespace werkbank.services
             {
                 get
                 {
-                    WindowPlacement result = new WindowPlacement();
+                    WindowPlacement result = new();
                     result.Length = Marshal.SizeOf(result);
                     return result;
                 }
@@ -186,5 +187,111 @@ namespace werkbank.services
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr FindWindow(IntPtr ZeroOnly, string lpWindowName);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder strText, int maxCount);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern int GetWindowTextLength(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetShellWindow();
+
+        [DllImport("user32.dll")]
+        public static extern bool EnumWindows(EnumWindowsProc2 enumFunc, int lParam);
+
+        public delegate bool EnumWindowsProc2(IntPtr hWnd, int lParam);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        /// <summary>
+        /// Get the class of a given window.
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <returns></returns>
+        /// <exception cref="Win32Exception"></exception>
+        public static string GetWindowClass(IntPtr hWnd)
+        {
+            string className = string.Empty;
+            int length = 256;
+            StringBuilder sb = new(length);
+            while (length < 1024)
+            {
+                int classNameLength = GetClassName(hWnd, sb, length);
+                if (classNameLength == 0)
+                {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
+                else if (classNameLength < length - 1) // -1 for null terminator
+                {
+                    className = sb.ToString();
+                    break;
+                }
+                else length *= 2;
+            }
+            return className;
+        }
+
+        /// <summary>
+        /// Get the text of a given window.
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <returns></returns>
+        /// <exception cref="ExternalException"></exception>
+        public static string? GetWindowText(IntPtr hWnd)
+        {
+            int length = GetWindowTextLength(hWnd);
+            if (length != 0)
+            {
+                StringBuilder sbTitle = new(length);
+                if (GetWindowText(hWnd, sbTitle, length + 1) == 0)
+                {
+                    throw new ExternalException();
+                }
+                return sbTitle.ToString();
+            };
+            return null;
+        }
+
+        /// <summary>
+        /// Get handles for all root level windows.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<Window> GetRootWindows()
+        {
+            IntPtr shellWindow = GetShellWindow();
+            List<Window> windows = new();
+
+            EnumWindows(delegate (IntPtr hWnd, int lParam)
+            {
+                if (hWnd == shellWindow)
+                {
+                    return true;
+                }
+
+                Window window = new(hWnd)
+                {
+                    Title = GetWindowText(hWnd),
+                    Class = GetWindowClass(hWnd)
+                };
+                windows.Add(window);
+
+                return true;
+            }, 0);
+
+            return windows;
+        }
+
+        public class Window
+        {
+            public IntPtr hWnd;
+            public string? Title;
+            public string? Class;
+            public Window(IntPtr hWnd)
+            {
+                this.hWnd = hWnd;
+            }
+        }
     }
 }

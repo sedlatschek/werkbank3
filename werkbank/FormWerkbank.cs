@@ -1,6 +1,6 @@
-using BrightIdeasSoftware;
-using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
+using BrightIdeasSoftware;
 using werkbank.controls;
 using werkbank.exceptions;
 using werkbank.models;
@@ -11,6 +11,8 @@ namespace werkbank
 {
     public partial class FormWerkbank : Form
     {
+        public static string Title => Application.ProductName;
+
         private readonly List<WerkList> vaults;
         private readonly WerkList vaultHot;
         private readonly WerkList vaultCold;
@@ -33,8 +35,8 @@ namespace werkbank
             InitializeComponent();
 
             Icon = Properties.Resources.logo;
-            Text = Application.ProductName;
-            label_version.Text = "v" + Application.ProductVersion.ToString();
+            Text = Title;
+            label_version.Text = "v" + Assembly.GetEntryAssembly()?.GetName().Version?.ToString();
 
             vaultHot = new WerkList(iconList, WerkState.Hot)
             {
