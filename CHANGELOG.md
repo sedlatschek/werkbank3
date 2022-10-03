@@ -2,6 +2,7 @@
 
 [v3.4.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.4.0.0)
 - fix bug where zip operation would skip empty directories
+- add button to reset queue operations
 
 [v3.3.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.3.0.0)
 - add regex support to ignore list

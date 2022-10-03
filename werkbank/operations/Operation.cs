@@ -96,6 +96,14 @@ namespace werkbank.operations
         }
 
         /// <summary>
+        /// Reset the operation so it can be queued again.
+        /// </summary>
+        public void Reset()
+        {
+            lastAttempt = null;
+        }
+
+        /// <summary>
         /// Perform and verify the operation.
         /// </summary>
         public void Run()

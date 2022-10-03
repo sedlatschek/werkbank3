@@ -66,6 +66,7 @@ namespace werkbank
             };
 
             objectListView.ItemsChanged += ObjectListViewItemsChanged;
+            objectListView.SelectedIndexChanged += ObjectListViewSelectedIndexChanged;
 
             OLVColumn colWerk = new()
             {
@@ -307,6 +308,7 @@ namespace werkbank
         {
             RegisterOperationChange();
         }
+
         private void RegisterOperationChange()
         {
             List<Operation> operations = objectListView.Objects.Cast<Operation>().ToList();
@@ -314,6 +316,19 @@ namespace werkbank
             doneOperationsCount = operations.Count(op => op.Success);
             totalOperationsCount = openOperationsCount + doneOperationsCount;
             Changed?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void ObjectListViewSelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (objectListView.SelectedObject != null)
+            {
+                Operation op = (Operation)objectListView.SelectedObject;
+                button_operation_reset.Enabled = !op.Success;
+            }
+            else
+            {
+                button_operation_reset.Enabled = false;
+            }
         }
 
         private void SyncLists()
@@ -342,6 +357,23 @@ namespace werkbank
         private void GroupByBatch()
         {
             objectListView.BuildGroups(colBatch, SortOrder.Ascending);
+        }
+
+        private void ButtonOperationResetClick(object sender, EventArgs e)
+        {
+            if (objectListView.SelectedObject != null)
+            {
+                Operation op = (Operation)objectListView.SelectedObject;
+                if (op.Success)
+                {
+                    MessageBox.Show("Operations that are already done can not be reseted.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    op.Reset();
+                    objectListView.RefreshObject(op);
+                }
+            }
         }
         #endregion
 
