@@ -68,6 +68,7 @@ namespace werkbank
                 vault.WerkSelected += WerkSelected;
                 vault.WerkDoubleClick += WerkDoubleClick;
                 vault.GatherDone += VaultGatherDone;
+                vault.TransitionDetected += VaultTransitionDetected;
             }
 
             timerQueue.Interval = Settings.Properties.QueueTickInterval;
@@ -77,6 +78,11 @@ namespace werkbank
             UpdateControlsAvailability();
             UpdateQueueProgressBar();
             UpdateNotifyIconContextMenu();
+        }
+
+        private void VaultTransitionDetected(object? sender, Werk e)
+        {
+            formQueue.RelateWithWerk(e);
         }
 
         private void FormWerkbankLoad(object sender, EventArgs e)
@@ -164,7 +170,7 @@ namespace werkbank
                         WerkList fromVault = GetVaultFor(Transition.From(batch.TransitionType));
                         WerkList toVault = GetVaultFor(Transition.To(batch.TransitionType));
 
-                        Werk? werk = fromVault.RemoveWerkById(batch.WerkId);
+                        Werk? werk = fromVault.RemoveWerkById(batch.WerkId) ?? batch.Werk;
                         if (werk != null)
                         {
                             toVault.List.AddObject(werk);

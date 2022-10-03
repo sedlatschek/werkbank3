@@ -324,9 +324,11 @@ namespace werkbank
             {
                 Operation op = (Operation)objectListView.SelectedObject;
                 button_operation_reset.Enabled = !op.Success;
+                button_operation_copy_error.Enabled = op.Error != null;
             }
             else
             {
+                button_operation_copy_error.Enabled = false;
                 button_operation_reset.Enabled = false;
             }
         }
@@ -398,7 +400,7 @@ namespace werkbank
         {
             foreach (Batch batch in batches)
             {
-                if (batch.WerkId == Werk.Id)
+                if (batch.WerkId == Werk.Id && batch.Werk == null)
                 {
                     batch.Werk = Werk;
                     Werk.CurrentBatch = batch;
@@ -449,6 +451,7 @@ namespace werkbank
         {
             if (!worker.IsBusy)
             {
+                label_heartbeat.Text = "Last Heartbeat: " + DateTime.Now.ToString();
                 worker.RunWorkerAsync();
             }
         }

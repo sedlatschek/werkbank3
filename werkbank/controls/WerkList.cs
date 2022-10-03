@@ -38,6 +38,11 @@ namespace werkbank.controls
         /// </summary>
         public event EventHandler<Werk>? WerkDoubleClick;
 
+        /// <summary>
+        /// Triggers whenever a werk in transition is detected. This may also include werke, that do not make it to the list, as they are inbetween states.
+        /// </summary>
+        public event EventHandler<Werk>? TransitionDetected;
+
         public override string Text
         {
             get { return rotatingLabel_title.NewText; }
@@ -312,6 +317,8 @@ namespace werkbank.controls
                                 // werk is transitioning
                                 if (werk.TransitionType != null)
                                 {
+                                    TransitionDetected?.Invoke(this, werk);
+
                                     // if this werk is in the target vault, skip, we only want the source werk.
                                     if (werk.State != State)
                                     {

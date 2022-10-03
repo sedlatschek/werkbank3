@@ -1,5 +1,8 @@
 # Changelog
 
+[v3.5.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.5.0.0)
+- fix bug where werk would disappear after a transition, if Werkbank was restarted after the delete operation was done
+
 [v3.4.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.4.0.0)
 - fix bug where zip operation would skip empty directories
 - add button to reset queue operations
