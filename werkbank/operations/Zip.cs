@@ -1,10 +1,11 @@
-﻿using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
 using werkbank.exceptions;
 using werkbank.services;
 
@@ -57,6 +58,15 @@ namespace werkbank.operations
         /// <param name="Offset"></param>
         private static void ZipAddDir(DirectoryInfo Dir, ZipOutputStream ZipStream, int Offset)
         {
+            // add dir entry if we are not at the root level
+            if (Dir.FullName.Length != Offset)
+            {
+                string entryName = Dir.FullName[Offset..];
+                ZipEntry newEntry = new(entryName + "\\");
+                ZipStream.PutNextEntry(newEntry);
+                ZipStream.CloseEntry();
+            }
+
             foreach (FileInfo file in Dir.GetFiles())
             {
                 ZipAddFile(file, ZipStream, Offset);
@@ -119,15 +129,21 @@ namespace werkbank.operations
 
             if (!File.Exists(DestinationPath))
             {
-                return false;
+                throw new VerificationException("Directory \"" + DestinationPath + "\" does not exist"); ;
             }
 
             ZipContents zipContents = GetZipContents(DestinationPath);
 
             DirectoryInfo dir = new(SourcePath);
-            return FilesExistInZip(ref zipContents, dir)
-                && zipContents.Directories.Count == 0
-                && zipContents.Files.Count == 0;
+
+            if (!FilesExistInZip(ref zipContents, dir)
+                || zipContents.Directories.Count != 0
+                || zipContents.Files.Count != 0)
+            {
+                throw new VerificationException("Zip contains additional directories and/or files");
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -141,19 +157,22 @@ namespace werkbank.operations
         {
             if (!Directory.Exists)
             {
-                return false;
+                throw new VerificationException("Directory \"" + Directory.FullName + "\" does not exist");
             }
 
             foreach (FileInfo file in Directory.GetFiles())
             {
                 string fileName = Path.Combine(Prefix, file.Name);
-                if (!ZipContents.Files.TryGetValue(fileName, out long FileSize) || FileSize != file.Length)
+                if (!ZipContents.Files.TryGetValue(fileName, out long FileSize))
                 {
-                    return false;
+                    throw new VerificationException("Zip does not contain file \"" + fileName + "\"");
+                }
+                else if (FileSize != file.Length)
+                {
+                    throw new VerificationException(fileName + " in zip has different size than the file in \"" + Directory.FullName + "\"");
                 }
                 else
                 {
-
                     ZipContents.Files.Remove(fileName);
                 }
             }
@@ -164,9 +183,16 @@ namespace werkbank.operations
                 if (ZipContents.Directories.Contains(dirName))
                 {
                     ZipContents.Directories.Remove(dirName);
-                    return FilesExistInZip(ref ZipContents, subDir, dirName);
+
+                    if (!FilesExistInZip(ref ZipContents, subDir, dirName))
+                    {
+                        throw new VerificationException("Zip does not contain directory \"" + subDir.FullName + "\"");
+                    }
                 }
-                return false;
+                else
+                {
+                    throw new VerificationException("Zip does not contain directory \"" + dirName + "\"");
+                }
             }
 
             return true;
@@ -184,7 +210,6 @@ namespace werkbank.operations
             using (ZipInputStream s = new(File.OpenRead(zipFile.FullName)))
             {
                 ZipEntry entry;
-
                 while ((entry = s.GetNextEntry()) != null)
                 {
                     string? directoryName = Path.GetDirectoryName(entry.Name);
@@ -197,7 +222,23 @@ namespace werkbank.operations
 
                     if (!string.IsNullOrEmpty(directoryName))
                     {
-                        contents.Directories.Add(directoryName.Replace('/', '\\'));
+                        List<string> pathParts = directoryName.Split('\\').ToList();
+
+                        if (pathParts.Count > 0)
+                        {
+                            // we need to build all possible paths, because directories that contain
+                            // only sub directories but no files would not be picked up otherwise.
+
+                            for (int i = 1; i <= pathParts.Count; i += 1)
+                            {
+                                string path = string.Join("\\", pathParts.GetRange(0, i));
+                                contents.Directories.Add(path);
+                            }
+                        }
+                        else
+                        {
+                            contents.Directories.Add(directoryName.Replace('/', '\\'));
+                        }
                     }
                 }
             }
@@ -207,7 +248,6 @@ namespace werkbank.operations
 
     internal class ZipContents
     {
-
         public readonly HashSet<string> Directories;
         public readonly Dictionary<string, long> Files;
 

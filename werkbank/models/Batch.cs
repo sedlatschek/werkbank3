@@ -18,8 +18,6 @@ namespace werkbank.models
 
         public delegate void BatchDone(Batch Batch, TransitionType? TransitionType, Werk werk);
 
-        public BatchDone? TestBatchDone;
-
         [JsonProperty("id")]
         private readonly Guid guid;
         [JsonIgnore]

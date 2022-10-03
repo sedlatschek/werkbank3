@@ -1,5 +1,8 @@
 # Changelog
 
+[v3.4.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.4.0.0)
+- fix bug where zip operation would skip empty directories
+
 [v3.3.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.3.0.0)
 - add regex support to ignore list
 
