@@ -21,15 +21,45 @@ namespace werkbank.operations
                 FileAttributes attributes = File.GetAttributes(DestinationPath);
                 if (attributes.HasFlag(FileAttributes.Directory))
                 {
-                    Directory.Delete(DestinationPath, true);
+                    DeleteDirectory(DestinationPath);
                 }
                 else
                 {
-                    File.Delete(DestinationPath);
+                    DeleteFile(DestinationPath);
                 }
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Delete a file from a given location.
+        /// </summary>
+        /// <param name="TargetPath"></param>
+        private static void DeleteFile(string TargetPath)
+        {
+            File.SetAttributes(TargetPath, FileAttributes.Normal);
+            File.Delete(TargetPath);
+        }
+
+        /// <summary>
+        /// Delete a dirctory and all its contents from a given location.
+        /// </summary>
+        /// <param name="TargetDirectory"></param>
+        private static void DeleteDirectory(string TargetDirectory)
+        {
+            File.SetAttributes(TargetDirectory, FileAttributes.Normal);
+
+            foreach (string file in Directory.GetFiles(TargetDirectory))
+            {
+                DeleteFile(file);
+            }
+            foreach (string dir in Directory.GetDirectories(TargetDirectory))
+            {
+                DeleteDirectory(dir);
+            }
+
+            Directory.Delete(TargetDirectory, false);
         }
 
         public static bool Verify(string? DestinationPath)
