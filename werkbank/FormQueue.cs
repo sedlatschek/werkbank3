@@ -361,6 +361,19 @@ namespace werkbank
             objectListView.BuildGroups(colBatch, SortOrder.Ascending);
         }
 
+
+        private void ButtonOperationCopyErrorClick(object sender, EventArgs e)
+        {
+            if (objectListView.SelectedObject != null)
+            {
+                Operation op = (Operation)objectListView.SelectedObject;
+                if (op.Error != null)
+                {
+                    Clipboard.SetText(op.Error.ToString());
+                }
+            }
+        }
+
         private void ButtonOperationResetClick(object sender, EventArgs e)
         {
             if (objectListView.SelectedObject != null)

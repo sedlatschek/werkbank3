@@ -31,6 +31,8 @@
             this.panel_objectListView = new System.Windows.Forms.Panel();
             this.worker = new System.ComponentModel.BackgroundWorker();
             this.button_operation_reset = new System.Windows.Forms.Button();
+            this.button_operation_copy_error = new System.Windows.Forms.Button();
+            this.label_heartbeat = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // panel_objectListView
@@ -65,17 +67,51 @@
             this.button_operation_reset.Location = new System.Drawing.Point(716, 404);
             this.button_operation_reset.Name = "button_operation_reset";
             this.button_operation_reset.Size = new System.Drawing.Size(72, 34);
-            this.button_operation_reset.TabIndex = 1;
+            this.button_operation_reset.TabIndex = 3;
             this.button_operation_reset.Text = "Reset";
             this.button_operation_reset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.button_operation_reset.UseVisualStyleBackColor = false;
             this.button_operation_reset.Click += new System.EventHandler(this.ButtonOperationResetClick);
+            // 
+            // button_operation_copy_error
+            // 
+            this.button_operation_copy_error.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_operation_copy_error.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button_operation_copy_error.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_operation_copy_error.Enabled = false;
+            this.button_operation_copy_error.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.button_operation_copy_error.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.button_operation_copy_error.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_operation_copy_error.Image = global::werkbank.Properties.Resources.btn_copy;
+            this.button_operation_copy_error.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button_operation_copy_error.Location = new System.Drawing.Point(611, 404);
+            this.button_operation_copy_error.Name = "button_operation_copy_error";
+            this.button_operation_copy_error.Size = new System.Drawing.Size(99, 34);
+            this.button_operation_copy_error.TabIndex = 2;
+            this.button_operation_copy_error.Text = "Copy Error";
+            this.button_operation_copy_error.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.button_operation_copy_error.UseVisualStyleBackColor = false;
+            this.button_operation_copy_error.Click += new System.EventHandler(this.ButtonOperationCopyErrorClick);
+            // 
+            // label_heartbeat
+            // 
+            this.label_heartbeat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label_heartbeat.AutoSize = true;
+            this.label_heartbeat.BackColor = System.Drawing.SystemColors.Control;
+            this.label_heartbeat.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label_heartbeat.Location = new System.Drawing.Point(12, 414);
+            this.label_heartbeat.Name = "label_heartbeat";
+            this.label_heartbeat.Size = new System.Drawing.Size(86, 15);
+            this.label_heartbeat.TabIndex = 1;
+            this.label_heartbeat.Text = "Last Heartbeat:";
             // 
             // FormQueue
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label_heartbeat);
+            this.Controls.Add(this.button_operation_copy_error);
             this.Controls.Add(this.button_operation_reset);
             this.Controls.Add(this.panel_objectListView);
             this.Name = "FormQueue";
@@ -83,6 +119,7 @@
             this.Text = "Werkbank: Queue";
             this.Shown += new System.EventHandler(this.FormQueueShown);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -91,5 +128,7 @@
         private Panel panel_objectListView;
         private System.ComponentModel.BackgroundWorker worker;
         private Button button_operation_reset;
+        private Button button_operation_copy_error;
+        private Label label_heartbeat;
     }
 }
