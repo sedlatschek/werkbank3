@@ -5,7 +5,7 @@ using System.Text;
 
 namespace werkbank.services
 {
-    internal static class WinApiService
+    public static class WinApiService
     {
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -96,7 +96,7 @@ namespace werkbank.services
         /// </summary>
         [Serializable]
         [StructLayout(LayoutKind.Sequential)]
-        internal struct WindowPlacement
+        public struct WindowPlacement
         {
             /// <summary>
             /// The length of the structure, in bytes. Before calling the GetWindowPlacement or SetWindowPlacement functions, set this member to sizeof(WINDOWPLACEMENT).
@@ -291,6 +291,30 @@ namespace werkbank.services
             public Window(IntPtr hWnd)
             {
                 this.hWnd = hWnd;
+            }
+        }
+
+        [DllImport("shell32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsUserAnAdmin();
+
+        [DllImport("kernel32.dll", EntryPoint = "CreateSymbolicLinkW", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern int CreateSymLink(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
+
+        [Flags]
+        public enum SYMBOLIC_LINK_FLAG
+        {
+            File = 0,
+            Directory = 1,
+            AllowUnprivilegedCreate = 2
+        }
+
+        public static void CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags)
+        {
+            int result = CreateSymLink(lpSymlinkFileName, lpTargetFileName, dwFlags);
+            if (result != 1)
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using werkbank.exceptions;
+using werkbank.services;
 
 namespace werkbank.operations
 {
@@ -50,16 +51,25 @@ namespace werkbank.operations
         {
             File.SetAttributes(TargetDirectory, FileAttributes.Normal);
 
-            foreach (string file in Directory.GetFiles(TargetDirectory))
+            if (FileService.IsSymbolic(TargetDirectory))
             {
-                DeleteFile(file);
+                // symlinks do not seem to work with Directory.Delete nor File.Delete,
+                // therefor we use the shellcomand rm to delete it
+                FileService.ShellDeleteFile(TargetDirectory);
             }
-            foreach (string dir in Directory.GetDirectories(TargetDirectory))
+            else
             {
-                DeleteDirectory(dir);
-            }
+                foreach (string file in Directory.GetFiles(TargetDirectory))
+                {
+                    DeleteFile(file);
+                }
+                foreach (string dir in Directory.GetDirectories(TargetDirectory))
+                {
+                    DeleteDirectory(dir);
+                }
 
-            Directory.Delete(TargetDirectory, false);
+                Directory.Delete(TargetDirectory, false);
+            }
         }
 
         public static bool Verify(string? DestinationPath)

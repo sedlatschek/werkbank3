@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace werkbank.services
 {
@@ -72,6 +71,58 @@ namespace werkbank.services
         public static string ReplaceInvalidCharsFromPath(string FileName)
         {
             return string.Join("_", FileName.Split(Path.GetInvalidFileNameChars()));
+        }
+
+        /// <summary>
+        /// Determine whether or not a path is actually a symlink.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static bool IsSymbolic(string path)
+        {
+            FileInfo pathInfo = new(path);
+            return pathInfo.Attributes.HasFlag(FileAttributes.ReparsePoint);
+        }
+
+        /// <summary>
+        /// Execute a command in shell.
+        /// </summary>
+        /// <param name="Command"></param>
+        /// <exception cref="ExternalException"></exception>
+        private static void Shell(string Command)
+        {
+            System.Diagnostics.Process process = new();
+            System.Diagnostics.ProcessStartInfo startInfo = new()
+            {
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                FileName = "cmd.exe",
+                Arguments = "/C " + Command
+            };
+            process.StartInfo = startInfo;
+            process.Start();
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                throw new ExternalException("Shell exited with code " + process.ExitCode.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Delete a file using the shell command rm.
+        /// </summary>
+        /// <param name="FilePath"></param>
+        public static void ShellDeleteFile(string FilePath)
+        {
+            Shell("rm \"" + FilePath + "\"");
+        }
+
+        /// <summary>
+        /// Delete a directory using the shell command rmdir.
+        /// </summary>
+        /// <param name="DirectoryPath"></param>
+        public static void ShellDeleteDirectory(string DirectoryPath)
+        {
+            Shell("rmdir \"" + DirectoryPath + "\"");
         }
     }
 }

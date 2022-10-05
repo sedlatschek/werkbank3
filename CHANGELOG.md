@@ -1,5 +1,8 @@
 # Changelog
 
+[v3.6.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.6.0.0)
+- fix bug where symlinks could not be deleted
+
 [v3.5.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.5.0.0)
 - fix bug where werk would disappear after a transition, if Werkbank was restarted after the delete operation was done
 - fix bug where readonly files could not be deleted
