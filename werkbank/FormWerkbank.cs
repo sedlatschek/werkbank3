@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using BrightIdeasSoftware;
@@ -384,7 +385,8 @@ namespace werkbank
                 && selectedWerk.TransitionType == null;
             button_werk_vscode.Enabled = selectedWerk != null
                 && selectedWerk.TransitionType == null;
-            button_werk_web.Enabled = selectedWerk != null;
+            button_werk_web.Enabled = selectedWerk != null
+                && selectedWerk.HasGit;
         }
 
         private void ButtonRefreshClick(object sender, EventArgs e)
@@ -530,7 +532,22 @@ namespace werkbank
 
         private void ButtonWerkWebClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (selectedWerk != null)
+            {
+                string? url = selectedWerk.GetGitRemoteUrl();
+                if (url != null)
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("There is not remote URL configured for this werk repository.", Title + ": Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
         }
 
         private void ButtonSettingsClick(object sender, EventArgs e)

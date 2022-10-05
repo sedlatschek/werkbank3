@@ -1,15 +1,18 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ICSharpCode.SharpZipLib.Zip;
+using IniParser;
+using IniParser.Model;
+using Newtonsoft.Json;
 using werkbank.converters;
 using werkbank.environments;
 using werkbank.repositories;
 using werkbank.services;
 using werkbank.transitions;
-using static System.Windows.Forms.AxHost;
+using werkbank.operations;
 
 namespace werkbank.models
 {
@@ -103,6 +106,13 @@ namespace werkbank.models
                 return File.Exists(IconFile);
             }
         }
+
+        /// <summary>
+        /// Whether or not the werk uses Git.
+        /// </summary>
+        [JsonIgnore]
+        public bool HasGit => (State == WerkState.Hot && Directory.Exists(Path.Combine(CurrentDirectory, Config.DirNameGit)))
+                    || (State != WerkState.Hot && File.Exists(Path.Combine(CurrentDirectory, Config.FileNameGitZip)));
 
         [JsonIgnore]
         public string IconFile => Path.Combine(CurrentMetaDirectory, Config.FileNameWerkIcon);
@@ -199,6 +209,48 @@ namespace werkbank.models
                 @"Programs\Microsoft VS Code\Code.exe"),
                 CurrentDirectory
             );
+        }
+
+        /// <summary>
+        /// Retrieve the remote url from the local git repository config. Will be null when git config does not exist or has no remote configured.
+        /// </summary>
+        /// <returns></returns>
+        public string? GetGitRemoteUrl()
+        {
+            if (!HasGit)
+            {
+                return null;
+            }
+
+            string? url = null;
+
+            if (State == WerkState.Hot)
+            {
+                FileIniDataParser parser = new();
+                IniData gitConfig = parser.ReadFile(Path.Combine(CurrentDirectory, Config.DirNameGit, "config"));
+                url = gitConfig["remote \"origin\""]["url"];
+            }
+            else
+            {
+                string zipPath = Path.Combine(CurrentDirectory, Config.FileNameGitZip);
+                using ZipInputStream zip = new(File.OpenRead(zipPath));
+                using FileStream filestream = new(zipPath, FileMode.Open, FileAccess.Read);
+                ZipFile zipfile = new(filestream);
+                ZipEntry item;
+                while ((item = zip.GetNextEntry()) != null)
+                {
+                    if (item.Name == "config")
+                    {
+                        using StreamReader s = new(zipfile.GetInputStream(item));
+                        FileIniDataParser parser = new();
+                        IniData gitConfig = parser.ReadData(s);
+                        url = gitConfig["remote \"origin\""]["url"];
+                        break;
+                    }
+                }
+            }
+
+            return url;
         }
 
         /// <summary>

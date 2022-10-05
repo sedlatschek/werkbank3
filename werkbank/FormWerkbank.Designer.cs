@@ -130,6 +130,7 @@ namespace werkbank
             // 
             this.button_werk_delete.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_werk_delete.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_werk_delete.Enabled = false;
             this.button_werk_delete.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.button_werk_delete.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.button_werk_delete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -148,6 +149,7 @@ namespace werkbank
             // 
             this.button_werk_history.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_werk_history.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_werk_history.Enabled = false;
             this.button_werk_history.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.button_werk_history.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.button_werk_history.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -184,6 +186,7 @@ namespace werkbank
             // 
             this.button_werk_web.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_werk_web.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_werk_web.Enabled = false;
             this.button_werk_web.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.button_werk_web.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.button_werk_web.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -232,6 +235,7 @@ namespace werkbank
             // 
             this.button_werk_open.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_werk_open.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_werk_open.Enabled = false;
             this.button_werk_open.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.button_werk_open.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.button_werk_open.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -250,6 +254,7 @@ namespace werkbank
             // 
             this.button_werk_backup.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_werk_backup.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_werk_backup.Enabled = false;
             this.button_werk_backup.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.button_werk_backup.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.button_werk_backup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -269,6 +274,7 @@ namespace werkbank
             // 
             this.button_werk_down.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_werk_down.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_werk_down.Enabled = false;
             this.button_werk_down.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.button_werk_down.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.button_werk_down.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -287,6 +293,7 @@ namespace werkbank
             // 
             this.button_werk_up.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_werk_up.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_werk_up.Enabled = false;
             this.button_werk_up.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.button_werk_up.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.button_werk_up.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -305,6 +312,7 @@ namespace werkbank
             // 
             this.button_werk_vscode.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_werk_vscode.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_werk_vscode.Enabled = false;
             this.button_werk_vscode.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.button_werk_vscode.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.button_werk_vscode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -323,6 +331,7 @@ namespace werkbank
             // 
             this.button_werk_edit.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button_werk_edit.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_werk_edit.Enabled = false;
             this.button_werk_edit.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.button_werk_edit.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.button_werk_edit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
