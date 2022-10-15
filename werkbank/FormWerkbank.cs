@@ -384,7 +384,8 @@ namespace werkbank
             button_werk_history.Enabled = selectedWerk != null
                 && selectedWerk.TransitionType == null;
             button_werk_vscode.Enabled = selectedWerk != null
-                && selectedWerk.TransitionType == null;
+                && selectedWerk.TransitionType == null
+                && RegistryService.GetVSCodePath() != null;
             button_werk_web.Enabled = selectedWerk != null
                 && selectedWerk.HasGit;
         }

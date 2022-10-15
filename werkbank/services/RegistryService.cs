@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 
@@ -32,6 +33,33 @@ namespace werkbank.services
             {
                 key.DeleteValue(Application.ProductName, false);
             }
+        }
+
+        /// <summary>
+        /// Get the path of VS Code. Will be null if VS Code is not installed.
+        /// </summary>
+        /// <returns></returns>
+        public static string? GetVSCodePath()
+        {
+            RegistryKey? key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Classes\\vscode\\shell\\open\\command", true);
+            if (key == null)
+            {
+                return null;
+            }
+
+            string? command = (string?)key.GetValue("");
+            if (command == null)
+            {
+                return null;
+            }
+
+            Match match = Regex.Match(command, "\\\"(.+Code\\.exe)\\\"");
+            if (match.Success)
+            {
+                return match.Groups[1].Value;
+            }
+
+            return null;
         }
     }
 }

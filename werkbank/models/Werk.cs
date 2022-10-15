@@ -204,11 +204,11 @@ namespace werkbank.models
         /// </summary>
         public void OpenInVsCode()
         {
-            System.Diagnostics.Process.Start(Path.Combine(
-                System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData),
-                @"Programs\Microsoft VS Code\Code.exe"),
-                CurrentDirectory
-            );
+            string? vsCodePath = RegistryService.GetVSCodePath();
+            if (vsCodePath != null)
+            {
+                System.Diagnostics.Process.Start(vsCodePath, CurrentDirectory);
+            }
         }
 
         /// <summary>
