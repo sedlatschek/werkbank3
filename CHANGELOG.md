@@ -2,6 +2,7 @@
 
 [v3.7.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.7.0.0)
 - [#2](https://github.com/sedlatschek/werkbank3/issues/2) read VS Code path from registry
+- [#3](https://github.com/sedlatschek/werkbank3/issues/3) set window to foreground on tray icon click
 
 [v3.6.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.6.0.0)
 - fix bug where symlinks could not be deleted

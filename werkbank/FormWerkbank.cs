@@ -611,6 +611,7 @@ namespace werkbank
         private void NotifyIconClick(object sender, EventArgs e)
         {
             WinApiService.ShowWindow(Handle, WinApiService.ShowWindowCommands.Restore);
+            WinApiService.SetForegroundWindow(Handle);
         }
 
         private void UpdateNotifyIconContextMenu()
