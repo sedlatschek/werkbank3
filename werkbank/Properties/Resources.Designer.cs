@@ -347,6 +347,68 @@ namespace werkbank.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ; https://editorconfig.org/
+        ///
+        ///root = true
+        ///
+        ///[*]
+        ///insert_final_newline = true
+        ///charset = utf-8
+        ///trim_trailing_whitespace = true
+        ///indent_style = space
+        ///indent_size = 2
+        ///
+        ///[{Makefile,go.mod,go.sum,*.go,.gitmodules}]
+        ///indent_style = tab
+        ///indent_size = 4
+        ///
+        ///[*.md]
+        ///indent_size = 4
+        ///trim_trailing_whitespace = false
+        ///
+        ///eclint_indent_style = unset
+        ///
+        ///[Dockerfile]
+        ///indent_size = 4
+        ///.
+        /// </summary>
+        internal static string go_editorconfig {
+            get {
+                return ResourceManager.GetString("go_editorconfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to # If you prefer the allow list template instead of the deny list, see community template:
+        ///# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
+        ///#
+        ///# Binaries for programs and plugins
+        ///*.exe
+        ///*.exe~
+        ///*.dll
+        ///*.so
+        ///*.dylib
+        ///
+        ///# Test binary, built with `go test -c`
+        ///*.test
+        ///
+        ///# Output of the go coverage tool, specifically when used with LiteIDE
+        ///*.out
+        ///
+        ///# Dependency directories (remove the comment below to include it)
+        ///# vendor/
+        ///
+        ///# Go workspace file
+        ///go.work
+        ///.
+        /// </summary>
+        internal static string go_gitignore {
+            get {
+                return ResourceManager.GetString("go_gitignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap icon_blank {

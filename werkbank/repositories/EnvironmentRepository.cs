@@ -42,6 +42,7 @@ namespace werkbank.repositories
             add(typeof(Delphi7Environment));
             add(typeof(Delphi10Environment));
             add(typeof(DockerEnvironment));
+            add(typeof(GoEnvironment));
             add(typeof(JavaEnvironment));
             add(typeof(JavascriptEnvironment));
             add(typeof(MarkdownEnvironment));

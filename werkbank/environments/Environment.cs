@@ -73,7 +73,7 @@ namespace werkbank.environments
         /// </summary>
         /// <param name="Werk"></param>
         /// <param name="Content"></param>
-        protected void WriteGitAttributes(Werk Werk, string Content)
+        protected static void WriteGitAttributes(Werk Werk, string Content)
         {
             File.WriteAllText(Path.Combine(Werk.CurrentDirectory, Config.FileNameGitAttributes), Content);
         }
@@ -83,7 +83,7 @@ namespace werkbank.environments
         /// </summary>
         /// <param name="Werk"></param>
         /// <param name="Content"></param>
-        protected void WriteGitIgnore(Werk Werk, string Content)
+        protected static void WriteGitIgnore(Werk Werk, string Content)
         {
             File.WriteAllText(Path.Combine(Werk.CurrentDirectory, Config.FileNameGitIgnore), Content);
         }
@@ -93,7 +93,7 @@ namespace werkbank.environments
         /// </summary>
         /// <param name="Werk"></param>
         /// <param name="Content"></param>
-        protected void WriteEditorConfig(Werk Werk, string Content)
+        protected static void WriteEditorConfig(Werk Werk, string Content)
         {
             File.WriteAllText(Path.Combine(Werk.CurrentDirectory, Config.FileNameEditorConfig), Content);
         }
