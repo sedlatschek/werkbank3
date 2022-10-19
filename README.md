@@ -37,13 +37,17 @@ This is actually the third version of this software, going from a C# implementat
 
 Currently operation ignore lists only apply to the copy operation, as it was not needed yet for any other operation. Be aware of that when using ignore lists to program transitions.
 
+## User Interface
+
+![User Interface](docs/ui.png)
+
 ## ToDos
 
 ### Optional ToDos
 
 - Integrate GitHub Api to automatically create repositories for new werke
 - Add automatic backup trigger
-- Installer/Updater
+- Updater
 - GitHub CI/CD for releases and tests
 - Implement ignore list for all operations
 
