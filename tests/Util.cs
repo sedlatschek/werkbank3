@@ -108,8 +108,10 @@ namespace tests
         /// <param name="Batch"></param>
         public static void WorkOffBatch(Batch Batch)
         {
+            Console.WriteLine("WorkOffBatch: ");
             foreach (Operation op in Batch.Operations)
             {
+                Console.WriteLine("  " + op.Type.ToString());
                 op.Run();
                 if (op.Error != null)
                 {

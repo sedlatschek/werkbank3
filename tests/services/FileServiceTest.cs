@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using werkbank.operations;
 using werkbank.services;
 
 namespace tests.services
@@ -88,6 +89,31 @@ namespace tests.services
         {
             string file = Util.GetTempPath();
             FileService.ShellDeleteFile(file);
+        }
+
+        [TestMethod]
+        public void GetHiddenPathsWorks()
+        {
+            string dir = Directory.CreateDirectory(Util.GetTempPath()).FullName;
+            string subDir1 = Directory.CreateDirectory(Path.Combine(dir, "subDir1")).FullName;
+            string subDir1File = Path.Combine(subDir1, "file.txt");
+            string subDir2 = Directory.CreateDirectory(Path.Combine(dir, "subDir2")).FullName;
+            string subDir2File = Path.Combine(subDir2, "file.txt");
+            string subDir3 = Directory.CreateDirectory(Path.Combine(subDir2, "subDir3")).FullName;
+            string subDir3File = Path.Combine(subDir3, "file.txt");
+
+            File.WriteAllText(subDir1File, "hi");
+            File.WriteAllText(subDir2File, "hi");
+            File.WriteAllText(subDir3File, "hi");
+
+            Hide.Perform(subDir3);
+            Hide.Perform(subDir2File);
+
+            List<string> hiddenPaths = FileService.GetHiddenPaths(dir);
+
+            Assert.AreEqual(2, hiddenPaths.Count);
+            Assert.IsTrue(hiddenPaths.Contains(subDir2File));
+            Assert.IsTrue(hiddenPaths.Contains(subDir3));
         }
     }
 }

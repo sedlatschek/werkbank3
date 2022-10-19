@@ -1,6 +1,7 @@
 # Changelog
 
 [v3.7.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.7.0.0)
+- [#1](https://github.com/sedlatschek/werkbank3/issues/1) preserve hidden state on transitions
 - [#2](https://github.com/sedlatschek/werkbank3/issues/2) read VS Code path from registry
 - [#3](https://github.com/sedlatschek/werkbank3/issues/3) set window to foreground on tray icon click
 - [#4](https://github.com/sedlatschek/werkbank3/issues/4) add go environment

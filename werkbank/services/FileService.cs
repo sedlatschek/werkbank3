@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -123,6 +124,48 @@ namespace werkbank.services
         public static void ShellDeleteDirectory(string DirectoryPath)
         {
             Shell("rmdir \"" + DirectoryPath + "\"");
+        }
+
+        /// <summary>
+        /// Get the hidden paths in a given directory.
+        /// </summary>
+        /// <param name="Directory"></param>
+        /// <returns></returns>
+        public static List<string> GetHiddenPaths(DirectoryInfo Directory)
+        {
+            List<string> paths = new();
+
+            foreach (FileInfo file in Directory.GetFiles())
+            {
+                if (file.Attributes.HasFlag(FileAttributes.Hidden))
+                {
+                    paths.Add(file.FullName);
+                }
+            }
+
+            foreach (DirectoryInfo subDir in Directory.GetDirectories())
+            {
+                if (subDir.Attributes.HasFlag(FileAttributes.Hidden))
+                {
+                    paths.Add(subDir.FullName);
+                }
+                else
+                {
+                    paths.AddRange(GetHiddenPaths(subDir));
+                }
+            }
+
+            return paths;
+        }
+
+        /// <summary>
+        /// Get the hidden paths in a given directory.
+        /// </summary>
+        /// <param name="Path"></param>
+        /// <returns></returns>
+        public static List<string> GetHiddenPaths(string Path)
+        {
+            return GetHiddenPaths(new DirectoryInfo(Path));
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using werkbank.exceptions;
 using werkbank.models;
 using Newtonsoft.Json;
+using werkbank.services;
 
 namespace werkbank.transitions
 {
@@ -49,9 +50,6 @@ namespace werkbank.transitions
             batch.Copy(coldDir, hotDir);
             batch.Delete(coldDir);
 
-            // hide meta dir
-            batch.Hide(hotMetaDir);
-
             // unzip git
             if (File.Exists(coldGitZip))
             {
@@ -59,6 +57,13 @@ namespace werkbank.transitions
                 batch.Unzip(hotGitZip, gitDir);
                 batch.Hide(gitDir);
                 batch.Delete(hotGitZip);
+            }
+
+            // hide previously hidden dirs/files
+            List<string> hiddenPaths = FileService.GetHiddenPaths(coldDir).Select(path => path.Replace(coldDir, hotDir)).ToList();
+            foreach (string hiddenPath in hiddenPaths)
+            {
+                batch.Hide(hiddenPath);
             }
 
             // change state to hot and save

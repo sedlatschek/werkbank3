@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using werkbank.exceptions;
 using werkbank.models;
 using Newtonsoft.Json;
+using werkbank.services;
 
 namespace werkbank.transitions
 {
@@ -55,8 +56,12 @@ namespace werkbank.transitions
             batch.Copy(hotDir, coldDir);
             batch.Delete(hotDir);
 
-            // hide meta dir
-            batch.Hide(coldMetaDir);
+            // hide previously hidden dirs/files
+            List<string> hiddenPaths = FileService.GetHiddenPaths(hotDir).Select(path => path.Replace(hotDir, coldDir)).ToList();
+            foreach (string hiddenPath in hiddenPaths)
+            {
+                batch.Hide(hiddenPath);
+            }
 
             // change state to cold and save
             Werk.TransitionType = null;

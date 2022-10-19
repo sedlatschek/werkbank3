@@ -33,6 +33,7 @@ namespace werkbank
         public const string FileNameGitAttributes = ".gitattributes";
         public const string FileNameGitIgnore = ".gitignore";
         public const string FileNameEditorConfig = ".editorconfig";
+        public const string FileNameHiddenJson = "hidden.json";
 
         public static readonly string DirAppData = Directory.CreateDirectory(GetAppDataPath()).FullName;
         public static readonly string FileSettings = Path.Combine(DirAppData, FileNameSettings);

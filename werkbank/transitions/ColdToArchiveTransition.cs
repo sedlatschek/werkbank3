@@ -44,6 +44,9 @@ namespace werkbank.transitions
             batch.Delete(archiveDir);
             batch.CreateDirectory(archiveDir);
 
+            // get the currently hidden paths
+            List<string> hiddenPaths = FileService.GetHiddenPaths(coldDir);
+
             if (Werk.CompressOnArchive)
             {
                 // copy .werk folder into archive
@@ -55,18 +58,30 @@ namespace werkbank.transitions
                     FileService.ReplaceInvalidCharsFromPath(Werk.Name) + ".zip"
                 );
                 batch.Zip(coldDir, zipFile);
+
+                // write .werk/hidden.json
+                batch.Write(
+                    Path.Combine(archiveMetaDir, Config.FileNameHiddenJson),
+                    JsonConvert.SerializeObject(hiddenPaths.Select(path => path.Replace(coldDir + "\\", "")).ToList())
+                );
+
+                // hide meta dir
+                batch.Hide(archiveMetaDir);
             }
             else
             {
                 // copy directory into archive
                 batch.Copy(coldDir, archiveDir);
+
+                // hide previously hidden dirs/files
+                foreach (string hiddenPath in hiddenPaths.Select(path => path.Replace(coldDir, archiveDir)).ToList())
+                {
+                    batch.Hide(hiddenPath);
+                }
             }
 
             // delete cold directory
             batch.Delete(coldDir);
-
-            // hide meta dir
-            batch.Hide(archiveMetaDir);
 
             // change state to archived and save
             Werk.TransitionType = null;

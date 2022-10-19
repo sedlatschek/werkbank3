@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using werkbank.exceptions;
 using werkbank.models;
 using werkbank.repositories;
+using werkbank.services;
 
 namespace werkbank.transitions
 {
@@ -50,6 +51,13 @@ namespace werkbank.transitions
             // move to target dir
             batch.Copy(curDir, targetDir);
             batch.Delete(curDir);
+
+            // hide previously hidden dirs/files
+            List<string> hiddenPaths = FileService.GetHiddenPaths(curDir).Select(path => path.Replace(curDir, targetDir)).ToList();
+            foreach (string hiddenPath in hiddenPaths)
+            {
+                batch.Hide(hiddenPath);
+            }
 
             // change state to archived and save
             environments.Environment currentEnvironment = Werk.Environment;

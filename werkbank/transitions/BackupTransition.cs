@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using werkbank.exceptions;
 using werkbank.models;
+using werkbank.services;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace werkbank.transitions
@@ -52,6 +53,16 @@ namespace werkbank.transitions
 
             // copy directories that are not blacklisted
             batch.Copy(hotDir, coldDir);
+
+            // hide previously hidden dirs/files
+            List<string> hiddenPaths = FileService.GetHiddenPaths(hotDir)
+                .Where(path => path != hotMetaDir)
+                .Select(path => path.Replace(hotDir, coldDir))
+                .ToList();
+            foreach (string hiddenPath in hiddenPaths)
+            {
+                batch.Hide(hiddenPath);
+            }
 
             // trigger after transition events
             batch.TriggerAfterTransitionEvent();
