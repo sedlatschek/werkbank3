@@ -67,6 +67,24 @@ namespace tests.transitions
         }
 
         [TestMethod]
+        public void WorksWithGitFolder()
+        {
+            Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[1], WerkState.Hot);
+            DirectoryInfo subDir2 = Directory.CreateDirectory(Path.Combine(werk.CurrentDirectory, ".git"));
+            Hide.Perform(subDir2.FullName);
+
+            HotToColdTransition transition = new();
+            Batch batch = transition.Build(werk);
+            Util.WorkOffBatch(batch);
+
+            Assert.IsNull(werk.TransitionType);
+            Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Hot)));
+            Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
+            Assert.IsFalse(Directory.Exists(subDir2.FullName));
+            Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), "git.zip")));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(werkbank.exceptions.UnexpectedWerkStateException))]
         public void ThrowsExceptionIfWerkIsInColdVault()
         {

@@ -57,7 +57,11 @@ namespace werkbank.transitions
             batch.Delete(hotDir);
 
             // hide previously hidden dirs/files
-            List<string> hiddenPaths = FileService.GetHiddenPaths(hotDir).Select(path => path.Replace(hotDir, coldDir)).ToList();
+            List<string> hiddenPaths = FileService.GetHiddenPaths(hotDir)
+                // git dir does not exist anymore after transition
+                .Where(x => !x.EndsWith(Config.DirNameGit))
+                .Select(path => path.Replace(hotDir, coldDir))
+                .ToList();
             foreach (string hiddenPath in hiddenPaths)
             {
                 batch.Hide(hiddenPath);
