@@ -56,6 +56,9 @@ namespace werkbank.transitions
             batch.Copy(hotDir, coldDir);
             batch.Delete(hotDir);
 
+            // hide meta dir
+            batch.Hide(coldMetaDir);
+
             // hide previously hidden dirs/files
             List<string> hiddenPaths = FileService.GetHiddenPaths(hotDir)
                 // git dir does not exist anymore after transition

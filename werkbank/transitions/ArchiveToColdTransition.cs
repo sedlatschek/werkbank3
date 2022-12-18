@@ -82,6 +82,9 @@ namespace werkbank.transitions
             // delete archive directory
             batch.Delete(archiveDir);
 
+            // hide meta dir
+            batch.Hide(coldMetaDir);
+
             // hide previously hidden dirs/files
             foreach (string hiddenPath in hiddenPaths)
             {

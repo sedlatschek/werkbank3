@@ -66,6 +66,53 @@ namespace tests.transitions
         }
 
         [TestMethod]
+        public void GitDirIsHidden()
+        {
+            Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[4], WerkState.Hot);
+            DirectoryInfo subDir2 = Directory.CreateDirectory(Path.Combine(werk.CurrentDirectory, ".git"));
+            string file1 = Path.Combine(subDir2.FullName, "f1.txt");
+            File.WriteAllText(file1, "hi");
+
+            HotToColdTransition hotToCold = new();
+            Util.WorkOffBatch(hotToCold.Build(werk));
+
+            Assert.IsNull(werk.TransitionType);
+            Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Hot)));
+            Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
+            Assert.IsFalse(Directory.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), ".git")));
+            Assert.IsTrue(File.Exists(Path.Combine(werk.GetDirectoryFor(WerkState.Cold), "git.zip")));
+
+            ColdToHotTransition coldToHot = new();
+            Util.WorkOffBatch(coldToHot.Build(werk));
+
+            Assert.IsNull(werk.TransitionType);
+            Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
+            Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Hot)));
+            Assert.IsTrue(new DirectoryInfo(Path.Combine(werk.GetDirectoryFor(WerkState.Hot), ".git")).Attributes.HasFlag(FileAttributes.Hidden));
+        }
+
+        [TestMethod]
+        public void WerkDirIsHidden()
+        {
+            Werk werk = Util.CreateDummyWerk(EnvironmentRepository.Environments[0], WerkState.Hot);
+
+            HotToColdTransition hotToCold = new();
+            Util.WorkOffBatch(hotToCold.Build(werk));
+
+            Assert.IsNull(werk.TransitionType);
+            Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Hot)));
+            Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
+
+            ColdToHotTransition coldToHot = new();
+            Util.WorkOffBatch(coldToHot.Build(werk));
+
+            Assert.IsNull(werk.TransitionType);
+            Assert.IsFalse(Directory.Exists(werk.GetDirectoryFor(WerkState.Cold)));
+            Assert.IsTrue(Directory.Exists(werk.GetDirectoryFor(WerkState.Hot)));
+            Assert.IsTrue(new DirectoryInfo(Path.Combine(werk.GetDirectoryFor(WerkState.Hot), werkbank.Config.DirNameMeta)).Attributes.HasFlag(FileAttributes.Hidden));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(werkbank.exceptions.UnexpectedWerkStateException))]
         public void ThrowsExceptionIfWerkIsInHotVault()
         {

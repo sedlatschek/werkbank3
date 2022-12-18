@@ -59,6 +59,9 @@ namespace werkbank.transitions
                 batch.Delete(hotGitZip);
             }
 
+            // hide meta dir
+            batch.Hide(hotMetaDir);
+
             // hide previously hidden dirs/files
             List<string> hiddenPaths = FileService.GetHiddenPaths(coldDir).Select(path => path.Replace(coldDir, hotDir)).ToList();
             foreach (string hiddenPath in hiddenPaths)

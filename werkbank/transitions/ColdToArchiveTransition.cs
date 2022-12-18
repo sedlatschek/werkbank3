@@ -80,6 +80,9 @@ namespace werkbank.transitions
                 }
             }
 
+            // hide meta dir
+            batch.Hide(archiveMetaDir);
+
             // delete cold directory
             batch.Delete(coldDir);
 
