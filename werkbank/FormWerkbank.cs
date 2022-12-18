@@ -541,7 +541,7 @@ namespace werkbank
                     Process.Start(new ProcessStartInfo
                     {
                         FileName = url,
-                        UseShellExecute = true
+                        UseShellExecute = false
                     });
                 }
                 else
