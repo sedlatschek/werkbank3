@@ -1,5 +1,9 @@
 # Changelog
 
+[v3.8.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.8.0.0)
+- fix bug where .git dir is getting hidden even though it does not exist anymore
+- [#5] fix bug where .werk directory is not hidden on hot to cold transition
+
 [v3.7.0](https://github.com/sedlatschek/werkbank3/releases/tag/v3.7.0.0)
 - [#1](https://github.com/sedlatschek/werkbank3/issues/1) preserve hidden state on transitions
 - [#2](https://github.com/sedlatschek/werkbank3/issues/2) read VS Code path from registry
